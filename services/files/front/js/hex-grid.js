@@ -18,7 +18,7 @@ hexHeight = Math.sin(hexagonAngle) * sideLength;
 hexRadius = Math.cos(hexagonAngle) * sideLength;
 hexRectangleHeight = sideLength + 2 * hexHeight;
 hexRectangleWidth = 2 * hexRadius;
-let ctx = canvas.getContext('2d');
+let ctx = canvas.getContext("2d");
 
 ctx.fillStyle = "#000000";
 ctx.strokeStyle = "#000000";
@@ -28,15 +28,15 @@ drawBoard(ctx, boardWidth, boardHeight);
 
 function drawBoard(canvasContext, width, height) {
     for (let i = 0; i < height; i++) {
-        let hexagons = (i % 2 === 0) ? width : width - 1; // N for even rows, N-1 for odd rows
-        let xStart = (i % 2 === 0) ? 0 : hexRadius; // Shift odd rows by half a hexagon's width
+        let hexagons = i % 2 === 0 ? width : width - 1; // N for even rows, N-1 for odd rows
+        let xStart = i % 2 === 0 ? 0 : hexRadius; // Shift odd rows by half a hexagon's width
 
         for (let j = 0; j < hexagons; j++) {
             drawHexagon(
                 canvasContext,
                 j * hexRectangleWidth + xStart + offset,
                 i * (sideLength + hexHeight) + offset,
-                false
+                false,
             );
         }
     }
@@ -54,8 +54,6 @@ function drawHexagon(canvasContext, x, y, doFill) {
     canvasContext.lineTo(x, y + hexHeight);
     canvasContext.closePath();
 
-    if (fill)
-        canvasContext.fill();
-    else
-        canvasContext.stroke();
+    if (fill) canvasContext.fill();
+    else canvasContext.stroke();
 }
