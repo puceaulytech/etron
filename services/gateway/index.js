@@ -6,7 +6,7 @@ const httpProxy = require("http-proxy");
 const proxy = httpProxy.createProxyServer();
 
 const { Logger } = require("../helpers/logger");
-const logger = new Logger("info");
+const logger = new Logger("debug");
 
 const PORT = 8000;
 
