@@ -1,13 +1,13 @@
 {
-  "name": "ps8",
-  "workspaces": [
-    "services/files",
-    "services/gateway"
-  ],
-  "scripts": {
-    "format": "prettier . --write"
-  },
-  "devDependencies": {
-    "prettier": "3.4.2"
-  }
+    "name": "ps8",
+    "workspaces": [
+        "services/files",
+        "services/gateway"
+    ],
+    "scripts": {
+        "format": "prettier . --write"
+    },
+    "devDependencies": {
+        "prettier": "3.4.2"
+    }
 }
