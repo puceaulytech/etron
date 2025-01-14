@@ -29,6 +29,12 @@ function drawBoard(canvasContext, board) {
                 case 2:
                     filling = "#f59c0c";
                     break;
+                case 11:
+                    filling = "#062659";
+                    break;
+                case 12:
+                    filling = "#965e03";
+                    break;
                 default:
                     filling = null;
             }

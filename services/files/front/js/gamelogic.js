@@ -21,23 +21,54 @@ playerOne.placeInBoard(board);
 playerTwo.placeInBoard(board);
 drawBoard(ctx, board);
 
-let playerOneMove = { x: 1, y: 0 };
+let playerOneMove = { x: 0, y: 0 };
 
 document.addEventListener("keydown", (event) => {
-    if (event.key === "s") {
-        playerOneMove = { x: 0, y: 1 };
+    switch (event.key) {
+        case "q":
+            playerOneMove = { x: -1, y: 0 };
+            break;
+        case "d":
+            playerOneMove = { x: 1, y: 0 };
+            break;
+        case "w":
+            playerOneMove = {
+                x: playerOne.position().y % 2 === 0 ? -1 : 0,
+                y: 1,
+            };
+            break;
+        case "x":
+            playerOneMove = {
+                x: playerOne.position().y % 2 === 0 ? 0 : 1,
+                y: 1,
+            };
+            break;
+        case "z":
+            playerOneMove = {
+                x: playerOne.position().y % 2 === 0 ? -1 : 0,
+                y: -1,
+            };
+            break;
+        case "e":
+            playerOneMove = {
+                x: playerOne.position().y % 2 === 0 ? 0 : 1,
+                y: -1,
+            };
+            break;
+        default:
+            return;
     }
 });
 
 const intervalId = setInterval(() => {
     console.log("Playing turn...");
-    playerOne.move(playerOneMove);
-    playerOne.placeInBoard(board);
-    // playerTwo.placeInBoard(board);
+    playerOne.move(board, playerOneMove);
     drawBoard(ctx, board);
 
     if (gameDone(board)) {
         clearInterval(intervalId);
         console.log("Game over!");
     }
+
+    playerOneMove = { x: 0, y: 0 };
 }, 500);

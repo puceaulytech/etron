@@ -16,9 +16,11 @@ class Player {
         };
     }
 
-    move(delta) {
+    move(board, delta) {
+        board[this.pos.y][this.pos.x] = this.id + 10;
         this.pos.x += delta.x;
         this.pos.y += delta.y;
+        board[this.pos.y][this.pos.x] = this.id;
     }
 
     position() {
