@@ -21,7 +21,7 @@ playerOne.placeInBoard(board);
 playerTwo.placeInBoard(board);
 drawBoard(ctx, board);
 
-let playerOneMove = { x: 0, y: 0 };
+let playerOneMove = null;
 
 document.addEventListener("keydown", (event) => {
     switch (event.key) {
@@ -62,13 +62,13 @@ document.addEventListener("keydown", (event) => {
 
 const intervalId = setInterval(() => {
     console.log("Playing turn...");
-    playerOne.move(board, playerOneMove);
+    if (playerOneMove) playerOne.move(board, playerOneMove);
     drawBoard(ctx, board);
 
     if (gameDone(board)) {
         clearInterval(intervalId);
-        console.log("Game over!");
+        alert("Game over!");
     }
 
-    playerOneMove = { x: 0, y: 0 };
+    playerOneMove = null;
 }, 500);

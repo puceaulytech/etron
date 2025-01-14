@@ -16,10 +16,25 @@ class Player {
         };
     }
 
+    /**
+     * @param {Array<Array>} board
+     */
     move(board, delta) {
+        /* Place trail */
         board[this.pos.y][this.pos.x] = this.id + 10;
+        /* Move player */
         this.pos.x += delta.x;
         this.pos.y += delta.y;
+        /* Check death */
+        if (
+            this.pos.x < 0 ||
+            this.pos.y < 0 ||
+            this.pos.y >= board.length ||
+            this.pos.x >= board[0].length || // unsafe?
+            board[this.pos.y][this.pos.x] !== 0
+        )
+            return;
+        /* Update position on board */
         board[this.pos.y][this.pos.x] = this.id;
     }
 
