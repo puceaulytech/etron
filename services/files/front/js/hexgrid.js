@@ -14,24 +14,39 @@ const hexagonAngle = 0.523598776, // 30 degrees in radians
     hexRectangleHeight = sideLength + 2 * hexHeight,
     hexRectangleWidth = 2 * hexRadius;
 
-function drawBoard(canvasContext, width, height) {
-    for (let i = 0; i < height; i++) {
-        const hexagons = i % 2 === 0 ? width : width - 1; // N for even rows, N-1 for odd rows
-        const xStart = i % 2 === 0 ? 0 : hexRadius; // Shift odd rows by half a hexagon's width
-
-        for (let j = 0; j < hexagons; j++) {
-            drawHexagon(
-                canvasContext,
-                j * hexRectangleWidth + xStart + offset,
-                i * (sideLength + hexHeight) + offset,
-                false,
-            );
+/**
+ * @param {CanvasRenderingContext2D} canvasContext
+ * @param {Array<Array>} board
+ */
+function drawBoard(canvasContext, board) {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            let filling;
+            switch (board[i][j]) {
+                case 1:
+                    filling = "#0362fc";
+                    break;
+                case 2:
+                    filling = "#f59c0c";
+                    break;
+                default:
+                    filling = null;
+            }
+            drawHexagon(canvasContext, j, i, filling);
         }
     }
 }
 
-function drawHexagon(canvasContext, x, y, doFill) {
-    const fill = doFill || false;
+/**
+ * @param {CanvasRenderingContext2D} canvasContext
+ * @param {number} x
+ * @param {number} y
+ * @param {boolean} doFill
+ */
+function drawHexagon(canvasContext, x, y, filling) {
+    const xStart = y % 2 === 0 ? 0 : hexRadius;
+    x = x * hexRectangleWidth + xStart + offset;
+    y = y * (sideLength + hexHeight) + offset;
 
     canvasContext.beginPath();
     canvasContext.moveTo(x + hexRadius, y);
@@ -42,6 +57,9 @@ function drawHexagon(canvasContext, x, y, doFill) {
     canvasContext.lineTo(x, y + hexHeight);
     canvasContext.closePath();
 
-    if (fill) canvasContext.fill();
-    else canvasContext.stroke();
+    if (filling) {
+        canvasContext.fillStyle = filling;
+        canvasContext.fill();
+    }
+    canvasContext.stroke();
 }
