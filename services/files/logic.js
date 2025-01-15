@@ -7,7 +7,7 @@ const path = require("path");
 
 // We will limit the search of files in the front folder (../../front from here).
 // Note that fs methods consider the current folder to be the one where the app is run, that's why we don't need the "../.." before front.
-const baseFrontPath = "/front";
+const baseFrontPath = __dirname + "/front";
 // If the user requests a directory, a file can be returned by default.
 const defaultFileIfFolder = "index.html";
 
@@ -37,7 +37,7 @@ function manageRequest(request, response) {
     // First let's parse the URL, extract the path, and parse it into an easy-to-use object.
     // We add the baseFrontPath at the beginning to limit the places to search for files.
     const parsedUrl = url.parse(baseFrontPath + request.url);
-    let pathName = `.${parsedUrl.pathname}`;
+    let pathName = parsedUrl.pathname;
     let extension = path.parse(pathName).ext;
     // Uncomment the line below if you want to check in the console what url.parse() and path.parse() create.
     //console.log(parsedUrl, pathName, path.parse(pathName));
