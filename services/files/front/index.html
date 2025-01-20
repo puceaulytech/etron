@@ -4,9 +4,32 @@
         <meta charset="utf-8" />
         <title>éTronc</title>
         <link href="style.css" rel="stylesheet" />
+        <script
+            src="components/keyboardcontrols/keyboardcontrols.js"
+            defer
+        ></script>
     </head>
     <body>
-        <div id="left">left</div>
+        <div id="left">
+            left
+            <keyboard-controls>
+                <svg
+                    class="hex-controls"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M 50,0
+                              L 0,25
+                              L 0,75
+                              L 50,100
+                              L 100,75
+                              L 100,25
+                              L 50,0"
+                    />
+                </svg>
+            </keyboard-controls>
+        </div>
         <div id="game"><canvas id="hexmap"></canvas></div>
         <div id="right">right</div>
         <script src="js/hexgrid.js"></script>

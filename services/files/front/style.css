@@ -7,3 +7,8 @@ body {
 body div {
     height: 100vh;
 }
+
+.hex-controls {
+    width: 100px;
+    height: 100px;
+}
