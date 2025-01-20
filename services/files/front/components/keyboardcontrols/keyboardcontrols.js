@@ -20,10 +20,12 @@ template.innerHTML = `
             font-size: 14px;
             font-weight: bold;
         }
-        ::slotted(*) {
+        .hex-controls {
             position: absolute;
             left: 25%;
             top: 25%;
+            width: 100px;
+            height: 100px;
         }
 
         .top-right { left: 70%; top: 15%; }
@@ -35,13 +37,27 @@ template.innerHTML = `
     </style>
 
     <div id="container">
-        <slot></slot>
-        <div class="control top-right">E</div>
-        <div class="control right">D</div>
-        <div class="control bottom-right">X</div>
-        <div class="control bottom-left">W</div>
-        <div class="control left">Q</div>
-        <div class="control top-left">Z</div>
+        <svg
+            class="hex-controls"
+            viewBox="0 0 100 100"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M 50,0
+                      L 0,25
+                      L 0,75
+                      L 50,100
+                      L 100,75
+                      L 100,25
+                      L 50,0"
+            />
+        </svg>
+        <div class="control top-right">@</div>
+        <div class="control right">@</div>
+        <div class="control bottom-right">@</div>
+        <div class="control bottom-left">@</div>
+        <div class="control left">@</div>
+        <div class="control top-left">@</div>
     </div>
 `;
 
@@ -50,6 +66,30 @@ class KeyboardControls extends HTMLElement {
         super();
         const shadow = this.attachShadow({ mode: "open" });
         shadow.append(template.content.cloneNode(true));
+    }
+
+    static get observedAttributes() {
+        return ["keys"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "keys") {
+            this.updateKeys(newValue);
+        }
+    }
+
+    connectedCallback() {
+        if (this.hasAttribute("keys")) {
+            this.updateKeys(this.getAttribute("keys"));
+        }
+    }
+
+    updateKeys(keys) {
+        const keyArray = keys.split(",");
+        const controls = this.shadowRoot.querySelectorAll(".control");
+        controls.forEach((control, index) => {
+            control.textContent = keyArray[index] || "";
+        });
     }
 }
 

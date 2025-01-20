@@ -8,7 +8,8 @@ body div {
     height: 100vh;
 }
 
-.hex-controls {
-    width: 100px;
-    height: 100px;
+.side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

@@ -10,28 +10,15 @@
         ></script>
     </head>
     <body>
-        <div id="left">
+        <div class="left side">
             left
-            <keyboard-controls>
-                <svg
-                    class="hex-controls"
-                    viewBox="0 0 100 100"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M 50,0
-                              L 0,25
-                              L 0,75
-                              L 50,100
-                              L 100,75
-                              L 100,25
-                              L 50,0"
-                    />
-                </svg>
-            </keyboard-controls>
+            <keyboard-controls keys="E,D,X,W,Q,Z" />
         </div>
         <div id="game"><canvas id="hexmap"></canvas></div>
-        <div id="right">right</div>
+        <div class="right side">
+            right
+            <keyboard-controls keys="P,M,/,;,K,O" />
+        </div>
         <script src="js/hexgrid.js"></script>
         <script src="js/gameutils.js"></script>
         <script src="js/gamelogic.js"></script>
