@@ -24,36 +24,24 @@ drawBoard(ctx, board);
 let playerOneMove = null;
 
 document.addEventListener("keydown", (event) => {
-    switch (event.key) {
+    switch (event.key.toLowerCase()) {
         case "q":
-            playerOneMove = { x: -1, y: 0 };
+            playerOneMove = "LEFT";
             break;
         case "d":
-            playerOneMove = { x: 1, y: 0 };
+            playerOneMove = "RIGHT";
             break;
         case "w":
-            playerOneMove = {
-                x: playerOne.position().y % 2 === 0 ? -1 : 0,
-                y: 1,
-            };
+            playerOneMove = "BOTTOM_LEFT";
             break;
         case "x":
-            playerOneMove = {
-                x: playerOne.position().y % 2 === 0 ? 0 : 1,
-                y: 1,
-            };
+            playerOneMove = "BOTTOM_RIGHT";
             break;
         case "z":
-            playerOneMove = {
-                x: playerOne.position().y % 2 === 0 ? -1 : 0,
-                y: -1,
-            };
+            playerOneMove = "TOP_LEFT";
             break;
         case "e":
-            playerOneMove = {
-                x: playerOne.position().y % 2 === 0 ? 0 : 1,
-                y: -1,
-            };
+            playerOneMove = "TOP_RIGHT";
             break;
         default:
             return;
