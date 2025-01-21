@@ -1,19 +1,15 @@
 const { Server } = require("socket.io");
+const storage = require("./storage");
 
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
 
-    // FIXME: this stores socket ids, which is volatile
-    // and may not be suitable for tracking connected clients
-    const connectedClients = [];
-
     io.on("connection", (socket) => {
-        connectedClients.push(socket.id);
+        storage.addClient(socket.id);
 
         // Register disconnection event
         socket.on("disconnect", (_reason) => {
-            const idx = connectedClients.indexOf(socket.id);
-            if (idx !== -1) connectedClients.splice(idx, 1);
+            storage.removeClient(socket.id);
         });
     });
 }
