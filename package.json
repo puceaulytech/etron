@@ -2,7 +2,8 @@
     "name": "ps8",
     "workspaces": [
         "services/files",
-        "services/gateway"
+        "services/gateway",
+        "services/gamesvc"
     ],
     "scripts": {
         "format": "prettier . --write",
