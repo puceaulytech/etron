@@ -9,5 +9,8 @@
     "author": "",
     "license": "ISC",
     "type": "commonjs",
-    "description": ""
+    "description": "",
+    "dependencies": {
+        "socket.io": "4.8.1"
+    }
 }

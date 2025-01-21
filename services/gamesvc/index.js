@@ -4,10 +4,11 @@ const { Logger } = require("../helpers/logger");
 const logger = new Logger("debug");
 
 const handleRequest = require("./controllers");
+const handleWS = require("./ws");
 
 const PORT = 8002;
 
-http.createServer((req, res) => {
+const server = http.createServer((req, res) => {
     try {
         handleRequest(req, res);
     } catch (err) {
@@ -16,4 +17,8 @@ http.createServer((req, res) => {
         res.statusCode = 500;
         res.end("Internal Server Error");
     }
-}).listen(PORT, () => logger.info(`listening on port ${PORT}`));
+});
+
+handleWS(server);
+
+server.listen(PORT, () => logger.info(`listening on port ${PORT}`));
