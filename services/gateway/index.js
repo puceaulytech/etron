@@ -5,15 +5,20 @@ const httpProxy = require("http-proxy");
 const microservices = { gamesvc: "http://127.0.0.1:8002" };
 const websocketService = "ws://127.0.0.1:8002";
 
-// We will need a proxy to send requests to the other services.
-const proxy = httpProxy.createProxyServer();
-
 const { Logger } = require("../helpers/logger");
 const logger = new Logger("debug");
 
 const PORT = 8000;
 
-// Create a proxy for websockets
+// We will need a proxy to send requests to the other services.
+const proxy = httpProxy.createProxyServer();
+
+proxy.on("error", (err, req, res) => {
+    logger.error(`proxy error: ${err}`);
+
+    res.statusCode = 500;
+    res.end("Internal Server Error");
+});
 
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
