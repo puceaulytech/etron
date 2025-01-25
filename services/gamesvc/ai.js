@@ -7,6 +7,10 @@ function getGameState() {
 const BOARD_HEIGHT = 9;
 const BOARD_WIDTH = 16;
 
+// We can switch player but negating the value
+const PLAYER = 1;
+const OPPONENT = -1;
+
 class GameState {
     constructor(playerPosition, opponentPosition) {
         this.playerPosition = playerPosition;
@@ -23,17 +27,13 @@ class GameState {
     updatePositions(playerPosition, opponentPosition) {
         // Mark trails
         this.board[this.playerPosition.row][this.playerPosition.column] =
-            "PLAYER";
+            PLAYER;
         this.board[this.opponentPosition.row][this.opponentPosition.column] =
-            "OPPONENT";
+            OPPONENT;
 
         this.playerPosition = playerPosition;
         this.opponentPosition = opponentPosition;
     }
-}
-
-function switchPlayer(player) {
-    return "PLAYER" ? "OPPONENT" : "PLAYER";
 }
 
 function negamax(gameState, currentPlayer, depth, alpha, beta) {
@@ -49,13 +49,7 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
 
         score = Math.max(
             score,
-            -negamax(
-                gameState,
-                depth - 1,
-                -beta,
-                -alpha,
-                switchPlayer(currentPlayer),
-            ),
+            -negamax(gameState, depth - 1, -beta, -alpha, -currentPlayer),
         );
 
         // revert move
