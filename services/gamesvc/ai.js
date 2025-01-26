@@ -15,206 +15,62 @@ function playerText(p) {
     return p === 1 ? "PLAYER" : "OPPONENT";
 }
 
-const AbsoluteDirections = {
-    LEFT: "LEFT",
-    RIGHT: "RIGHT",
-    BOTTOM_LEFT: "BOTTOM_LEFT",
-    BOTTOM_RIGHT: "BOTTOM_RIGHT",
-    TOP_LEFT: "TOP_LEFT",
-    TOP_RIGHT: "TOP_RIGHT",
-};
+class Direction {
+    static LEFT = new Direction("LEFT");
+    static RIGHT = new Direction("RIGHT");
+    static BOTTOM_LEFT = new Direction("BOTTOM_LEFT");
+    static BOTTOM_RIGHT = new Direction("BOTTOM_RIGHT");
+    static TOP_LEFT = new Direction("TOP_LEFT");
+    static TOP_RIGHT = new Direction("TOP_RIGHT");
 
-const ABS_DIR_IDX = {
-    [AbsoluteDirections.TOP_LEFT]: 0,
-    [AbsoluteDirections.TOP_RIGHT]: 1,
-    [AbsoluteDirections.RIGHT]: 2,
-    [AbsoluteDirections.BOTTOM_RIGHT]: 3,
-    [AbsoluteDirections.BOTTOM_LEFT]: 4,
-    [AbsoluteDirections.LEFT]: 5,
-};
-
-const IDX_ABS_DIR = [
-    AbsoluteDirections.TOP_LEFT,
-    AbsoluteDirections.TOP_RIGHT,
-    AbsoluteDirections.RIGHT,
-    AbsoluteDirections.BOTTOM_RIGHT,
-    AbsoluteDirections.BOTTOM_LEFT,
-    AbsoluteDirections.LEFT,
-];
-
-const TeacherDirections = {
-    KEEP_GOING: "KEEP_GOING",
-    LIGHT_RIGHT: "LIGHT_RIGHT",
-    HEAVY_RIGHT: "HEAVY_RIGHT",
-    HEAVY_LEFT: "HEAVY_LEFT",
-    LIGHT_LEFT: "LIGHT_LEFT",
-};
-
-/**
- * Checks if two positions are equal
- *
- * @param {*} posA First position
- * @param {*} posB Second position
- * @returns true if the two positions are equal, otherwise false
- */
-function isPositionEqual(posA, posB) {
-    if (typeof posA === "undefined") throw new Error("posA is undefined");
-    if (typeof posB === "undefined") throw new Error("posB is undefined");
-
-    return posA.row === posB.row && posA.column === posB.column;
-}
-
-/**
- * Determines if two positions are directly opposite
- *
- * @param {*} first First position
- * @param {*} second Second position
- * @returns true if the two positions are opposite, otherwise false
- */
-function areDirectionOpposite(first, second) {
-    if (typeof first === "undefined") throw new Error("first is undefined");
-    if (typeof second === "undefined") throw new Error("second is undefined");
-
-    const currentIdx = ABS_DIR_IDX[first];
-    const nextIdx = ABS_DIR_IDX[second];
-
-    const diff = (nextIdx - currentIdx + 6) % 6;
-
-    return diff === 3;
-}
-
-/**
- * Moves a position in a specified direction on the hexagonal grid
- *
- * @param {*} position The current position
- * @param {*} direction The direction to move in
- * @returns The new position after moving
- */
-function movePositionInDirection(position, direction) {
-    const delta = { column: 0, row: 0 };
-    const evenRow = position.row % 2 === 0;
-
-    switch (direction) {
-        case AbsoluteDirections.LEFT:
-            delta.column = -1;
-            delta.row = 0;
-            break;
-        case AbsoluteDirections.RIGHT:
-            delta.column = 1;
-            delta.row = 0;
-            break;
-        case AbsoluteDirections.BOTTOM_LEFT:
-            delta.column = evenRow ? -1 : 0;
-            delta.row = 1;
-            break;
-        case AbsoluteDirections.BOTTOM_RIGHT:
-            delta.column = evenRow ? 0 : 1;
-            delta.row = 1;
-            break;
-        case AbsoluteDirections.TOP_LEFT:
-            delta.column = evenRow ? -1 : 0;
-            delta.row = -1;
-            break;
-        case AbsoluteDirections.TOP_RIGHT:
-            delta.column = evenRow ? 0 : 1;
-            delta.row = -1;
-            break;
-    }
-
-    return {
-        column: position.column + delta.column,
-        row: position.row + delta.row,
+    static ABS_DIR_IDX = {
+        [Direction.TOP_LEFT.kind]: 0,
+        [Direction.TOP_RIGHT.kind]: 1,
+        [Direction.RIGHT.kind]: 2,
+        [Direction.BOTTOM_RIGHT.kind]: 3,
+        [Direction.BOTTOM_LEFT.kind]: 4,
+        [Direction.LEFT.kind]: 5,
     };
-}
 
-/**
- * Determines the direction of movement from on position to another on an hexagonal grid
- *
- * @param {*} previousPos
- * @param {*} nextPos
- * @returns
- */
-function getDirectionBetweenPositions(previousPos, nextPos) {
-    const columnDiff = nextPos.column - previousPos.column;
-    const rowDiff = nextPos.row - previousPos.row;
-    const evenRow = previousPos.row % 2 === 0;
-
-    if (columnDiff === 0 && rowDiff === 1) {
-        return evenRow
-            ? AbsoluteDirections.BOTTOM_RIGHT
-            : AbsoluteDirections.BOTTOM_LEFT;
-    } else if (columnDiff === 0 && rowDiff === -1) {
-        return evenRow
-            ? AbsoluteDirections.TOP_RIGHT
-            : AbsoluteDirections.TOP_LEFT;
-    } else if (columnDiff === -1 && rowDiff === 0) {
-        return AbsoluteDirections.LEFT;
-    } else if (columnDiff === 1 && rowDiff === 0) {
-        return AbsoluteDirections.RIGHT;
-    } else if (columnDiff === -1 && rowDiff === 1) {
-        return AbsoluteDirections.BOTTOM_LEFT;
-    } else if (columnDiff === 1 && rowDiff === 1) {
-        return AbsoluteDirections.BOTTOM_RIGHT;
-    } else if (columnDiff === -1 && rowDiff === -1) {
-        return AbsoluteDirections.TOP_LEFT;
-    } else if (columnDiff === 1 && rowDiff === -1) {
-        return AbsoluteDirections.TOP_RIGHT;
+    constructor(kind) {
+        this.kind = kind;
     }
 
-    throw new Error("invalid positions");
-}
+    equals(other) {
+        if (typeof other === "undefined")
+            throw new Error("other operand is undefined");
 
-/**
- * Converts the teacher's supplied position to a position we can use within our grid
- *
- * @param {*} teacherPosition The teacher's position
- * @returns Our position
- */
-function teacherPosToRealPos(teacherPosition) {
-    return { column: teacherPosition.column - 1, row: teacherPosition.row - 1 };
-}
-
-class GameState {
-    /**
-     * Constructs a new game state
-     * @param {*} playerPosition The initial player position (the AI)
-     * @param {*} opponentPosition The initial opponent position
-     */
-    constructor(playerPosition, opponentPosition) {
-        this.playerPosition = playerPosition;
-        this.opponentPosition = opponentPosition;
-
-        // If the player starts at the left of the grid, head towards right, left otherwise
-        this.playerDirection =
-            this.playerPosition.column === 0
-                ? AbsoluteDirections.RIGHT
-                : AbsoluteDirections.LEFT;
-
-        this.opponentDirection =
-            this.opponentPosition.column === 0
-                ? AbsoluteDirections.RIGHT
-                : AbsoluteDirections.LEFT;
-
-        this.board = new Array(BOARD_HEIGHT);
-
-        for (let i = 0; i < BOARD_HEIGHT; i++)
-            this.board[i] = new Array(
-                i % 2 === 0 ? BOARD_WIDTH : BOARD_WIDTH - 1,
-            ).fill(0);
+        return this.kind === other.kind;
     }
 
-    /**
-     * Computes the teacher's direction (relative direction) based on
-     * the player current absolute direction and the next absolute direction
-     *
-     * @param {*} nextAbsoluteDirection The next absolute direction
-     * @returns The teacher's direction
-     */
-    computeTeacherDirection(nextAbsoluteDirection) {
-        const currentIdx = ABS_DIR_IDX[this.playerDirection];
-        const nextIdx = ABS_DIR_IDX[nextAbsoluteDirection];
+    static values() {
+        return [
+            Direction.LEFT,
+            Direction.RIGHT,
+            Direction.BOTTOM_LEFT,
+            Direction.BOTTOM_RIGHT,
+            Direction.TOP_LEFT,
+            Direction.TOP_RIGHT,
+        ];
+    }
 
-        const diff = (nextIdx - currentIdx + 6) % 6;
+    isOppositeTo(other) {
+        if (typeof other === "undefined")
+            throw new Error("other operand is undefined");
+
+        const thisIdx = Direction.ABS_DIR_IDX[this.kind];
+        const otherIdx = Direction.ABS_DIR_IDX[other.kind];
+
+        const diff = (otherIdx - thisIdx + 6) % 6;
+
+        return diff === 3;
+    }
+
+    static toTeacherDirection(previousDir, nextDir) {
+        const previousIdx = Direction.ABS_DIR_IDX[previousDir.kind];
+        const nextIdx = Direction.ABS_DIR_IDX[nextDir.kind];
+
+        const diff = (nextIdx - previousIdx + 6) % 6;
 
         if (diff === 0) {
             return TeacherDirections.KEEP_GOING;
@@ -231,6 +87,120 @@ class GameState {
         }
 
         return teacherDir;
+    }
+}
+
+const TeacherDirections = {
+    KEEP_GOING: "KEEP_GOING",
+    LIGHT_RIGHT: "LIGHT_RIGHT",
+    HEAVY_RIGHT: "HEAVY_RIGHT",
+    HEAVY_LEFT: "HEAVY_LEFT",
+    LIGHT_LEFT: "LIGHT_LEFT",
+};
+
+class Position {
+    constructor(column, row) {
+        this.column = column;
+        this.row = row;
+    }
+
+    equals(other) {
+        if (typeof other === "undefined")
+            throw new Error("other operand is undefined");
+
+        return this.column == other.column && this.row == other.row;
+    }
+
+    moveInDirection(dir) {
+        const delta = { column: 0, row: 0 };
+        const evenRow = this.row % 2 === 0;
+
+        switch (dir) {
+            case Direction.LEFT:
+                delta.column = -1;
+                delta.row = 0;
+                break;
+            case Direction.RIGHT:
+                delta.column = 1;
+                delta.row = 0;
+                break;
+            case Direction.BOTTOM_LEFT:
+                delta.column = evenRow ? -1 : 0;
+                delta.row = 1;
+                break;
+            case Direction.BOTTOM_RIGHT:
+                delta.column = evenRow ? 0 : 1;
+                delta.row = 1;
+                break;
+            case Direction.TOP_LEFT:
+                delta.column = evenRow ? -1 : 0;
+                delta.row = -1;
+                break;
+            case Direction.TOP_RIGHT:
+                delta.column = evenRow ? 0 : 1;
+                delta.row = -1;
+                break;
+        }
+
+        return new Position(this.column + delta.column, this.row + delta.row);
+    }
+
+    static diffDir(previousPos, nextPos) {
+        const columnDiff = nextPos.column - previousPos.column;
+        const rowDiff = nextPos.row - previousPos.row;
+        const evenRow = previousPos.row % 2 === 0;
+
+        if (columnDiff === 0 && rowDiff === 1) {
+            return evenRow ? Direction.BOTTOM_RIGHT : Direction.BOTTOM_LEFT;
+        } else if (columnDiff === 0 && rowDiff === -1) {
+            return evenRow ? Direction.TOP_RIGHT : Direction.TOP_LEFT;
+        } else if (columnDiff === -1 && rowDiff === 0) {
+            return Direction.LEFT;
+        } else if (columnDiff === 1 && rowDiff === 0) {
+            return Direction.RIGHT;
+        } else if (columnDiff === -1 && rowDiff === 1) {
+            return Direction.BOTTOM_LEFT;
+        } else if (columnDiff === 1 && rowDiff === 1) {
+            return Direction.BOTTOM_RIGHT;
+        } else if (columnDiff === -1 && rowDiff === -1) {
+            return Direction.TOP_LEFT;
+        } else if (columnDiff === 1 && rowDiff === -1) {
+            return Direction.TOP_RIGHT;
+        }
+
+        throw new Error("invalid positions");
+    }
+
+    static fromTeacherPosition(teacherPos) {
+        return new Position(teacherPos.row - 1, teacherPos.column - 1);
+    }
+}
+
+class GameState {
+    /**
+     * Constructs a new game state
+     * @param {*} playerPosition The initial player position (the AI)
+     * @param {*} opponentPosition The initial opponent position
+     */
+    constructor(playerPosition, opponentPosition) {
+        this.playerPosition = playerPosition;
+        this.opponentPosition = opponentPosition;
+
+        // If the player starts at the left of the grid, head towards right, left otherwise
+        this.playerDirection =
+            this.playerPosition.column === 0 ? Direction.RIGHT : Direction.LEFT;
+
+        this.opponentDirection =
+            this.opponentPosition.column === 0
+                ? Direction.RIGHT
+                : Direction.LEFT;
+
+        this.board = new Array(BOARD_HEIGHT);
+
+        for (let i = 0; i < BOARD_HEIGHT; i++)
+            this.board[i] = new Array(
+                i % 2 === 0 ? BOARD_WIDTH : BOARD_WIDTH - 1,
+            ).fill(0);
     }
 
     /**
@@ -346,17 +316,14 @@ class GameState {
     getLegalMovesFromPos(currentPosition, currentDirection) {
         const legalMoves = [];
 
-        for (const newDirection of Object.values(AbsoluteDirections)) {
-            const newPosition = movePositionInDirection(
-                currentPosition,
-                newDirection,
-            );
+        for (const newDirection of Direction.values()) {
+            const newPosition = currentPosition.moveInDirection(newDirection);
 
             if (
                 !this.isOutOfBounds(newPosition) &&
-                !areDirectionOpposite(currentDirection, newDirection) &&
-                !isPositionEqual(newPosition, this.opponentPosition) &&
-                !isPositionEqual(newPosition, this.playerPosition) &&
+                !currentDirection.isOppositeTo(newDirection) &&
+                !newPosition.equals(this.opponentPosition) &&
+                !newPosition.equals(this.playerPosition) &&
                 this.getCell(newPosition) === 0
             ) {
                 legalMoves.push(newPosition);
@@ -378,7 +345,7 @@ class GameState {
         const previousPosition = this.getPlayerPosition(player);
         const previousDirection = this.getPlayerDirection(player);
 
-        const positionsEqual = isPositionEqual(nextPosition, previousPosition);
+        const positionsEqual = nextPosition.equals(previousPosition);
 
         /* Mark trail
          * We skip trail marking if the previous and next position are the same.
@@ -390,7 +357,7 @@ class GameState {
         if (!positionsEqual)
             this.setPlayerDirection(
                 player,
-                getDirectionBetweenPositions(previousPosition, nextPosition),
+                Position.diffDir(previousPosition, nextPosition),
             );
 
         return { position: previousPosition, direction: previousDirection };
@@ -414,8 +381,8 @@ class GameState {
 
 async function setup(playersState) {
     globalGameState = new GameState(
-        teacherPosToRealPos(playersState.playerPosition),
-        teacherPosToRealPos(playersState.opponentPosition),
+        Position.fromTeacherPosition(playersState.playerPosition),
+        Position.fromTeacherPosition(playersState.opponentPosition),
     );
 
     return true;
@@ -423,10 +390,10 @@ async function setup(playersState) {
 
 async function nextMove(playersState) {
     // Convert player positions
-    const playerCurrentPosition = teacherPosToRealPos(
+    const playerCurrentPosition = Position.fromTeacherPosition(
         playersState.playerPosition,
     );
-    const opponentCurrentPosition = teacherPosToRealPos(
+    const opponentCurrentPosition = Position.fromTeacherPosition(
         playersState.opponentPosition,
     );
 
@@ -438,13 +405,14 @@ async function nextMove(playersState) {
     const playerNextPosition = nextMoveStateless(globalGameState);
 
     // Compute absolute direction
-    const nextAbsoluteDirection = getDirectionBetweenPositions(
+    const nextAbsoluteDirection = Position.diffDir(
         playerCurrentPosition,
         playerNextPosition,
     );
 
     // Compute teacher's direction
-    const teacherDir = globalGameState.computeTeacherDirection(
+    const teacherDir = Direction.toTeacherDirection(
+        globalGameState.playerDirection,
         nextAbsoluteDirection,
     );
 
@@ -484,10 +452,7 @@ function distancesAll(gameState, startPos, startDir) {
             if (distances[nextPos.row][nextPos.column] === -1) {
                 distances[nextPos.row][nextPos.column] = currentDistance + 1;
 
-                const nextDir = getDirectionBetweenPositions(
-                    currentPos,
-                    nextPos,
-                );
+                const nextDir = Position.diffDir(currentPos, nextPos);
 
                 visitQueue.push({
                     pos: nextPos,
@@ -540,7 +505,7 @@ function heuristic(gameState, currentPlayer) {
     return reachableByPlayer - reachableByOpponent;
 }
 
-const NEGAMAX_DEPTH = 2;
+const NEGAMAX_DEPTH = 5;
 
 // FOR DEBUG
 function padDepth(d) {
@@ -623,6 +588,7 @@ module.exports = {
     BOARD_WIDTH,
     BOARD_HEIGHT,
     TeacherDirections,
-    AbsoluteDirections,
+    Direction,
+    Position,
     stateless: { nextMove: nextMoveStateless },
 };

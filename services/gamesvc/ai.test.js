@@ -1,97 +1,124 @@
-const { GameState, BOARD_WIDTH, BOARD_HEIGHT } = require("./ai");
+const { Direction, Position } = require("./ai");
 
-describe("isOutOfBounds", () => {
-    it("should return true for positions out of bounds", () => {
-        const gameState = new GameState(
-            { row: 0, column: 0 },
-            { row: 1, column: 1 },
+describe("Direction", () => {
+    test("Direction.equals should compare two directions correctly", () => {
+        expect(Direction.LEFT.equals(Direction.LEFT)).toBe(true);
+        expect(Direction.LEFT.equals(Direction.RIGHT)).toBe(false);
+
+        expect(() => Direction.LEFT.equals(undefined)).toThrowError(
+            "other operand is undefined",
         );
-
-        expect(gameState.isOutOfBounds({ row: -1, column: 0 })).toBe(true); // Above the board
-        expect(gameState.isOutOfBounds({ row: 0, column: -1 })).toBe(true); // Left of the board
-        expect(gameState.isOutOfBounds({ row: BOARD_HEIGHT, column: 0 })).toBe(
-            true,
-        ); // Below the board
-        expect(gameState.isOutOfBounds({ row: 0, column: BOARD_WIDTH })).toBe(
-            true,
-        ); // Right of the board
     });
 
-    it("should return false for positions within bounds", () => {
-        const gameState = new GameState(
-            { row: 0, column: 0 },
-            { row: 1, column: 1 },
+    test("Direction.isOppositeTo should correctly identify opposite directions", () => {
+        expect(Direction.LEFT.isOppositeTo(Direction.RIGHT)).toBe(true);
+        expect(Direction.TOP_LEFT.isOppositeTo(Direction.BOTTOM_RIGHT)).toBe(
+            true,
         );
+        expect(Direction.TOP_RIGHT.isOppositeTo(Direction.BOTTOM_LEFT)).toBe(
+            true,
+        );
+        expect(Direction.LEFT.isOppositeTo(Direction.LEFT)).toBe(false);
 
-        expect(gameState.isOutOfBounds({ row: 0, column: 0 })).toBe(false); // Top-left corner
+        expect(() => Direction.LEFT.isOppositeTo(undefined)).toThrowError(
+            "other operand is undefined",
+        );
+    });
+
+    test("Direction.toTeacherDirection should return correct teacher direction", () => {
         expect(
-            gameState.isOutOfBounds({ row: BOARD_HEIGHT - 1, column: 0 }),
-        ).toBe(false); // Bottom-left corner
+            Direction.toTeacherDirection(Direction.LEFT, Direction.LEFT),
+        ).toBe("KEEP_GOING");
+
         expect(
-            gameState.isOutOfBounds({ row: 0, column: BOARD_WIDTH - 1 }),
-        ).toBe(false); // Top-right corner
+            Direction.toTeacherDirection(Direction.LEFT, Direction.BOTTOM_LEFT),
+        ).toBe("LIGHT_LEFT");
+
         expect(
-            gameState.isOutOfBounds({
-                row: BOARD_HEIGHT - 1,
-                column: BOARD_WIDTH - 1,
-            }),
-        ).toBe(false); // Bottom-right corner
+            Direction.toTeacherDirection(
+                Direction.LEFT,
+                Direction.BOTTOM_RIGHT,
+            ),
+        ).toBe("HEAVY_LEFT");
+
+        expect(() =>
+            Direction.toTeacherDirection(Direction.LEFT, Direction.RIGHT),
+        ).toThrowError("we cannot turn back!!");
+
+        expect(
+            Direction.toTeacherDirection(Direction.LEFT, Direction.TOP_RIGHT),
+        ).toBe("HEAVY_RIGHT");
+
+        expect(
+            Direction.toTeacherDirection(Direction.LEFT, Direction.TOP_LEFT),
+        ).toBe("LIGHT_RIGHT");
     });
 });
 
-describe("getLegalMoves", () => {
-    it("should return all legal moves for PLAYER in the middle of the board", () => {
-        const gameState = new GameState(
-            { row: 4, column: 8 },
-            { row: 0, column: 0 },
-        );
+describe("Position", () => {
+    test("Position.equals should compare two positions correctly", () => {
+        const pos1 = new Position(2, 3);
+        const pos2 = new Position(2, 3);
+        const pos3 = new Position(3, 4);
 
-        const legalMoves = gameState.getLegalMoves(1);
-        expect(legalMoves).toContainEqual({ row: 3, column: 8 }); // Up
-        expect(legalMoves).toContainEqual({ row: 5, column: 8 }); // Down
-        expect(legalMoves).toContainEqual({ row: 4, column: 7 }); // Left
-        expect(legalMoves).toContainEqual({ row: 4, column: 9 }); // Right
-        expect(legalMoves).toContainEqual({ row: 3, column: 9 }); // Upper Right
-        expect(legalMoves).toContainEqual({ row: 5, column: 7 }); // Lower Left
+        expect(pos1.equals(pos2)).toBe(true);
+        expect(pos1.equals(pos3)).toBe(false);
+
+        expect(() => pos1.equals(undefined)).toThrowError(
+            "other operand is undefined",
+        );
     });
 
-    it("should return all legal moves for OPPONENT in the middle of the board", () => {
-        const gameState = new GameState(
-            { row: 0, column: 0 },
-            { row: 4, column: 8 },
-        );
+    test("Position.moveInDirection should move position in a given direction", () => {
+        const pos = new Position(2, 2);
 
-        const legalMoves = gameState.getLegalMoves(-1);
-        expect(legalMoves).toContainEqual({ row: 3, column: 8 }); // Up
-        expect(legalMoves).toContainEqual({ row: 5, column: 8 }); // Down
-        expect(legalMoves).toContainEqual({ row: 4, column: 7 }); // Left
-        expect(legalMoves).toContainEqual({ row: 4, column: 9 }); // Right
-        expect(legalMoves).toContainEqual({ row: 3, column: 9 }); // Upper Right
-        expect(legalMoves).toContainEqual({ row: 5, column: 7 }); // Lower Left
+        expect(pos.moveInDirection(Direction.LEFT)).toEqual(new Position(1, 2));
+        expect(pos.moveInDirection(Direction.RIGHT)).toEqual(
+            new Position(3, 2),
+        );
+        expect(pos.moveInDirection(Direction.TOP_LEFT)).toEqual(
+            new Position(1, 1),
+        );
+        expect(pos.moveInDirection(Direction.TOP_RIGHT)).toEqual(
+            new Position(2, 1),
+        );
+        expect(pos.moveInDirection(Direction.BOTTOM_LEFT)).toEqual(
+            new Position(1, 3),
+        );
+        expect(pos.moveInDirection(Direction.BOTTOM_RIGHT)).toEqual(
+            new Position(2, 3),
+        );
     });
 
-    it("should return only moves within bounds for edge positions", () => {
-        const gameState = new GameState(
-            { row: 0, column: 0 },
-            { row: 1, column: 1 },
+    test("Position.diffDir should determine direction difference between two positions", () => {
+        const pos1 = new Position(2, 2);
+
+        expect(Position.diffDir(pos1, new Position(1, 2))).toBe(Direction.LEFT);
+        expect(Position.diffDir(pos1, new Position(3, 2))).toBe(
+            Direction.RIGHT,
+        );
+        expect(Position.diffDir(pos1, new Position(1, 3))).toBe(
+            Direction.BOTTOM_LEFT,
+        );
+        expect(Position.diffDir(pos1, new Position(2, 3))).toBe(
+            Direction.BOTTOM_RIGHT,
+        );
+        expect(Position.diffDir(pos1, new Position(1, 1))).toBe(
+            Direction.TOP_LEFT,
+        );
+        expect(Position.diffDir(pos1, new Position(2, 1))).toBe(
+            Direction.TOP_RIGHT,
         );
 
-        const legalMoves = gameState.getLegalMoves(1);
-        expect(legalMoves).not.toContainEqual({ row: -1, column: 0 }); // Above
-        expect(legalMoves).not.toContainEqual({ row: 0, column: -1 }); // Left
-        expect(legalMoves).toContainEqual({ row: 1, column: 0 }); // Down
-        expect(legalMoves).toContainEqual({ row: 0, column: 1 }); // Right
+        expect(() => Position.diffDir(pos1, new Position(0, 0))).toThrowError(
+            "invalid positions",
+        );
     });
 
-    it("should exclude moves into occupied cells", () => {
-        const gameState = new GameState(
-            { row: 4, column: 8 },
-            { row: 4, column: 9 },
-        );
-        gameState.board[3][8] = 1; // Mark cell as occupied
+    test("Position.fromTeacherPosition should convert teacher position to Position", () => {
+        const teacherPos = { row: 3, column: 3 };
+        const pos = Position.fromTeacherPosition(teacherPos);
 
-        const legalMoves = gameState.getLegalMoves(1);
-        expect(legalMoves).not.toContainEqual({ row: 3, column: 8 }); // Occupied cell
-        expect(legalMoves).toContainEqual({ row: 5, column: 8 }); // Down
+        expect(pos).toEqual(new Position(2, 2));
     });
 });
