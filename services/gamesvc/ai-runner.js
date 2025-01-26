@@ -3,8 +3,8 @@ const { setup, nextMove } = require("./ai");
 let initialState = {
     playerPosition: { row: 1, column: 1 },
     opponentPosition: {
-        row: 9,
-        column: 16,
+        row: 8,
+        column: 8,
     },
 };
 
