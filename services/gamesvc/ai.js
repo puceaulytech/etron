@@ -88,7 +88,7 @@ class Direction {
      *
      * @param {Direction} previousDir The previous direction
      * @param {Direction} nextDir The next direction
-     * @throws if the two directions are directly opposite
+     * @throws {Error} if the two directions are directly opposite
      * @returns {string} The teacher position
      */
     static toTeacherDirection(previousDir, nextDir) {
@@ -107,11 +107,9 @@ class Direction {
             throw new Error("we cannot turn back!!");
         } else if (diff === 4) {
             return TeacherDirections.HEAVY_LEFT;
-        } else if (diff == 5) {
+        } else if (diff === 5) {
             return TeacherDirections.LIGHT_LEFT;
         }
-
-        return teacherDir;
     }
 }
 
@@ -145,7 +143,7 @@ class Position {
         if (typeof other === "undefined")
             throw new Error("other operand is undefined");
 
-        return this.column == other.column && this.row == other.row;
+        return this.column === other.column && this.row === other.row;
     }
 
     /**
@@ -467,21 +465,19 @@ async function nextMove(playersState) {
     );
 
     // Compute teacher's direction
-    const teacherDir = Direction.toTeacherDirection(
+    return Direction.toTeacherDirection(
         globalGameState.playerDirection,
         nextAbsoluteDirection,
     );
-
-    return teacherDir;
 }
 
 /**
  * Computes the distances from a start position to all other positions in the grid
  *
  * @param {GameState} gameState The game state
- * @param {*} startPos The starting position
- * @param {*} startDir The starting direction
- * @returns {Array} A grid-like array containing distances
+ * @param {Position} startPos The starting position
+ * @param {Direction} startDir The starting direction
+ * @returns {number[][]} A grid-like array containing distances
  */
 function distancesAll(gameState, startPos, startDir) {
     const distances = new Array(BOARD_HEIGHT);
@@ -546,7 +542,7 @@ function heuristic(gameState, currentPlayer) {
 
     for (let row = 0; row < BOARD_HEIGHT; row++) {
         for (let col = 0; col < BOARD_WIDTH; col++) {
-            if (row % 2 == 1 && col == BOARD_WIDTH - 1) continue;
+            if (row % 2 === 1 && col === BOARD_WIDTH - 1) continue;
 
             if (distancesPlayer[row][col] > distancesOpponent[row][col]) {
                 reachableByPlayer++;
@@ -561,38 +557,58 @@ function heuristic(gameState, currentPlayer) {
     return reachableByPlayer - reachableByOpponent;
 }
 
-const NEGAMAX_DEPTH = 7;
+const NEGAMAX_DEPTH = 2;
+const NEGAMAX_DEBUG = true;
 
 // FOR DEBUG
 function padDepth(d) {
     return "-".repeat(NEGAMAX_DEPTH - d + 1);
 }
 
+/**
+ * Computes the best move and score for a given position
+ *
+ * @param {GameState} gameState The game state
+ * @param {number} currentPlayer The current player
+ * @param {number} depth The current tree depth
+ * @param {number} alpha Alpha value for alpha-beta pruning
+ * @param {number} beta Beta value for alpha-beta pruning
+ * @returns {{ score: number, move: Direction }} The best move with its computed score
+ */
 function negamax(gameState, currentPlayer, depth, alpha, beta) {
     if (depth <= 0) {
         const score = heuristic(gameState, currentPlayer);
 
-        /* console.log(
-            `${padDepth(depth)} heuristic for ${playerText(currentPlayer)}: ${score}`,
-        ); */
+        if (NEGAMAX_DEBUG)
+            console.log(
+                `${padDepth(depth)} heuristic for ${playerText(currentPlayer)}: ${score}`,
+            );
 
         return { score, move: null };
     }
 
     const legalMoves = gameState.getLegalMoves(currentPlayer);
 
-    if (legalMoves.length == 0) {
+    if (legalMoves.length === 0) {
         // that's bad for the current player
-        /* console.log(
-            `${padDepth(depth)} ${playerText(currentPlayer)} has no legal moves`,
-        ); */
+        if (NEGAMAX_DEBUG)
+            console.log(
+                `${padDepth(depth)} ${playerText(currentPlayer)} has no legal moves`,
+            );
         return { score: -100000, move: null };
     }
 
-    /* console.log(
-        `${padDepth(depth)} legal moves for ${playerText(currentPlayer)}:`,
-        legalMoves,
-    ); */
+    if (NEGAMAX_DEBUG) {
+        const currentPlayerPos = gameState.getPlayerPosition(currentPlayer);
+        const directions = legalMoves.map(
+            (position) => Position.diffDir(currentPlayerPos, position).kind,
+        );
+
+        console.log(
+            `${padDepth(depth)} legal moves for ${playerText(currentPlayer)}:`,
+            directions,
+        );
+    }
 
     let bestScore = Number.NEGATIVE_INFINITY;
     let bestMove = null;
@@ -625,13 +641,15 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
 }
 
 function nextMoveStateless(gameState) {
-    const { move } = negamax(
+    const { move, score } = negamax(
         gameState,
         PLAYER,
         NEGAMAX_DEPTH,
         Number.NEGATIVE_INFINITY,
         Number.POSITIVE_INFINITY,
     );
+
+    console.log(`move score: ${score}`);
 
     return move;
 }
