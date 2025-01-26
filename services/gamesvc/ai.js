@@ -50,6 +50,13 @@ const TeacherDirections = {
     LIGHT_LEFT: "LIGHT_LEFT",
 };
 
+/**
+ * Checks if two positions are equal
+ *
+ * @param {*} posA First position
+ * @param {*} posB Second position
+ * @returns true if the two positions are equal, otherwise false
+ */
 function isPositionEqual(posA, posB) {
     if (typeof posA === "undefined") throw new Error("posA is undefined");
     if (typeof posB === "undefined") throw new Error("posB is undefined");
@@ -57,7 +64,14 @@ function isPositionEqual(posA, posB) {
     return posA.row === posB.row && posA.column === posB.column;
 }
 
-function isDirectionBackToBack(first, second) {
+/**
+ * Determines if two positions are directly opposite
+ *
+ * @param {*} first First position
+ * @param {*} second Second position
+ * @returns true if the two positions are opposite, otherwise false
+ */
+function areDirectionOpposite(first, second) {
     if (typeof first === "undefined") throw new Error("first is undefined");
     if (typeof second === "undefined") throw new Error("second is undefined");
 
@@ -69,12 +83,13 @@ function isDirectionBackToBack(first, second) {
     return diff === 3;
 }
 
-function positionReverse(pos) {
-    const idx = ABS_DIR_IDX[pos];
-    const newIdx = (idx + 3) % 6;
-    return IDX_ABS_DIR[newIdx];
-}
-
+/**
+ * Moves a position in a specified direction on the hexagonal grid
+ *
+ * @param {*} position The current position
+ * @param {*} direction The direction to move in
+ * @returns The new position after moving
+ */
 function movePositionInDirection(position, direction) {
     const delta = { column: 0, row: 0 };
     const evenRow = position.row % 2 === 0;
@@ -112,7 +127,14 @@ function movePositionInDirection(position, direction) {
     };
 }
 
-function directionFromPositions(previousPos, nextPos) {
+/**
+ * Determines the direction of movement from on position to another on an hexagonal grid
+ *
+ * @param {*} previousPos
+ * @param {*} nextPos
+ * @returns
+ */
+function getDirectionBetweenPositions(previousPos, nextPos) {
     const columnDiff = nextPos.column - previousPos.column;
     const rowDiff = nextPos.row - previousPos.row;
     const evenRow = previousPos.row % 2 === 0;
@@ -142,11 +164,22 @@ function directionFromPositions(previousPos, nextPos) {
     throw new Error("invalid positions");
 }
 
+/**
+ * Converts the teacher's supplied position to a position we can use within our grid
+ *
+ * @param {*} teacherPosition The teacher's position
+ * @returns Our position
+ */
 function teacherPosToRealPos(teacherPosition) {
     return { column: teacherPosition.column - 1, row: teacherPosition.row - 1 };
 }
 
 class GameState {
+    /**
+     * Constructs a new game state
+     * @param {*} playerPosition The initial player position (the AI)
+     * @param {*} opponentPosition The initial opponent position
+     */
     constructor(playerPosition, opponentPosition) {
         this.playerPosition = playerPosition;
         this.opponentPosition = opponentPosition;
@@ -170,6 +203,13 @@ class GameState {
             ).fill(0);
     }
 
+    /**
+     * Computes the teacher's direction (relative direction) based on
+     * the player current absolute direction and the next absolute direction
+     *
+     * @param {*} nextAbsoluteDirection The next absolute direction
+     * @returns The teacher's direction
+     */
     computeTeacherDirection(nextAbsoluteDirection) {
         const currentIdx = ABS_DIR_IDX[this.playerDirection];
         const nextIdx = ABS_DIR_IDX[nextAbsoluteDirection];
@@ -193,6 +233,12 @@ class GameState {
         return teacherDir;
     }
 
+    /**
+     * Retrieves the direction of a given player
+     *
+     * @param {number} player
+     * @returns The direction of the player
+     */
     getPlayerDirection(player) {
         if (player === PLAYER) {
             return this.playerDirection;
@@ -201,6 +247,12 @@ class GameState {
         }
     }
 
+    /**
+     * Updates the direction of a given a player
+     *
+     * @param {number} player The given player
+     * @param {*} value The new direction
+     */
     setPlayerDirection(player, value) {
         if (!value) throw new Error("value is undefined");
 
@@ -211,10 +263,22 @@ class GameState {
         }
     }
 
+    /**
+     * Retrieves the position of a given player
+     *
+     * @param {number} player The given player
+     * @returns The position of the player
+     */
     getPlayerPosition(player) {
         return player === PLAYER ? this.playerPosition : this.opponentPosition;
     }
 
+    /**
+     * Updates the position of a given player
+     *
+     * @param {*} player The given player
+     * @param {*} value The new position
+     */
     setPlayerPosition(player, value) {
         if (!value) throw new Error("value is undefined");
 
@@ -225,14 +289,31 @@ class GameState {
         }
     }
 
+    /**
+     * Retrieves the content of a cell on the grid
+     *
+     * @param {*} position The position of the cell
+     * @returns {number} The value of the cell
+     */
     getCell(position) {
         return this.board[position.row][position.column];
     }
 
+    /**
+     * Updates the content of a cell on the grid
+     *
+     * @param {*} position The position of the cell
+     * @param {number} value The new value of the cell
+     */
     setCell(position, value) {
         this.board[position.row][position.column] = value;
     }
 
+    /**
+     * Checks if a given position is out of bounds
+     * @param {*} position The position
+     * @returns true if it is out of bounds, otherwise false
+     */
     isOutOfBounds(position) {
         return (
             position.row < 0 ||
@@ -242,6 +323,12 @@ class GameState {
         );
     }
 
+    /**
+     * Computes a list of all legal moves that can be played by a given player
+     *
+     * @param {number} player The given player
+     * @returns {Array} A list of positions
+     */
     getLegalMoves(player) {
         return this.getLegalMovesFromPos(
             this.getPlayerPosition(player),
@@ -249,6 +336,13 @@ class GameState {
         );
     }
 
+    /**
+     * Computes a list of all legal moves that can be played given a position and a direction
+     *
+     * @param {*} currentPosition The given position
+     * @param {*} currentDirection The given direction
+     * @returns {Array} A list of positions
+     */
     getLegalMovesFromPos(currentPosition, currentDirection) {
         const legalMoves = [];
 
@@ -260,7 +354,7 @@ class GameState {
 
             if (
                 !this.isOutOfBounds(newPosition) &&
-                !isDirectionBackToBack(currentDirection, newDirection) &&
+                !areDirectionOpposite(currentDirection, newDirection) &&
                 !isPositionEqual(newPosition, this.opponentPosition) &&
                 !isPositionEqual(newPosition, this.playerPosition) &&
                 this.getCell(newPosition) === 0
@@ -272,6 +366,14 @@ class GameState {
         return legalMoves;
     }
 
+    /**
+     * Moves a given player to a new position and update the game state
+     *
+     * @param {number} player The given player
+     * @param {*} nextPosition The new player's position
+     * @returns The previous position and direction, useful when moving back
+     * @see GameState#moveBack
+     */
     moveTo(player, nextPosition) {
         const previousPosition = this.getPlayerPosition(player);
         const previousDirection = this.getPlayerDirection(player);
@@ -288,12 +390,18 @@ class GameState {
         if (!positionsEqual)
             this.setPlayerDirection(
                 player,
-                directionFromPositions(previousPosition, nextPosition),
+                getDirectionBetweenPositions(previousPosition, nextPosition),
             );
 
         return { position: previousPosition, direction: previousDirection };
     }
 
+    /**
+     * Restores a player's position add direction
+     *
+     * @param {number} player The target player
+     * @param {*} previousMove The move to restore
+     */
     moveBack(player, previousMove) {
         // Unmark trail
         this.setCell(previousMove.position, 0);
@@ -330,7 +438,7 @@ async function nextMove(playersState) {
     const playerNextPosition = nextMoveStateless(globalGameState);
 
     // Compute absolute direction
-    const nextAbsoluteDirection = directionFromPositions(
+    const nextAbsoluteDirection = getDirectionBetweenPositions(
         playerCurrentPosition,
         playerNextPosition,
     );
@@ -343,7 +451,14 @@ async function nextMove(playersState) {
     return teacherDir;
 }
 
-// WORK IN PROGRESS
+/**
+ * Computes the distances from a start position to all other positions in the grid
+ *
+ * @param {GameState} gameState The game state
+ * @param {*} startPos The starting position
+ * @param {*} startDir The starting direction
+ * @returns {Array} A grid-like array containing distances
+ */
 function distancesAll(gameState, startPos, startDir) {
     const distances = new Array(BOARD_HEIGHT);
 
@@ -369,7 +484,10 @@ function distancesAll(gameState, startPos, startDir) {
             if (distances[nextPos.row][nextPos.column] === -1) {
                 distances[nextPos.row][nextPos.column] = currentDistance + 1;
 
-                const nextDir = directionFromPositions(currentPos, nextPos);
+                const nextDir = getDirectionBetweenPositions(
+                    currentPos,
+                    nextPos,
+                );
 
                 visitQueue.push({
                     pos: nextPos,
@@ -382,6 +500,13 @@ function distancesAll(gameState, startPos, startDir) {
     return distances;
 }
 
+/**
+ * Computes a heuristic score for a given player
+ *
+ * @param {GameState} gameState The game state
+ * @param {number} currentPlayer The current player
+ * @returns {number} The score
+ */
 function heuristic(gameState, currentPlayer) {
     const distancesPlayer = distancesAll(
         gameState,
@@ -415,7 +540,7 @@ function heuristic(gameState, currentPlayer) {
     return reachableByPlayer - reachableByOpponent;
 }
 
-const NEGAMAX_DEPTH = 5;
+const NEGAMAX_DEPTH = 2;
 
 // FOR DEBUG
 function padDepth(d) {
@@ -426,7 +551,9 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
     if (depth <= 0) {
         const score = heuristic(gameState, currentPlayer);
 
-        console.log(`${padDepth(depth)} heuristic: ${score}`);
+        console.log(
+            `${padDepth(depth)} heuristic for ${playerText(currentPlayer)}: ${score}`,
+        );
 
         return { score, move: null };
     }
@@ -499,22 +626,3 @@ module.exports = {
     AbsoluteDirections,
     stateless: { nextMove: nextMoveStateless },
 };
-
-// TESTING
-let initialState = {
-    playerPosition: { row: 1, column: 1 },
-    opponentPosition: {
-        row: 7,
-        column: 10,
-    },
-};
-
-setup(initialState);
-
-console.time("nextMove");
-nextMove(initialState).then((move) => {
-    console.log("");
-    console.log(move);
-    console.log("");
-    console.timeEnd("nextMove");
-});
