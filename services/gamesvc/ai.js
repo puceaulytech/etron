@@ -36,6 +36,12 @@ class Direction {
         this.kind = kind;
     }
 
+    /**
+     * Tests if two directions are equals
+     *
+     * @param {Direction} other The other operand
+     * @returns {boolean} true if they are equals, otherwise false
+     */
     equals(other) {
         if (typeof other === "undefined")
             throw new Error("other operand is undefined");
@@ -43,6 +49,11 @@ class Direction {
         return this.kind === other.kind;
     }
 
+    /**
+     * Returns a list of all possible directions
+     *
+     * @returns {Direction[]} A list of directions
+     */
     static values() {
         return [
             Direction.LEFT,
@@ -54,6 +65,12 @@ class Direction {
         ];
     }
 
+    /**
+     * Checks if the current direction is the direct opposite of a given direction
+     *
+     * @param {Direction} other The other direction
+     * @returns {boolean} true if the two positions are opposite, otherwise false
+     */
     isOppositeTo(other) {
         if (typeof other === "undefined")
             throw new Error("other operand is undefined");
@@ -66,6 +83,14 @@ class Direction {
         return diff === 3;
     }
 
+    /**
+     * Computes the teacher (relative) direction given two positions
+     *
+     * @param {Direction} previousDir The previous direction
+     * @param {Direction} nextDir The next direction
+     * @throws if the two directions are directly opposite
+     * @returns {string} The teacher position
+     */
     static toTeacherDirection(previousDir, nextDir) {
         const previousIdx = Direction.ABS_DIR_IDX[previousDir.kind];
         const nextIdx = Direction.ABS_DIR_IDX[nextDir.kind];
@@ -99,11 +124,23 @@ const TeacherDirections = {
 };
 
 class Position {
+    /**
+     * Constructs a new position
+     *
+     * @param {number} column
+     * @param {number} row
+     */
     constructor(column, row) {
         this.column = column;
         this.row = row;
     }
 
+    /**
+     * Checks if two positions are equals
+     *
+     * @param {Position} other The other operand
+     * @returns {boolean} true if both positions are equals, otherwise false
+     */
     equals(other) {
         if (typeof other === "undefined")
             throw new Error("other operand is undefined");
@@ -111,6 +148,12 @@ class Position {
         return this.column == other.column && this.row == other.row;
     }
 
+    /**
+     * Moves the current position in a new direction, returning the new position
+     *
+     * @param {Direction} dir The direction to move in
+     * @returns {Position} The new position
+     */
     moveInDirection(dir) {
         const delta = { column: 0, row: 0 };
         const evenRow = this.row % 2 === 0;
@@ -145,6 +188,13 @@ class Position {
         return new Position(this.column + delta.column, this.row + delta.row);
     }
 
+    /**
+     * Computes the movement direction between a start position and an end position
+     *
+     * @param {Position} previousPos The start position
+     * @param {Position} nextPos The end position
+     * @returns {Direction} The movement direction
+     */
     static diffDir(previousPos, nextPos) {
         const columnDiff = nextPos.column - previousPos.column;
         const rowDiff = nextPos.row - previousPos.row;
@@ -171,6 +221,12 @@ class Position {
         throw new Error("invalid positions");
     }
 
+    /**
+     * Creates a new position from a teacher's formatted position
+     *
+     * @param {{row: number, column: number}} teacherPos The teacher's formatted position
+     * @returns {Position} The new position
+     */
     static fromTeacherPosition(teacherPos) {
         return new Position(teacherPos.row - 1, teacherPos.column - 1);
     }
@@ -179,8 +235,8 @@ class Position {
 class GameState {
     /**
      * Constructs a new game state
-     * @param {*} playerPosition The initial player position (the AI)
-     * @param {*} opponentPosition The initial opponent position
+     * @param {Position} playerPosition The initial player position (the AI)
+     * @param {Position} opponentPosition The initial opponent position
      */
     constructor(playerPosition, opponentPosition) {
         this.playerPosition = playerPosition;
@@ -207,7 +263,7 @@ class GameState {
      * Retrieves the direction of a given player
      *
      * @param {number} player
-     * @returns The direction of the player
+     * @returns {Direction} The direction of the player
      */
     getPlayerDirection(player) {
         if (player === PLAYER) {
@@ -221,7 +277,7 @@ class GameState {
      * Updates the direction of a given a player
      *
      * @param {number} player The given player
-     * @param {*} value The new direction
+     * @param {Direction} value The new direction
      */
     setPlayerDirection(player, value) {
         if (!value) throw new Error("value is undefined");
@@ -237,7 +293,7 @@ class GameState {
      * Retrieves the position of a given player
      *
      * @param {number} player The given player
-     * @returns The position of the player
+     * @returns {Position} The position of the player
      */
     getPlayerPosition(player) {
         return player === PLAYER ? this.playerPosition : this.opponentPosition;
@@ -246,8 +302,8 @@ class GameState {
     /**
      * Updates the position of a given player
      *
-     * @param {*} player The given player
-     * @param {*} value The new position
+     * @param {number} player The given player
+     * @param {Position} value The new position
      */
     setPlayerPosition(player, value) {
         if (!value) throw new Error("value is undefined");
@@ -262,7 +318,7 @@ class GameState {
     /**
      * Retrieves the content of a cell on the grid
      *
-     * @param {*} position The position of the cell
+     * @param {Position} position The position of the cell
      * @returns {number} The value of the cell
      */
     getCell(position) {
@@ -272,7 +328,7 @@ class GameState {
     /**
      * Updates the content of a cell on the grid
      *
-     * @param {*} position The position of the cell
+     * @param {Position} position The position of the cell
      * @param {number} value The new value of the cell
      */
     setCell(position, value) {
@@ -281,8 +337,8 @@ class GameState {
 
     /**
      * Checks if a given position is out of bounds
-     * @param {*} position The position
-     * @returns true if it is out of bounds, otherwise false
+     * @param {Position} position The position
+     * @returns {boolean} true if it is out of bounds, otherwise false
      */
     isOutOfBounds(position) {
         return (
@@ -297,7 +353,7 @@ class GameState {
      * Computes a list of all legal moves that can be played by a given player
      *
      * @param {number} player The given player
-     * @returns {Array} A list of positions
+     * @returns {Position[]} A list of positions
      */
     getLegalMoves(player) {
         return this.getLegalMovesFromPos(
@@ -309,9 +365,9 @@ class GameState {
     /**
      * Computes a list of all legal moves that can be played given a position and a direction
      *
-     * @param {*} currentPosition The given position
-     * @param {*} currentDirection The given direction
-     * @returns {Array} A list of positions
+     * @param {Position} currentPosition The given position
+     * @param {Direction} currentDirection The given direction
+     * @returns {Position[]} A list of positions
      */
     getLegalMovesFromPos(currentPosition, currentDirection) {
         const legalMoves = [];
@@ -337,8 +393,8 @@ class GameState {
      * Moves a given player to a new position and update the game state
      *
      * @param {number} player The given player
-     * @param {*} nextPosition The new player's position
-     * @returns The previous position and direction, useful when moving back
+     * @param {Position} nextPosition The new player's position
+     * @returns {{position: Position, direction: Direction}} The previous position and direction, useful when moving back
      * @see GameState#moveBack
      */
     moveTo(player, nextPosition) {
@@ -367,7 +423,7 @@ class GameState {
      * Restores a player's position add direction
      *
      * @param {number} player The target player
-     * @param {*} previousMove The move to restore
+     * @param {{position: Position, direction: Direction}} previousMove The move to restore
      */
     moveBack(player, previousMove) {
         // Unmark trail
