@@ -1,19 +1,26 @@
 const { setup, nextMove } = require("./ai");
 
-let initialState = {
+const initialState = {
     playerPosition: { row: 1, column: 1 },
     opponentPosition: {
-        row: 8,
-        column: 8,
+        row: 9,
+        column: 16,
     },
 };
 
-setup(initialState);
+const nextState = {
+    playerPosition: { row: 1, column: 2 },
+    opponentPosition: {
+        row: 9,
+        column: 15,
+    },
+};
 
-console.time("nextMove");
-nextMove(initialState).then((move) => {
-    console.log("");
-    console.log(move);
-    console.log("");
-    console.timeEnd("nextMove");
-});
+async function run() {
+    await setup(initialState);
+
+    await nextMove(initialState);
+    await nextMove(nextState);
+}
+
+run();

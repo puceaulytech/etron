@@ -228,7 +228,7 @@ class Position {
      * @returns {Position} The new position
      */
     static fromTeacherPosition(teacherPos) {
-        return new Position(teacherPos.row - 1, teacherPos.column - 1);
+        return new Position(teacherPos.column - 1, teacherPos.row - 1);
     }
 }
 
@@ -561,7 +561,7 @@ function heuristic(gameState, currentPlayer) {
     return reachableByPlayer - reachableByOpponent;
 }
 
-const NEGAMAX_DEPTH = 5;
+const NEGAMAX_DEPTH = 7;
 
 // FOR DEBUG
 function padDepth(d) {
@@ -572,9 +572,9 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
     if (depth <= 0) {
         const score = heuristic(gameState, currentPlayer);
 
-        console.log(
+        /* console.log(
             `${padDepth(depth)} heuristic for ${playerText(currentPlayer)}: ${score}`,
-        );
+        ); */
 
         return { score, move: null };
     }
@@ -583,16 +583,16 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
 
     if (legalMoves.length == 0) {
         // that's bad for the current player
-        console.log(
+        /* console.log(
             `${padDepth(depth)} ${playerText(currentPlayer)} has no legal moves`,
-        );
+        ); */
         return { score: -100000, move: null };
     }
 
-    console.log(
+    /* console.log(
         `${padDepth(depth)} legal moves for ${playerText(currentPlayer)}:`,
         legalMoves,
-    );
+    ); */
 
     let bestScore = Number.NEGATIVE_INFINITY;
     let bestMove = null;
