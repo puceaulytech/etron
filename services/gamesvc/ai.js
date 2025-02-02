@@ -228,6 +228,38 @@ class Position {
     static fromTeacherPosition(teacherPos) {
         return new Position(teacherPos.column - 1, teacherPos.row - 1);
     }
+
+    /**
+     * Converts offset grid coordinates to cube coordinates
+     *
+     * @return {{x: number, y: number, z: number}} The cube coordinates
+     */
+    toCubeCoords() {
+        const x = this.column - Math.ceil(this.row / 2);
+        const z = this.row;
+        const y = -x - z;
+
+        return { x, y, z };
+    }
+
+    /**
+     * Computes the hexagonal distance between two positions
+     *
+     * @param {Position} startPos The start position
+     * @param {Position} endPos The end position
+     * @returns {number} The hexagonal distance
+     */
+    static hexDistance(startPos, endPos) {
+        const startPosCube = startPos.toCubeCoords();
+        const endPosCube = endPos.toCubeCoords();
+
+        return (
+            (Math.abs(endPosCube.x - startPosCube.x) +
+                Math.abs(endPosCube.y - startPosCube.y) +
+                Math.abs(endPosCube.z - startPosCube.z)) /
+            2
+        );
+    }
 }
 
 class GameState {
@@ -351,7 +383,7 @@ class GameState {
      * Computes a list of all legal moves that can be played by a given player
      *
      * @param {number} player The given player
-     * @returns {Position[]} A list of positions
+     * @returns {{ legalMoves: Position[], possibleHeadCollision: boolean }} A list of positions
      */
     getLegalMoves(player) {
         return this.getLegalMovesFromPos(
@@ -365,26 +397,33 @@ class GameState {
      *
      * @param {Position} currentPosition The given position
      * @param {Direction} currentDirection The given direction
-     * @returns {Position[]} A list of positions
+     * @returns {{ legalMoves: Position[], possibleHeadCollision: boolean }} A list of positions
      */
     getLegalMovesFromPos(currentPosition, currentDirection) {
         const legalMoves = [];
+        let possibleHeadCollision = false;
 
         for (const newDirection of Direction.values()) {
             const newPosition = currentPosition.moveInDirection(newDirection);
 
+            if (this.isOutOfBounds(newPosition)) continue;
+
+            if (currentDirection.isOppositeTo(newDirection)) continue;
+
             if (
-                !this.isOutOfBounds(newPosition) &&
-                !currentDirection.isOppositeTo(newDirection) &&
-                !newPosition.equals(this.opponentPosition) &&
-                !newPosition.equals(this.playerPosition) &&
-                this.getCell(newPosition) === 0
+                newPosition.equals(this.opponentPosition) ||
+                newPosition.equals(this.playerPosition)
             ) {
-                legalMoves.push(newPosition);
+                possibleHeadCollision = true;
+                continue;
             }
+
+            if (this.getCell(newPosition) !== 0) continue;
+
+            legalMoves.push(newPosition);
         }
 
-        return legalMoves;
+        return { legalMoves, possibleHeadCollision };
     }
 
     /**
@@ -493,7 +532,7 @@ function distancesAll(gameState, startPos, startDir) {
     while (visitQueue.length !== 0) {
         const { pos: currentPos, dir: currentDir } = visitQueue.shift();
 
-        const legalMoves = gameState.getLegalMovesFromPos(
+        const { legalMoves } = gameState.getLegalMovesFromPos(
             currentPos,
             currentDir,
         );
@@ -554,11 +593,20 @@ function heuristic(gameState, currentPlayer) {
         }
     }
 
-    return reachableByPlayer - reachableByOpponent;
+    const distanceBetweenHeads = Position.hexDistance(
+        gameState.playerPosition,
+        gameState.opponentPosition,
+    );
+
+    let penalty = 0;
+
+    if (distanceBetweenHeads <= 4) penalty += 15;
+
+    return reachableByPlayer - reachableByOpponent - penalty;
 }
 
-const NEGAMAX_DEPTH = 2;
-const NEGAMAX_DEBUG = true;
+const NEGAMAX_DEPTH = 6;
+const NEGAMAX_DEBUG = false;
 
 // FOR DEBUG
 function padDepth(d) {
@@ -587,7 +635,8 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
         return { score, move: null };
     }
 
-    const legalMoves = gameState.getLegalMoves(currentPlayer);
+    const { legalMoves, possibleHeadCollision } =
+        gameState.getLegalMoves(currentPlayer);
 
     if (legalMoves.length === 0) {
         // that's bad for the current player
@@ -595,7 +644,8 @@ function negamax(gameState, currentPlayer, depth, alpha, beta) {
             console.log(
                 `${padDepth(depth)} ${playerText(currentPlayer)} has no legal moves`,
             );
-        return { score: -100000, move: null };
+
+        return { score: possibleHeadCollision ? 0 : -100000, move: null };
     }
 
     if (NEGAMAX_DEBUG) {
