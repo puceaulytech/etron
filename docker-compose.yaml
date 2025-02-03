@@ -17,6 +17,7 @@ services:
     environment:
       GAMESVC_ADDR: "gamesvc:8002"
       FILES_ADDR: "files:8001"
+      AUTH_ADDR: "auth:8003"
     ports:
         - "8000:8000"
 
@@ -27,3 +28,7 @@ services:
   files:
     build: .
     command: files
+
+  auth:
+    build: .
+    command: auth

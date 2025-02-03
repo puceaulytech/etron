@@ -18,6 +18,13 @@ COPY services/gamesvc/package*.json ./
 RUN npm install --omit=dev
 COPY services/gamesvc ./
 
+FROM base AS auth
+WORKDIR /app/services/auth
+
+COPY services/auth/package*.json ./
+RUN npm install --omit=dev
+COPY services/auth ./
+
 FROM base AS gateway
 WORKDIR /app/services/gateway
 
@@ -33,6 +40,7 @@ RUN apk update --no-cache && apk add --no-cache tini
 COPY --from=files /app/services/files ./services/files
 COPY --from=gamesvc /app/services/gamesvc ./services/gamesvc
 COPY --from=gateway /app/services/gateway ./services/gateway
+COPY --from=auth /app/services/auth ./services/auth
 COPY --from=base /app/services/helpers ./services/helpers
 COPY --from=base /app/docker-entrypoint.sh docker-entrypoint.sh
 
