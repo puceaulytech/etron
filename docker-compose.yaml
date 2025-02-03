@@ -1,0 +1,26 @@
+volumes:
+  mongodb_data:
+
+services:
+  database:
+    image: mongo:5
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ps8
+      MONGO_INITDB_ROOT_PASSWORD: 734741ec1209b29040ac
+      MONGO_INITDB_DATABASE: ps8
+
+  gateway:
+    build: .
+    command: gateway
+    ports:
+        - "8080:8080"
+
+  gamesvc:
+    build: .
+    command: gamesvc
+
+  files:
+    build: .
+    command: files
