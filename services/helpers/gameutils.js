@@ -236,6 +236,21 @@ class GameState {
     }
 
     /**
+     * Constructs a new game state with players at a random position
+     *
+     * @returns {GameState} The new GameState with players at a random position
+     */
+    static randomPositions() {
+        const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
+        const leftPlayer = new Position(0, startingPosition);
+        const rightPlayer = new Position(
+            BOARD_WIDTH - 1,
+            BOARD_HEIGHT - startingPosition - 1,
+        );
+        return new GameState(leftPlayer, rightPlayer);
+    }
+
+    /**
      * Retrieves the direction of a given player
      *
      * @param {number} player

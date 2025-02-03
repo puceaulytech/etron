@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { GameState } = require("../helpers/gameutils");
 
 function uuidv4() {
     const bytes = crypto.randomBytes(16);
@@ -49,8 +50,13 @@ class Storage {
      */
     createAIGame(playerId) {
         const id = uuidv4();
-        // TODO: create game state
-        const game = { id, player: playerId };
+        const game = {
+            id,
+            player: playerId,
+            state: GameState.randomPositions(),
+            lastTurnTime: Date.now(),
+            ready: false,
+        };
 
         this.games.set(id, game);
 

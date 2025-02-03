@@ -1,7 +1,7 @@
 const storage = require("./storage");
 
 const endpoints = {
-    play: {
+    playagainstai: {
         GET: playAgainstAI,
     },
 };
