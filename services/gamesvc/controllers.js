@@ -7,7 +7,8 @@ const endpoints = {
 };
 
 async function playAgainstAI(req, res) {
-    res.end("playing against AI");
+    const gameId = storage.createAIGame("test");
+    res.end(JSON.stringify({ gameId }));
 }
 
 function handleNotFound(res) {
