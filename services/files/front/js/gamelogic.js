@@ -10,7 +10,7 @@ for (let i = 0; i < boardHeight; i++)
     board[i] = new Array(i % 2 === 0 ? boardWidth : boardWidth - 1).fill(0);
 
 const startingPosition = Math.floor(Math.random() * boardHeight);
-const playerOne = new Player(1, 0, startingPosition);
+const playerOne = new Player(-2, 0, startingPosition);
 const playerTwo = new Player(
     2,
     boardWidth - 1,

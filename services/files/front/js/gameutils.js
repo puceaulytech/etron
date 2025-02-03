@@ -4,7 +4,7 @@
  */
 function gameDone(board) {
     const flatBoard = board.flat();
-    return !(flatBoard.includes(1) && flatBoard.includes(2));
+    return !(flatBoard.includes(-2) && flatBoard.includes(2));
 }
 
 class Player {
@@ -21,7 +21,7 @@ class Player {
      */
     rawMove(board, delta) {
         /* Place trail */
-        board[this.pos.y][this.pos.x] = this.id + 10;
+        board[this.pos.y][this.pos.x] = this.id / 2;
         /* Move player */
         this.pos.x += delta.x;
         this.pos.y += delta.y;

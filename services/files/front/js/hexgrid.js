@@ -23,16 +23,16 @@ function drawBoard(canvasContext, board) {
         for (let j = 0; j < board[i].length; j++) {
             let filling;
             switch (board[i][j]) {
-                case 1:
+                case -2:
                     filling = "#0362fc";
                     break;
                 case 2:
                     filling = "#f59c0c";
                     break;
-                case 11:
+                case -1:
                     filling = "#062659";
                     break;
-                case 12:
+                case 1:
                     filling = "#965e03";
                     break;
                 default:
