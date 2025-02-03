@@ -19,7 +19,7 @@ class Player {
     /**
      * @param {Array<Array>} board
      */
-    move(board, delta) {
+    rawMove(board, delta) {
         /* Place trail */
         board[this.pos.y][this.pos.x] = this.id + 10;
         /* Move player */
@@ -36,6 +36,45 @@ class Player {
             return;
         /* Update position on board */
         board[this.pos.y][this.pos.x] = this.id;
+    }
+
+    /**
+     * @param {Array<Array>} board
+     * @param {string} direction
+     */
+    move(board, direction) {
+        switch (direction) {
+            case "LEFT":
+                this.rawMove(board, { x: -1, y: 0 });
+                break;
+            case "RIGHT":
+                this.rawMove(board, { x: 1, y: 0 });
+                break;
+            case "BOTTOM_LEFT":
+                this.rawMove(board, {
+                    x: this.pos.y % 2 === 0 ? -1 : 0,
+                    y: 1,
+                });
+                break;
+            case "BOTTOM_RIGHT":
+                this.rawMove(board, {
+                    x: this.pos.y % 2 === 0 ? 0 : 1,
+                    y: 1,
+                });
+                break;
+            case "TOP_LEFT":
+                this.rawMove(board, {
+                    x: this.pos.y % 2 === 0 ? -1 : 0,
+                    y: -1,
+                });
+                break;
+            case "TOP_RIGHT":
+                this.rawMove(board, {
+                    x: this.pos.y % 2 === 0 ? 0 : 1,
+                    y: -1,
+                });
+                break;
+        }
     }
 
     position() {
