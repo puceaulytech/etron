@@ -6,18 +6,24 @@ COPY services/helpers ./services/helpers
 
 FROM base AS files
 WORKDIR /app/services/files
-COPY services/files ./
+
+COPY services/files/package*.json ./
 RUN npm install --omit=dev
+COPY services/files ./
 
 FROM base AS gamesvc
 WORKDIR /app/services/gamesvc
-COPY services/gamesvc ./
+
+COPY services/gamesvc/package*.json ./
 RUN npm install --omit=dev
+COPY services/gamesvc ./
 
 FROM base AS gateway
 WORKDIR /app/services/gateway
-COPY services/gateway ./
+
+COPY services/gateway/package*.json ./
 RUN npm install --omit=dev
+COPY services/gateway ./
 
 FROM node:lts-alpine
 WORKDIR /app

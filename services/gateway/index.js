@@ -2,11 +2,17 @@
 const http = require("http");
 const httpProxy = require("http-proxy");
 
-const microservices = { gamesvc: "http://127.0.0.1:8002" };
-const websocketService = "ws://127.0.0.1:8002";
-
 const { Logger } = require("../helpers/logger");
 const logger = new Logger("debug");
+
+const gamesvcAddr = process.env["GAMESVC_ADDR"] ?? "127.0.0.1:8002";
+const filesAddr = process.env["FILES_ADDR"] ?? "127.0.0.1:8001";
+
+logger.debug(`using gamesvc at ${gamesvcAddr}`);
+logger.debug(`using files at ${filesAddr}`);
+
+const microservices = { gamesvc: `http://${gamesvcAddr}` };
+const websocketService = `ws://${gamesvcAddr}`;
 
 const PORT = 8000;
 
@@ -46,7 +52,7 @@ const server = http.createServer(function (req, res) {
             logger.debug(
                 "request for a file received, transferring to the file service",
             );
-            proxy.web(req, res, { target: "http://127.0.0.1:8001" });
+            proxy.web(req, res, { target: `http://${filesAddr}` });
         }
     } catch (error) {
         logger.warn(`error while processing ${req.url}: ${error}`);
@@ -61,4 +67,4 @@ server.on("upgrade", (req, socket, head) => {
     proxy.ws(req, socket, head, { target: websocketService });
 });
 
-server.listen(PORT, () => logger.info(`listening on port ${PORT}`));
+server.listen(PORT, "0.0.0.0", () => logger.info(`listening on port ${PORT}`));

@@ -24,4 +24,4 @@ const io = handleWS(server);
 
 startGameLoop(io);
 
-server.listen(PORT, () => logger.info(`listening on port ${PORT}`));
+server.listen(PORT, "0.0.0.0", () => logger.info(`listening on port ${PORT}`));
