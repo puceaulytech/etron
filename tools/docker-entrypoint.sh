@@ -7,4 +7,4 @@ fi
 
 SERVICE=$1
 
-node services/$SERVICE/index.js
+node services/$SERVICE/index.js "${@:2}"
