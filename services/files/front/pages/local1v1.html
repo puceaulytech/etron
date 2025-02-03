@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>éTronc</title>
+        <link href="local1v1.css" rel="stylesheet" />
+        <script
+            src="../components/keyboardcontrols/keyboardcontrols.js"
+            defer
+        ></script>
+    </head>
+    <body>
+        <div class="left side">
+            left
+            <keyboard-controls keys="E,D,X,W,Q,Z" />
+        </div>
+        <div id="game"><canvas id="hexmap"></canvas></div>
+        <div class="right side">
+            right
+            <keyboard-controls keys="P,M,/,;,K,O" />
+        </div>
+        <script src="../js/socket.io.js"></script>
+        <script src="../js/ws.js"></script>
+        <script src="../js/hexgrid.js"></script>
+        <script src="../js/gameutils.js"></script>
+        <script src="../js/gamelogic.js"></script>
+    </body>
+</html>
