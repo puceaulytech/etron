@@ -28,3 +28,5 @@ function decodeJsonBody(req) {
         });
     });
 }
+
+module.exports = { decodeJsonBody };

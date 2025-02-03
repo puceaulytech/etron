@@ -418,6 +418,18 @@ class GameState {
     }
 
     /**
+     * TODO: better doc
+     * @param {number} player
+     */
+    move(player) {
+        const previousPosition = this.getPlayerPosition(player);
+        const pos = previousPosition.moveInDirection(
+            this.getPlayerDirection(player),
+        );
+        return this.moveTo(player, pos);
+    }
+
+    /**
      * Restores a player's position add direction
      *
      * @param {number} player The target player
@@ -436,6 +448,8 @@ class GameState {
 module.exports = {
     BOARD_WIDTH,
     BOARD_HEIGHT,
+    PLAYER,
+    OPPONENT,
     Direction,
     Position,
     GameState,

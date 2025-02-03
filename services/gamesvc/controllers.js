@@ -1,13 +1,15 @@
 const storage = require("./storage");
+const { decodeJsonBody } = require("../helpers/http");
 
 const endpoints = {
     playagainstai: {
-        GET: playAgainstAI,
+        POST: playAgainstAI,
     },
 };
 
 async function playAgainstAI(req, res) {
-    const gameId = storage.createAIGame("test");
+    const payload = await decodeJsonBody(req);
+    const gameId = storage.createAIGame(payload.clientId);
     res.end(JSON.stringify({ gameId }));
 }
 

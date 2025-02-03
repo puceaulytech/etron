@@ -1,4 +1,5 @@
 const http = require("http");
+const { startGameLoop } = require("./gameloop");
 
 const { Logger } = require("../helpers/logger");
 const logger = new Logger("debug");
@@ -19,6 +20,8 @@ const server = http.createServer((req, res) => {
     }
 });
 
-handleWS(server);
+const io = handleWS(server);
+
+startGameLoop(io);
 
 server.listen(PORT, () => logger.info(`listening on port ${PORT}`));
