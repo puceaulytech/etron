@@ -1,12 +1,19 @@
 const storage = require("./storage");
-const { PLAYER, OPPONENT } = require("../helpers/gameutils");
+const { PLAYER, OPPONENT, GameState } = require("../helpers/gameutils");
 
 const TURN_TIME = 500;
 
 let intervalId;
 
-function placePlayersInBoard() {
-    // TODO
+/**
+ * @param {GameState} gameState
+ */
+function placePlayersInBoard(gameState) {
+    const board = JSON.parse(JSON.stringify(gameState.board));
+    board[gameState.playerPosition.row][gameState.playerPosition.column] = 2;
+    board[gameState.opponentPosition.row][gameState.opponentPosition.column] =
+        -2;
+    return board;
 }
 
 function startGameLoop(io) {
@@ -18,12 +25,13 @@ function startGameLoop(io) {
             game.state.move(PLAYER);
             game.state.move(OPPONENT);
 
-            placePlayersInBoard();
+            // The line bellow causes big problems
             const socket = io.sockets.sockets.get(game.player);
-            socket.emit(
-                "gamestate",
-                JSON.stringify({ board: game.state.board }),
-            );
+            socket.emit("gamestate", {
+                board: placePlayersInBoard(game.state),
+            });
+
+            // TODO: check if game is over
 
             game.lastTurnTime = Date.now();
         }

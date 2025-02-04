@@ -112,28 +112,28 @@ class Position {
         const delta = { column: 0, row: 0 };
         const evenRow = this.row % 2 === 0;
 
-        switch (dir) {
-            case Direction.LEFT:
+        switch (dir.kind) {
+            case Direction.LEFT.kind:
                 delta.column = -1;
                 delta.row = 0;
                 break;
-            case Direction.RIGHT:
+            case Direction.RIGHT.kind:
                 delta.column = 1;
                 delta.row = 0;
                 break;
-            case Direction.BOTTOM_LEFT:
+            case Direction.BOTTOM_LEFT.kind:
                 delta.column = evenRow ? -1 : 0;
                 delta.row = 1;
                 break;
-            case Direction.BOTTOM_RIGHT:
+            case Direction.BOTTOM_RIGHT.kind:
                 delta.column = evenRow ? 0 : 1;
                 delta.row = 1;
                 break;
-            case Direction.TOP_LEFT:
+            case Direction.TOP_LEFT.kind:
                 delta.column = evenRow ? -1 : 0;
                 delta.row = -1;
                 break;
-            case Direction.TOP_RIGHT:
+            case Direction.TOP_RIGHT.kind:
                 delta.column = evenRow ? 0 : 1;
                 delta.row = -1;
                 break;

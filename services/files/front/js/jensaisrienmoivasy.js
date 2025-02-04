@@ -10,7 +10,6 @@ socket.on("connect", () => {
         body: JSON.stringify({ clientId: socket.id }),
     })
         .then(async (response) => {
-            console.log(socket.id);
             if (!response.ok)
                 throw new Error(`Server returned an error: ${response.status}`);
             const body = await response.json();
@@ -21,6 +20,47 @@ socket.on("connect", () => {
             });
 
             socket.emit("ready", { gameId: body.gameId });
+            document.addEventListener("keydown", (event) => {
+                switch (event.key.toLowerCase()) {
+                    /* Player 1 keys */
+                    case "q":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "LEFT",
+                        });
+                        break;
+                    case "d":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "RIGHT",
+                        });
+                        break;
+                    case "w":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "BOTTOM_LEFT",
+                        });
+                        break;
+                    case "x":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "BOTTOM_RIGHT",
+                        });
+                        break;
+                    case "z":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "TOP_LEFT",
+                        });
+                        break;
+                    case "e":
+                        socket.emit("move", {
+                            gameId: body.gameId,
+                            direction: "TOP_RIGHT",
+                        });
+                        break;
+                }
+            });
         })
         .catch((error) =>
             console.error(`Error occured during request: ${error}`),
