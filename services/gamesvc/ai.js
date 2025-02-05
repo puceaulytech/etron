@@ -621,7 +621,7 @@ function padDepth(d) {
  * @param {number} depth The current tree depth
  * @param {number} alpha Alpha value for alpha-beta pruning
  * @param {number} beta Beta value for alpha-beta pruning
- * @returns {{ score: number, move: Direction }} The best move with its computed score
+ * @returns {{ score: number, move: Position }} The best move with its computed score
  */
 function negamax(gameState, currentPlayer, depth, alpha, beta) {
     if (depth <= 0) {
