@@ -212,31 +212,57 @@ class GameResult {
     static UNFINISHED = new GameResult("UNFINISHED");
     static DRAW = new GameResult("DRAW");
 
+    /**
+     * Constructs a new game result
+     *
+     * @param {string} type
+     * @param {number | null} winner
+     */
     constructor(type, winner = null) {
         this.type = type;
         this.winner = winner;
     }
 
+    /**
+     * Constructs a new game result where a player won
+     *
+     * @param {number} playerNumber
+     */
     static playerWin(playerNumber) {
         return new GameResult("PLAYER_WIN", playerNumber);
     }
 
+    /**
+     * @returns {boolean}
+     */
     isUnfinished() {
         return this.type === "UNFINISHED";
     }
 
+    /**
+     * @returns {boolean}
+     */
     isDraw() {
         return this.type === "DRAW";
     }
 
+    /**
+     * @returns {boolean}
+     */
     isPlayerWin() {
         return this.type === "PLAYER_WIN";
     }
 
+    /**
+     * @returns {number | null}
+     */
     getWinner() {
         return this.winner;
     }
 
+    /**
+     * @returns {string}
+     */
     toString() {
         return this.isPlayerWin() ? `PLAYER_WIN(${this.winner})` : this.type;
     }
