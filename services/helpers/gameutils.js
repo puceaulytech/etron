@@ -536,4 +536,5 @@ module.exports = {
     Direction,
     Position,
     GameState,
+    GameResult,
 };

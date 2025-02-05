@@ -1,6 +1,11 @@
 const { stateless } = require("./ai");
 const storage = require("./storage");
-const { PLAYER, OPPONENT, GameState } = require("../helpers/gameutils");
+const {
+    PLAYER,
+    OPPONENT,
+    GameState,
+    GameResult,
+} = require("../helpers/gameutils");
 
 const TURN_TIME = 500;
 
@@ -19,6 +24,7 @@ function placePlayersInBoard(gameState) {
 
 function startGameLoop(io) {
     intervalId = setInterval(() => {
+        const finishedGames = [];
         for (const game of storage.games.values()) {
             if (!game.ready) continue;
             if (Date.now() - game.lastTurnTime <= TURN_TIME) continue;
@@ -28,7 +34,9 @@ function startGameLoop(io) {
             game.state.moveTo(PLAYER, aiMove);
             game.state.move(OPPONENT);
 
+            /** @type {GameResult} */
             const result = game.state.gameResult();
+            if (!result.isUnfinished()) finishedGames.push(game.id);
 
             // The line bellow causes big problems
             const socket = io.sockets.sockets.get(game.player);
@@ -37,10 +45,10 @@ function startGameLoop(io) {
                 result,
             });
 
-            // TODO: remove game from Storage if finished
-
             game.lastTurnTime = Date.now();
         }
+
+        for (const gameId of finishedGames) storage.games.delete(gameId);
     }, 20);
 }
 
