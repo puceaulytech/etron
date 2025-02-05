@@ -9,5 +9,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "type": "commonjs"
+    "type": "commonjs",
+    "dependencies": {
+        "argon2": "^0.41.1",
+        "mongodb": "^6.13.0"
+    }
 }

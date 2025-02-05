@@ -1,6 +1,22 @@
 const http = require("http");
 
 /**
+ * Sends an error to the client
+ *
+ * @param {http.ClientRequest} res
+ * @param {number} statusCode
+ * @param {string} errorCode
+ * @param {string} message
+ */
+function sendError(res, statusCode, errorCode, message) {
+    res.statusCode = statusCode;
+
+    const resp = JSON.stringify({ code: errorCode, message });
+
+    res.end(resp);
+}
+
+/**
  * Decodes the body of the request to JSON
  *
  * @param {http.ClientRequest} req The HTTP request
@@ -143,4 +159,5 @@ module.exports = {
     decodeCookies,
     encodeCookies,
     createHandler,
+    sendError,
 };
