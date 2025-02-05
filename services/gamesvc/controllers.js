@@ -1,5 +1,5 @@
 const storage = require("./storage");
-const { decodeJsonBody } = require("../helpers/http");
+const { decodeJsonBody, createHandler } = require("../helpers/http");
 
 const endpoints = {
     playagainstai: {
@@ -13,23 +13,7 @@ async function playAgainstAI(req, res) {
     res.end(JSON.stringify({ gameId }));
 }
 
-function handleNotFound(res) {
+module.exports = createHandler(endpoints, (res) => {
     res.statusCode = 404;
     res.end();
-}
-
-function handleRequest(req, res) {
-    const path = req.url.split("/").filter((elem) => elem !== "..");
-
-    const endpoint = endpoints[path[3]];
-
-    if (!endpoint) return handleNotFound(res);
-
-    const handler = endpoint[req.method.toUpperCase()];
-
-    if (!handler) return handleNotFound(res);
-
-    handler(req, res);
-}
-
-module.exports = handleRequest;
+});

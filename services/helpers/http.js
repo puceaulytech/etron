@@ -115,4 +115,32 @@ function encodeCookies(cookies) {
         .join("; ");
 }
 
-module.exports = { decodeJsonBody, decodeCookies, encodeCookies };
+/**
+ * Creates a handler
+ *
+ * @param {Record<string, Record<string, (req: http.ClientRequest, res: http.ServerResponse) => Promise<void>>>} endpoints
+ * @param {(res: http.ServerResponse) => Promise<void>} handleNotFound
+ * @returns {(req: http.ClientRequest, res: http.ServerResponse) => Promise<void>}
+ */
+function createHandler(endpoints, handleNotFound) {
+    return (req, res) => {
+        const path = req.url.split("/").filter((elem) => elem !== "..");
+
+        const endpoint = endpoints[path[3]];
+
+        if (!endpoint) return handleNotFound(res);
+
+        const handler = endpoint[req.method.toUpperCase()];
+
+        if (!handler) return handleNotFound(res);
+
+        return handler(req, res);
+    };
+}
+
+module.exports = {
+    decodeJsonBody,
+    decodeCookies,
+    encodeCookies,
+    createHandler,
+};
