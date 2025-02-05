@@ -1,3 +1,4 @@
+const { stateless } = require("./ai");
 const storage = require("./storage");
 const { PLAYER, OPPONENT, GameState } = require("../helpers/gameutils");
 
@@ -22,7 +23,9 @@ function startGameLoop(io) {
             if (!game.ready) continue;
             if (Date.now() - game.lastTurnTime <= TURN_TIME) continue;
 
-            game.state.move(PLAYER);
+            // TODO: move this soemwhere else so that it doesn't use game time to think?
+            const aiMove = stateless.nextMove(game.state);
+            game.state.moveTo(PLAYER, aiMove);
             game.state.move(OPPONENT);
 
             // The line bellow causes big problems
