@@ -208,6 +208,40 @@ class Position {
     }
 }
 
+class GameResult {
+    static UNFINISHED = new GameResult("UNFINISHED");
+    static DRAW = new GameResult("DRAW");
+
+    constructor(type, winner = null) {
+        this.type = type;
+        this.winner = winner;
+    }
+
+    static playerWin(playerNumber) {
+        return new GameResult("PLAYER_WIN", playerNumber);
+    }
+
+    isUnfinished() {
+        return this.type === "UNFINISHED";
+    }
+
+    isDraw() {
+        return this.type === "DRAW";
+    }
+
+    isPlayerWin() {
+        return this.type === "PLAYER_WIN";
+    }
+
+    getWinner() {
+        return this.winner;
+    }
+
+    toString() {
+        return this.isPlayerWin() ? `PLAYER_WIN(${this.winner})` : this.type;
+    }
+}
+
 class GameState {
     /**
      * Constructs a new game state
@@ -338,6 +372,29 @@ class GameState {
             position.row >= this.board.length ||
             position.column >= this.board[position.row].length
         );
+    }
+
+    /**
+     * Checks wethed or not the game ended and what are the results
+     * @returns {GameResult} The game results
+     */
+    gameResult() {
+        const playerPos = this.getPlayerPosition(PLAYER);
+        const opponentPos = this.getPlayerPosition(OPPONENT);
+
+        const isPlayerDead =
+            this.isOutOfBounds(playerPos) || this.getCell(playerPos) !== 0;
+        const isOpponentDead =
+            this.isOutOfBounds(opponentPos) || this.getCell(opponentPos) !== 0;
+
+        if ((isPlayerDead && isOpponentDead) || playerPos.equals(opponentPos))
+            return GameResult.DRAW;
+
+        if (!isPlayerDead && !isOpponentDead) return GameResult.UNFINISHED;
+
+        return isPlayerDead
+            ? GameResult.playerWin(OPPONENT)
+            : GameResult.playerWin(PLAYER);
     }
 
     /**

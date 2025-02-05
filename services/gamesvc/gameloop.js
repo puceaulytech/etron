@@ -23,18 +23,21 @@ function startGameLoop(io) {
             if (!game.ready) continue;
             if (Date.now() - game.lastTurnTime <= TURN_TIME) continue;
 
-            // TODO: move this soemwhere else so that it doesn't use game time to think?
+            // TODO: move this somewhere else so that it doesn't use game time to think?
             const aiMove = stateless.nextMove(game.state);
             game.state.moveTo(PLAYER, aiMove);
             game.state.move(OPPONENT);
+
+            const result = game.state.gameResult();
 
             // The line bellow causes big problems
             const socket = io.sockets.sockets.get(game.player);
             socket.emit("gamestate", {
                 board: placePlayersInBoard(game.state),
+                result,
             });
 
-            // TODO: check if game is over
+            // TODO: remove game from Storage if finished
 
             game.lastTurnTime = Date.now();
         }

@@ -16,6 +16,7 @@ socket.on("connect", () => {
             if (!body.gameId) throw new Error("No game id in response body");
 
             socket.on("gamestate", (payload) => {
+                console.log(payload.result);
                 drawBoard(ctx, payload.board);
             });
 
