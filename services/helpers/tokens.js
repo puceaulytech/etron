@@ -8,13 +8,15 @@ function generateAccessToken(jwt, user) {
 }
 
 function generateRefreshToken(jwt, user) {
-    // TODO: store the refresh token in the database to be able to revoke it
-    const refreshToken = jwt.sign(user, REFRESH_SECRET, { expiresIn: "7d" });
-    return refreshToken;
+    return jwt.sign(user, REFRESH_SECRET, { expiresIn: "7d" });
 }
 
 function verifyAccessToken(jwt, token) {
     return jwt.verify(token, ACCESS_SECRET);
+}
+
+function verifyRefreshToken(jwt, token) {
+    return jwt.verify(token, REFRESH_SECRET);
 }
 
 /**
@@ -44,4 +46,9 @@ function authenticate(req, res, jwt) {
     }
 }
 
-module.exports = { generateAccessToken, generateRefreshToken, authenticate };
+module.exports = {
+    generateAccessToken,
+    generateRefreshToken,
+    authenticate,
+    verifyRefreshToken,
+};

@@ -1,6 +1,7 @@
 const argon2 = require("argon2");
 const http = require("http");
 const jwt = require("jsonwebtoken");
+const ObjectId = require("mongodb").ObjectId;
 
 const {
     decodeJsonBody,
@@ -10,9 +11,10 @@ const {
 } = require("../helpers/http");
 const pool = require("../helpers/db");
 const {
+    authenticate,
     generateAccessToken,
     generateRefreshToken,
-    authenticate,
+    verifyRefreshToken,
 } = require("../helpers/tokens");
 
 const endpoints = {
@@ -21,6 +23,9 @@ const endpoints = {
     },
     register: {
         POST: register,
+    },
+    refresh: {
+        POST: refreshAccess,
     },
 };
 
@@ -69,6 +74,39 @@ async function register(req, res) {
         .collection("users")
         .insertOne({ username, password });
     res.end(JSON.stringify({ _id: result.insertedId, username }));
+}
+
+async function refreshAccess(req, res) {
+    const payload = await decodeJsonBody(req);
+    if (!payload.refreshToken) {
+        sendError(res, 400, "E_MISSING_TOKEN", "No refresh token provided.");
+        return;
+    }
+
+    try {
+        const { _id, username } = verifyRefreshToken(jwt, payload.refreshToken);
+        const user = await pool
+            .get()
+            .collection("users")
+            .findOne({ _id: ObjectId.createFromHexString(_id), username });
+        if (!user) {
+            sendError(
+                res,
+                401,
+                "E_UNAUTHORIZED_TOKEN", // not sure about that error code
+                "User that generated token does not exist anymore.",
+            );
+            return;
+        }
+
+        res.end(
+            JSON.stringify({
+                accessToken: generateAccessToken(jwt, { username, _id }),
+            }),
+        );
+    } catch (error) {
+        sendError(res, 401, "E_UNAUTHORIZED_TOKEN", "Unauthorized token.");
+    }
 }
 
 module.exports = createHandler(endpoints, (res) => {
