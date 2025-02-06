@@ -1,3 +1,7 @@
+const argon2 = require("argon2");
+const http = require("http");
+const jwt = require("jsonwebtoken");
+
 const {
     decodeJsonBody,
     decodeCookies,
@@ -5,7 +9,11 @@ const {
     sendError,
 } = require("../helpers/http");
 const pool = require("../helpers/db");
-const argon2 = require("argon2");
+const {
+    generateAccessToken,
+    generateRefreshToken,
+    authenticate,
+} = require("../helpers/tokens");
 
 const endpoints = {
     login: {
@@ -17,11 +25,31 @@ const endpoints = {
 };
 
 async function login(req, res) {
-    const payload = decodeJsonBody(req);
+    const payload = await decodeJsonBody(req);
+    // TODO: check user input
+    const username = payload.username;
+
+    const db = pool.get();
+    const user = await db.collection("users").findOne({ username });
+    if (!user || !(await argon2.verify(user.password, payload.password))) {
+        sendError(
+            res,
+            404,
+            "E_INVALID_CREDENTIALS",
+            "Provided credentials are invalid.",
+        );
+        return;
+    }
+
+    const refreshToken = generateRefreshToken(jwt, { username, _id: user._id });
+    const accessToken = generateAccessToken(jwt, { username, _id: user._id });
+
+    res.end(JSON.stringify({ refreshToken, accessToken }));
 }
 
 async function register(req, res) {
     const payload = await decodeJsonBody(req);
+    // TODO: check user input
     const username = payload.username;
 
     const db = pool.get();
