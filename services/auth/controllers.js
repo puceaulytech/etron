@@ -27,7 +27,32 @@ const endpoints = {
     refresh: {
         POST: refreshAccess,
     },
+    me: {
+        GET: getAuthenticatedUser,
+    },
 };
+
+async function getAuthenticatedUser(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
+    const user = await pool
+        .get()
+        .collection("users")
+        .findOne({ _id: ObjectId.createFromHexString(userId) });
+    if (!user) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "User that generated token does not exist anymore.",
+        );
+        return;
+    }
+
+    const { password, ...userInfo } = user;
+    res.end(JSON.stringify(userInfo));
+}
 
 async function login(req, res) {
     const payload = await decodeJsonBody(req);
@@ -93,7 +118,7 @@ async function refreshAccess(req, res) {
             sendError(
                 res,
                 401,
-                "E_UNAUTHORIZED_TOKEN", // not sure about that error code
+                "E_USER_DOES_NOT_EXIST", // not sure about that error code
                 "User that generated token does not exist anymore.",
             );
             return;
