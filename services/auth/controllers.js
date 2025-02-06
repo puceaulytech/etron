@@ -32,6 +32,12 @@ const endpoints = {
     },
 };
 
+/**
+ * Sends information about the authenticated user to the client
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
 async function getAuthenticatedUser(req, res) {
     const userId = authenticate(req, res, jwt);
     if (!userId) return;
@@ -54,6 +60,13 @@ async function getAuthenticatedUser(req, res) {
     res.end(JSON.stringify(userInfo));
 }
 
+/**
+ * Generates and sends access and refresh tokens to the client
+ * if the provided credentials match the registered user
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
 async function login(req, res) {
     const payload = await decodeJsonBody(req);
     // TODO: check user input
@@ -77,6 +90,12 @@ async function login(req, res) {
     res.end(JSON.stringify({ refreshToken, accessToken }));
 }
 
+/**
+ * Adds a new user to the database with the provided credentials
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
 async function register(req, res) {
     const payload = await decodeJsonBody(req);
     // TODO: check user input
@@ -101,6 +120,12 @@ async function register(req, res) {
     res.end(JSON.stringify({ _id: result.insertedId, username }));
 }
 
+/**
+ * Generates and sends a new access token given a valid refresh token
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
 async function refreshAccess(req, res) {
     const payload = await decodeJsonBody(req);
     if (!payload.refreshToken) {
