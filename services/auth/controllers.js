@@ -57,7 +57,8 @@ async function getAuthenticatedUser(req, res) {
     }
 
     const { password, ...userInfo } = user;
-    res.end(JSON.stringify(userInfo));
+
+    return userInfo;
 }
 
 /**
@@ -87,7 +88,7 @@ async function login(req, res) {
     const refreshToken = generateRefreshToken(jwt, { username, _id: user._id });
     const accessToken = generateAccessToken(jwt, { username, _id: user._id });
 
-    res.end(JSON.stringify({ refreshToken, accessToken }));
+    return { refreshToken, accessToken };
 }
 
 /**
@@ -117,7 +118,8 @@ async function register(req, res) {
     const result = await db
         .collection("users")
         .insertOne({ username, password });
-    res.end(JSON.stringify({ _id: result.insertedId, username }));
+
+    return { _id: result.insertedId, username };
 }
 
 /**
@@ -149,11 +151,9 @@ async function refreshAccess(req, res) {
             return;
         }
 
-        res.end(
-            JSON.stringify({
-                accessToken: generateAccessToken(jwt, { username, _id }),
-            }),
-        );
+        return {
+            accessToken: generateAccessToken(jwt, { username, _id }),
+        };
     } catch (error) {
         sendError(res, 401, "E_UNAUTHORIZED_TOKEN", "Unauthorized token.");
     }

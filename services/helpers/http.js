@@ -134,9 +134,9 @@ function encodeCookies(cookies) {
 /**
  * Creates a handler
  *
- * @param {Record<string, Record<string, (req: http.ClientRequest, res: http.ServerResponse) => Promise<void>>>} endpoints
+ * @param {Record<string, Record<string, (req: http.ClientRequest, res: http.ServerResponse) => Promise<any>>>} endpoints
  * @param {(res: http.ServerResponse) => Promise<void>} handleNotFound
- * @returns {(req: http.ClientRequest, res: http.ServerResponse) => Promise<void>}
+ * @returns {(req: http.ClientRequest, res: http.ServerResponse) => Promise<any>}
  */
 function createHandler(endpoints, handleNotFound) {
     return (req, res) => {
@@ -150,7 +150,10 @@ function createHandler(endpoints, handleNotFound) {
 
         if (!handler) return handleNotFound(res);
 
-        return handler(req, res);
+        handler(req, res).then((handlerRet) => {
+            // Check if resp is not undefined nor null (https://stackoverflow.com/a/21273362)
+            if (handlerRet != null) res.end(JSON.stringify(handlerRet));
+        });
     };
 }
 

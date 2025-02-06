@@ -10,7 +10,8 @@ const endpoints = {
 async function playAgainstAI(req, res) {
     const payload = await decodeJsonBody(req);
     const gameId = storage.createAIGame(payload.clientId);
-    res.end(JSON.stringify({ gameId }));
+
+    return { gameId };
 }
 
 module.exports = createHandler(endpoints, (res) => {
