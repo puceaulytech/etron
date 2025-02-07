@@ -3,12 +3,36 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
-        <link href="style.css" rel="stylesheet" />
+        <link href="styles/style.css" rel="stylesheet" />
+        <link href="styles/accountmenu.css" rel="stylesheet" />
+        <script src="js/accountmenu.js" defer></script>
     </head>
     <body>
         <h1>Welcome to e-tron!</h1>
         <p>This game really is awesome.</p>
         <a href="pages/local1v1.html" class="menu-button">CLICK HERE PLS UWU</a>
         <a href="pages/ai1v1.html" class="menu-button">NO ME >-&lt;</a>
+
+        <!-- The divs bellow aren't part of the layout -->
+        <div id="account-button">
+            <svg viewBox="0 0 24 24">
+                <defs>
+                    <style>
+                        .cls-1 {
+                            fill: none;
+                            stroke: #020202;
+                            stroke-miterlimit: 10;
+                            stroke-width: 1.91px;
+                        }
+                    </style>
+                </defs>
+                <circle class="cls-1" cx="12" cy="7.25" r="5.73" />
+                <path
+                    class="cls-1"
+                    d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
+                />
+            </svg>
+        </div>
+        <div id="account-menu"></div>
     </body>
 </html>

@@ -1,3 +1,11 @@
+/* This is to disable scrolling so that sneaky users don't see what is hidden in page overflow */
+html,
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -40,4 +48,25 @@ body {
         rgba(173, 24, 171, 0.25) 0 8px 16px,
         rgba(173, 24, 171, 0.25) 0 16px 32px;
     transform: scale(1.05) rotate(-1deg);
+}
+
+#account-button {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 3px solid black;
+    right: 40px;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#account-button:hover {
+    cursor: pointer;
+}
+
+#account-button > svg {
+    width: 90%;
+    height: 90%;
 }

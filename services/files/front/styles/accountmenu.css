@@ -1,0 +1,21 @@
+:root {
+    --menu-width: 35vw;
+    --menu-border-size: 5px;
+}
+
+#account-menu {
+    width: calc(var(--menu-width) - 2 * var(--menu-border-size));
+    height: calc(100vh - 2 * var(--menu-border-size));
+    position: absolute;
+    right: calc(-20px - var(--menu-width));
+    top: 0;
+    background-color: pink;
+    border: var(--menu-border-size) solid black;
+    z-index: 5;
+    /* display: none; */
+    transition: transform 0.5s ease-in-out;
+}
+
+#account-menu.visible {
+    transform: translateX(calc(-20px - var(--menu-width)));
+}
