@@ -49,3 +49,19 @@
     width: 2px;
     height: 90%;
 }
+
+#menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#menu-content .content-section {
+    width: fit-content;
+    text-align: center;
+    display: none;
+}
+
+.content-section.active {
+    display: block !important;
+}

@@ -19,29 +19,42 @@ function toggleMenu() {
 
 button.addEventListener("click", toggleMenu);
 
+/** @type {Map<HTMLDivElement, HTMLDivElement>} */
+const sectionBindings = new Map();
 // TODO: add some more styling to the two functions bellow
 /**
  * @param {HTMLDivElement} newSection
  */
 function selectNewSection(newSection) {
     newSection.style.fontWeight = "bolder";
+    sectionBindings.get(newSection).classList.add("active");
 }
 /**
  * @param {HTMLDivElement} oldSection
  */
 function unselectOldSection(oldSection) {
     oldSection.style.fontWeight = "normal";
+    sectionBindings.get(oldSection).classList.remove("active");
 }
 
-const allSections = document.querySelectorAll("#menu-header .section");
-let currentSection = allSections[0]; // unsafe? naaaaaah, I'm sure it'll be fine
-selectNewSection(currentSection);
-
-allSections.forEach((section) =>
-    section.addEventListener("click", () => {
-        if (section === currentSection) return;
-        selectNewSection(section);
-        unselectOldSection(currentSection);
-        currentSection = section;
-    }),
+let currentSection;
+const contentSections = document.querySelectorAll(
+    "#menu-content .content-section",
 );
+
+document
+    .querySelectorAll("#menu-header .section")
+    .entries()
+    .forEach((entry) => {
+        const section = entry[1];
+        sectionBindings.set(section, contentSections[entry[0]]);
+        section.addEventListener("click", () => {
+            if (section === currentSection) return;
+            selectNewSection(section);
+            unselectOldSection(currentSection);
+            currentSection = section;
+        });
+    });
+
+currentSection = sectionBindings.keys().next().value;
+selectNewSection(currentSection);
