@@ -70,3 +70,10 @@ body {
     width: 90%;
     height: 90%;
 }
+
+svg .svg-shit {
+    fill: none;
+    stroke: #020202;
+    stroke-miterlimit: 10;
+    stroke-width: 1.91px;
+}
