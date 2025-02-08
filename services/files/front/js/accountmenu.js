@@ -18,3 +18,30 @@ function toggleMenu() {
 }
 
 button.addEventListener("click", toggleMenu);
+
+// TODO: add some more styling to the two functions bellow
+/**
+ * @param {HTMLDivElement} newSection
+ */
+function selectNewSection(newSection) {
+    newSection.style.fontWeight = "bolder";
+}
+/**
+ * @param {HTMLDivElement} oldSection
+ */
+function unselectOldSection(oldSection) {
+    oldSection.style.fontWeight = "normal";
+}
+
+const allSections = document.querySelectorAll("#menu-header .section");
+let currentSection = allSections[0]; // unsafe? naaaaaah, I'm sure it'll be fine
+selectNewSection(currentSection);
+
+allSections.forEach((section) =>
+    section.addEventListener("click", () => {
+        if (section === currentSection) return;
+        selectNewSection(section);
+        unselectOldSection(currentSection);
+        currentSection = section;
+    }),
+);
