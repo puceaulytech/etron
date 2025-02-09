@@ -60,16 +60,41 @@ document
         });
     });
 
+async function updateAccountInfo() {
+    // Questionable edge case handling
+    if (!localStorage.getItem("accessToken"))
+        throw new Error(
+            "Could not update account info, no access token in localStorage",
+        );
+
+    await fetch("/api/auth/me", {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+    }).then(async (response) => {
+        if (!response.ok) return; // TODO: something better
+
+        const userInfo = await response.json();
+        const playerNameElement = document.querySelector(
+            "#account-section #player-name",
+        );
+        playerNameElement.textContent = userInfo.username;
+    });
+}
+
 currentSection = sectionBindings.keys().next().value;
-if (localStorage.getItem("accessToken"))
+if (localStorage.getItem("accessToken")) {
     loginSection.classList.remove("active");
+    updateAccountInfo(); // async call with no await?
+}
 
 selectNewSection(currentSection);
 
 /**
  * @param {SubmitEvent} event
  */
-function submitLogin(event) {
+async function submitLogin(event) {
     event.preventDefault();
     const usernameInput = document.querySelector(
         "form.login-form input[name='username']",
@@ -77,7 +102,7 @@ function submitLogin(event) {
     const passwordInput = document.querySelector(
         "form.login-form input[name='password']",
     );
-    fetch("/api/auth/login", {
+    await fetch("/api/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -96,5 +121,12 @@ function submitLogin(event) {
         localStorage.setItem("refreshToken", tokens.refreshToken);
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
+        await updateAccountInfo();
     });
+}
+
+function logOut() {
+    localStorage.clear();
+    sectionBindings.get(currentSection).classList.remove("active");
+    loginSection.classList.add("active");
 }

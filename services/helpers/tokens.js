@@ -4,7 +4,7 @@ const ACCESS_SECRET = process.env["ACCESS_SECRET"] ?? "very_secret_access";
 const REFRESH_SECRET = process.env["REFRESH_SECRET"] ?? "very_secret_refresh";
 
 function generateAccessToken(jwt, user) {
-    return jwt.sign(user, ACCESS_SECRET, { expiresIn: "3min" });
+    return jwt.sign(user, ACCESS_SECRET, { expiresIn: "2h" });
 }
 
 function generateRefreshToken(jwt, user) {

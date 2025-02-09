@@ -66,6 +66,12 @@
     display: block !important;
 }
 
+.content-section#account-section #player-name {
+    font-size: 40px;
+    font-weight: bolder;
+    font-family: arial;
+}
+
 .content-section#login-section h1 {
     margin-bottom: 60px;
 }
