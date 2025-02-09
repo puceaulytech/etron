@@ -21,13 +21,17 @@ button.addEventListener("click", toggleMenu);
 
 /** @type {Map<HTMLDivElement, HTMLDivElement>} */
 const sectionBindings = new Map();
+const loginSection = document.querySelector("#login-section");
 // TODO: add some more styling to the two functions bellow
 /**
  * @param {HTMLDivElement} newSection
  */
 function selectNewSection(newSection) {
     newSection.style.fontWeight = "bolder";
-    sectionBindings.get(newSection).classList.add("active");
+
+    if (!localStorage.getItem("accessToken"))
+        loginSection.classList.add("active");
+    else sectionBindings.get(newSection).classList.add("active");
 }
 /**
  * @param {HTMLDivElement} oldSection
@@ -57,7 +61,10 @@ document
     });
 
 currentSection = sectionBindings.keys().next().value;
-// selectNewSection(currentSection); I gotta remember to uncomment that at some point
+if (localStorage.getItem("accessToken"))
+    loginSection.classList.remove("active");
+
+selectNewSection(currentSection);
 
 /**
  * @param {SubmitEvent} event
@@ -87,5 +94,7 @@ function submitLogin(event) {
         const tokens = await response.json();
         localStorage.setItem("accessToken", tokens.accessToken);
         localStorage.setItem("refreshToken", tokens.refreshToken);
+        selectNewSection(currentSection);
+        loginSection.classList.remove("active");
     });
 }
