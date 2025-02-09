@@ -78,7 +78,7 @@ async function login(req, res) {
     if (!user || !(await argon2.verify(user.password, payload.password))) {
         sendError(
             res,
-            404,
+            401,
             "E_INVALID_CREDENTIALS",
             "Provided credentials are invalid.",
         );
