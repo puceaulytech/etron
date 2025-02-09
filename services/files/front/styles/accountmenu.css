@@ -65,3 +65,24 @@
 .content-section.active {
     display: block !important;
 }
+
+.content-section#login-section h1 {
+    margin-bottom: 60px;
+}
+
+form.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+form.login-form input {
+    width: 13vw;
+    height: 30px;
+}
+
+form.login-form input[type="submit"] {
+    width: 9vw;
+    margin-top: 25px;
+}

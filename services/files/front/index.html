@@ -45,8 +45,23 @@
                     <p>Here you can see your friend requests.</p>
                 </div>
                 <!-- It is very important for the login section to be last-->
-                <div class="content-section" id="login-section">
+                <div class="content-section active" id="login-section">
                     <h1>Login to play</h1>
+                    <form class="login-form" onsubmit="submitLogin(event)">
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            required
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                        <input type="submit" value="Login" />
+                    </form>
                 </div>
             </div>
         </div>

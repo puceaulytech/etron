@@ -57,4 +57,35 @@ document
     });
 
 currentSection = sectionBindings.keys().next().value;
-selectNewSection(currentSection);
+// selectNewSection(currentSection); I gotta remember to uncomment that at some point
+
+/**
+ * @param {SubmitEvent} event
+ */
+function submitLogin(event) {
+    event.preventDefault();
+    const usernameInput = document.querySelector(
+        "form.login-form input[name='username']",
+    );
+    const passwordInput = document.querySelector(
+        "form.login-form input[name='password']",
+    );
+    fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value,
+        }),
+    }).then(async (response) => {
+        passwordInput.value = "";
+        if (!response.ok) return;
+
+        usernameInput.value = "";
+        const tokens = await response.json();
+        localStorage.setItem("accessToken", tokens.accessToken);
+        localStorage.setItem("refreshToken", tokens.refreshToken);
+    });
+}
