@@ -95,7 +95,7 @@ selectNewSection(currentSection);
  * @param {SubmitEvent} event
  */
 async function submitLogin(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     const usernameInput = document.querySelector(
         "form.login-form input[name='username']",
     );
@@ -122,6 +122,29 @@ async function submitLogin(event) {
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
         await updateAccountInfo();
+    });
+}
+
+async function registerUser() {
+    const usernameInput = document.querySelector(
+        "form.login-form input[name='username']",
+    );
+    const passwordInput = document.querySelector(
+        "form.login-form input[name='password']",
+    );
+    await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value,
+        }),
+    }).then(async (response) => {
+        if (!response.ok) return;
+
+        await submitLogin(null);
     });
 }
 

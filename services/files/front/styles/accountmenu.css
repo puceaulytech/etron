@@ -90,5 +90,6 @@ form.login-form input {
 
 form.login-form input[type="submit"] {
     width: 9vw;
+    height: auto;
     margin-top: 25px;
 }
