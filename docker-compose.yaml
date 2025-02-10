@@ -4,6 +4,7 @@ volumes:
 services:
   database:
     image: mongo:5
+    restart: always
     volumes:
       - mongodb_data:/data/db
     environment:
@@ -14,6 +15,7 @@ services:
   gateway:
     build: .
     command: gateway
+    restart: always
     environment:
       GAMESVC_ADDR: "gamesvc:8002"
       FILES_ADDR: "files:8001"
@@ -24,14 +26,17 @@ services:
   gamesvc:
     build: .
     command: gamesvc
+    restart: always
 
   files:
     build: .
     command: files
+    restart: always
 
   auth:
     build: .
     command: auth
+    restart: always
     environment:
       DB_USER: "ps8"
       DB_PASSWORD: "734741ec1209b29040ac"
