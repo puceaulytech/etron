@@ -61,21 +61,9 @@ document
     });
 
 async function updateAccountInfo() {
-    // Questionable edge case handling
-    if (!localStorage.getItem("accessToken"))
-        throw new Error(
-            "Could not update account info, no access token in localStorage",
-        );
-
-    await fetch("/api/auth/me", {
+    await authenticatedFetch("/api/auth/me", {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-    }).then(async (response) => {
-        if (!response.ok) return; // TODO: something better
-
-        const userInfo = await response.json();
+    }).then(async (userInfo) => {
         const playerNameElement = document.querySelector(
             "#account-section #player-name",
         );
