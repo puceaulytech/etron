@@ -3,6 +3,10 @@
     --menu-border-size: 5px;
 }
 
+.active {
+    display: flex !important;
+}
+
 #account-menu {
     width: calc(var(--menu-width) - 2 * var(--menu-border-size));
     height: calc(100vh - 2 * var(--menu-border-size));
@@ -12,7 +16,6 @@
     background-color: pink;
     border: var(--menu-border-size) solid black;
     z-index: 5;
-    /* display: none; */
     transition: transform 0.5s ease-in-out;
 }
 
@@ -57,13 +60,11 @@
 }
 
 #menu-content .content-section {
-    width: fit-content;
+    width: 100%;
     text-align: center;
     display: none;
-}
-
-.content-section.active {
-    display: block !important;
+    flex-direction: column;
+    align-items: center;
 }
 
 .content-section#account-section #player-name {
@@ -73,10 +74,26 @@
 }
 
 .content-section#login-section h1 {
-    margin-bottom: 60px;
+    margin-bottom: 50px;
+}
+
+.content-section#login-section #form-error {
+    --main-red: #912020;
+    width: 50%;
+    height: 50px;
+    margin-bottom: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--main-red);
+    background-color: #e68181;
+    border: medium solid var(--main-red);
+    display: none;
+    justify-content: center;
+    align-items: center;
 }
 
 form.login-form {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -84,7 +101,7 @@ form.login-form {
 }
 
 form.login-form input {
-    width: 13vw;
+    width: 40%;
     height: 30px;
 }
 

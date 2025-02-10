@@ -1,3 +1,12 @@
+/**
+ * @param {string} message
+ */
+function displayLoginFormError(message) {
+    const messageDiv = document.querySelector("#login-section #form-error");
+    messageDiv.firstElementChild.textContent = message; // surely this will never cause nullptr exception
+    messageDiv.classList.add("active");
+}
+
 const menu = document.querySelector("#account-menu");
 const button = document.querySelector("#account-button");
 let isToggled = false;
@@ -101,7 +110,10 @@ async function submitLogin(event) {
         }),
     }).then(async (response) => {
         passwordInput.value = "";
-        if (!response.ok) return;
+        if (!response.ok) {
+            displayLoginFormError("Incorrect username or password.");
+            return;
+        }
 
         usernameInput.value = "";
         const tokens = await response.json();
