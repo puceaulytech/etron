@@ -14,6 +14,8 @@ socket.on("connect", async () => {
         drawBoard(ctx, payload.board);
     });
 
+    let gameId = ongoingGamesResp.ongoingGameId;
+
     if (ongoingGamesResp.ongoingGameId === null) {
         const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
             method: "POST",
@@ -22,6 +24,8 @@ socket.on("connect", async () => {
         if (!body.gameId) throw new Error("No game id in response body");
 
         socket.emit("ready", { gameId: body.gameId });
+
+        gameId = body.gameId;
     }
 
     document.addEventListener("keydown", (event) => {
@@ -29,37 +33,37 @@ socket.on("connect", async () => {
             /* Player 1 keys */
             case "q":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "LEFT",
                 });
                 break;
             case "d":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "RIGHT",
                 });
                 break;
             case "w":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "BOTTOM_LEFT",
                 });
                 break;
             case "x":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "BOTTOM_RIGHT",
                 });
                 break;
             case "z":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "TOP_LEFT",
                 });
                 break;
             case "e":
                 socket.emit("move", {
-                    gameId: body.gameId,
+                    gameId,
                     direction: "TOP_RIGHT",
                 });
                 break;

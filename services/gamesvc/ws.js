@@ -32,6 +32,7 @@ function handleWS(httpServer) {
         });
 
         socket.on("move", (payload) => {
+            console.log(payload);
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
             /** @type {GameState} */
