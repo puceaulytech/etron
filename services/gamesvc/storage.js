@@ -22,17 +22,16 @@ class Storage {
     constructor() {
         this.games = new Map();
 
-        // FIXME: this stores socket ids, which is volatile
-        // and may not be suitable for tracking connected clients
-        this.wsClients = new Set();
+        this.wsClients = new Map();
     }
 
     /**
      * Register a new client
-     * @param {any} clientId Client identifier
+     * @param {string} clientId Client ID
+     * @param {string} socket socket.io ID
      */
-    addClient(clientId) {
-        this.wsClients.add(clientId);
+    addClient(clientId, socketId) {
+        this.wsClients.set(clientId, socketId);
     }
 
     /**
@@ -42,6 +41,16 @@ class Storage {
      */
     removeClient(clientId) {
         this.wsClients.delete(clientId);
+    }
+
+    /**
+     * Retrieves the socket.io id of a client
+     *
+     * @param {string} clientId The client ID
+     * @returns {string} The socket.io ID
+     */
+    getClientSocketId(clientId) {
+        return this.wsClients.get(clientId);
     }
 
     /**
@@ -61,6 +70,14 @@ class Storage {
         this.games.set(id, game);
 
         return id;
+    }
+
+    findGameByPlayerId(playerId) {
+        for (const [gameId, gameState] of this.games.entries()) {
+            if (gameState.player === playerId) return gameId;
+        }
+
+        return null;
     }
 }
 

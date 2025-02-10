@@ -38,12 +38,15 @@ function startGameLoop(io) {
             const result = game.state.gameResult();
             if (!result.isUnfinished()) finishedGames.push(game.id);
 
-            // The line bellow causes big problems
-            const socket = io.sockets.sockets.get(game.player);
-            socket.emit("gamestate", {
-                board: placePlayersInBoard(game.state),
-                result,
-            });
+            const socketId = storage.getClientSocketId(game.player);
+
+            if (socketId) {
+                const socket = io.sockets.sockets.get(socketId);
+                socket.emit("gamestate", {
+                    board: placePlayersInBoard(game.state),
+                    result,
+                });
+            }
 
             game.lastTurnTime = Date.now();
         }

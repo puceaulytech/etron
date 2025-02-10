@@ -1,13 +1,29 @@
 const { Server } = require("socket.io");
+const jwt = require("jsonwebtoken");
 const storage = require("./storage");
 const { Direction, GameState, OPPONENT } = require("../helpers/gameutils");
+const { verifyAccessToken } = require("../helpers/tokens");
 
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
 
-    io.on("connection", (socket) => {
-        storage.addClient(socket.id);
+    io.use((socket, next) => {
+        const accessToken = socket.handshake.auth.accessToken;
 
+        if (!accessToken) return next(new Error("Authentification error"));
+
+        try {
+            const decoded = verifyAccessToken(jwt, accessToken);
+            socket.userId = decoded._id;
+            storage.addClient(socket.userId, socket.id);
+        } catch (err) {
+            return next(new Error("Invalid token"));
+        }
+
+        next();
+    });
+
+    io.on("connection", (socket) => {
         socket.on("ready", (payload) => {
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
@@ -28,7 +44,7 @@ function handleWS(httpServer) {
 
         // Register disconnection event
         socket.on("disconnect", (_reason) => {
-            storage.removeClient(socket.id);
+            storage.removeClient(socket.userId);
         });
     });
 
