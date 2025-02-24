@@ -35,6 +35,10 @@ function handleWS(httpServer) {
             console.log(payload);
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
+
+            // Game doesn't exist, ignore
+            if (!game) return;
+
             /** @type {GameState} */
             const gameState = game.state;
             gameState.setPlayerDirection(
