@@ -16,7 +16,8 @@
     background-color: #ade67f;
     border: var(--menu-border-size) solid black;
     z-index: 5;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 5px 0 0 5px;
 }
 
 #account-menu.visible {
@@ -45,6 +46,10 @@
     -ms-user-select: none;
     user-select: none;
     font-size: larger;
+}
+
+.section > span {
+    text-align: center;
 }
 
 #menu-header .separator {
