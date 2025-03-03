@@ -7,6 +7,7 @@ const logger = new Logger("debug");
 
 const gamesvcAddr = process.env["GAMESVC_ADDR"] ?? "127.0.0.1:8002";
 const authAddr = process.env["AUTH_ADDR"] ?? "127.0.0.1:8003";
+const socialAddr = process.env["SOCIAL_ADDR"] ?? "127.0.0.1:8004";
 const filesAddr = process.env["FILES_ADDR"] ?? "127.0.0.1:8001";
 
 logger.debug(`using gamesvc at ${gamesvcAddr}`);
@@ -16,6 +17,7 @@ logger.debug(`using auth at ${authAddr}`);
 const microservices = {
     gamesvc: `http://${gamesvcAddr}`,
     auth: `http://${authAddr}`,
+    social: `http://${socialAddr}`,
 };
 const websocketService = `ws://${gamesvcAddr}`;
 

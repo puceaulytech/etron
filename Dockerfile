@@ -25,6 +25,13 @@ COPY services/auth/package*.json ./
 RUN npm install --omit=dev
 COPY services/auth ./
 
+FROM base AS social
+WORKDIR /app/services/social
+
+COPY services/social/package*.json ./
+RUN npm install --omit=dev
+COPY services/social ./
+
 FROM base AS gateway
 WORKDIR /app/services/gateway
 
@@ -41,9 +48,10 @@ COPY --from=files /app/services/files ./services/files
 COPY --from=gamesvc /app/services/gamesvc ./services/gamesvc
 COPY --from=gateway /app/services/gateway ./services/gateway
 COPY --from=auth /app/services/auth ./services/auth
+COPY --from=social /app/services/social ./services/social
 COPY --from=base /app/services/helpers ./services/helpers
 COPY --from=base /app/docker-entrypoint.sh docker-entrypoint.sh
 
-EXPOSE 8000 8001 8002
+EXPOSE 8000 8001 8002 8003 8004
 
 ENTRYPOINT [ "/sbin/tini", "--", "/app/docker-entrypoint.sh" ]
