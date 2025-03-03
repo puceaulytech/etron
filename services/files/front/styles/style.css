@@ -12,7 +12,7 @@ body {
     align-items: center;
     gap: 40px;
 
-    background-image: url("../assets/background.jpg");
+    background-image: url("../assets/background-with-donkeys.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -39,7 +39,10 @@ body {
     font-size: 16px;
 }
 
-.menu-button:hover {
+.menu-button:hover,
+.menu-button:focus {
+    transition: 200ms;
+    box-shadow: 5px 5px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 .big-button {
@@ -69,7 +72,6 @@ body {
     text-align: left;
     font-size: 16px;
     display: inline-block;
-    box-shadow: 2px 2px 6px rgba(0, 128, 0, 0.3);
     transition:
         background-color 0.3s ease,
         box-shadow 0.3s ease;
@@ -85,7 +87,7 @@ body {
 
 .select:hover {
     background-color: #e0f0d0;
-    box-shadow: 4px 4px 10px rgba(0, 128, 0, 0.5);
+    box-shadow: 2px 2px 6px rgba(0, 128, 0, 0.3);
 }
 
 .select:focus {
