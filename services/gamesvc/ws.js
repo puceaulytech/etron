@@ -27,8 +27,20 @@ function handleWS(httpServer) {
         socket.on("ready", (payload) => {
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
-            if (game) game.ready = true;
-            console.log(payload);
+
+            if (!game) return;
+
+            if (game.ai) {
+                game.ready = true;
+            } else {
+                if (game.firstPlayer === socket.userId) {
+                    game.firstReady = true;
+                } else if (game.secondPlayer === socket.userId) {
+                    game.secondReady = true;
+                }
+
+                socket.join(game.id);
+            }
         });
 
         socket.on("move", (payload) => {
@@ -41,10 +53,21 @@ function handleWS(httpServer) {
 
             /** @type {GameState} */
             const gameState = game.state;
-            gameState.setPlayerDirection(
-                OPPONENT,
-                new Direction(payload.direction),
-            );
+
+            if (gameState.ai) {
+                gameState.setPlayerDirection(
+                    OPPONENT,
+                    new Direction(payload.direction),
+                );
+            } else {
+                const currentPlayer =
+                    socket.userId === gameState.firstPlayer ? PLAYER : OPPONENT;
+
+                gameState.setPlayerDirection(
+                    currentPlayer,
+                    new Direction(payload.direction),
+                );
+            }
         });
 
         // Register disconnection event

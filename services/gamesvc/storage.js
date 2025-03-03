@@ -61,6 +61,7 @@ class Storage {
         const id = uuidv4();
         const game = {
             id,
+            ai: true,
             player: playerId,
             state: GameState.randomPositions(),
             lastTurnTime: Date.now(),
@@ -72,12 +73,51 @@ class Storage {
         return id;
     }
 
-    findGameByPlayerId(playerId) {
-        for (const [gameId, gameState] of this.games.entries()) {
-            if (gameState.player === playerId) return gameId;
+    createOrJoinGame(player) {
+        const freeGame = this.games
+            .values()
+            .find((g) => g.secondPlayer === null);
+
+        if (freeGame) {
+            freeGame.secondPlayer = player;
+            return freeGame.id;
         }
 
-        return null;
+        const id = uuidv4();
+        const game = {
+            id,
+            ai: false,
+            state: GameState.randomPositions(),
+            lastTurnTime: Date.now(),
+            firstPlayer: player,
+            secondPlayer: null,
+            firstReady: false,
+            secondReady: false,
+        };
+
+        this.games.set(id, game);
+
+        return id;
+    }
+
+    findGameInMatchmaking() {
+        return this.games.values().find((g) => g.secondPlayer === null);
+    }
+
+    findGameByPlayerId(playerId) {
+        for (const [gameId, gameState] of this.games.entries()) {
+            if (gameState.ai) {
+                if (gameState.player === playerId) return gameId;
+            } else {
+                if (
+                    gameState.firstPlayer === playerId ||
+                    gameState.secondPlayer === playerId
+                )
+                    return gameId;
+            }
+
+            return null;
+        }
     }
 }
 

@@ -10,7 +10,18 @@ const endpoints = {
     playagainstai: {
         POST: playAgainstAI,
     },
+    play: {
+        POST: play,
+    },
 };
+
+async function play(req, res) {
+    const userId = authenticate(req, res, jwt);
+
+    const gameId = storage.createOrJoinGame(userId);
+
+    return { gameId };
+}
 
 async function playAgainstAI(req, res) {
     const userId = authenticate(req, res, jwt);
