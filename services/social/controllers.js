@@ -97,10 +97,57 @@ async function addFriend(req, res) {
         return;
     }
 
-    await userCollection.updateOne(
-        { _id: ObjectId.createFromHexString(payload.newFriendId) },
-        { $push: { friendRequests: userId } },
-    );
+    if (user.friends.includes(payload.newFriendId)) {
+        sendError(
+            res,
+            400,
+            "E_ALREADY_IN_FRIENDS",
+            "User is already in friends / friend requests.",
+        );
+        return;
+    }
+
+    const friend = await userCollection.findOne({
+        _id: ObjectId.createFromHexString(payload.newFriendId),
+    });
+    if (!friend) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "Tried to add a non-existing user as friend.",
+        );
+        return;
+    }
+
+    if (friend.friendRequests.includes(userId)) {
+        sendError(
+            res,
+            400,
+            "E_ALREADY_IN_FRIENDS",
+            "User is already in friends / friend requests.",
+        );
+        return;
+    }
+
+    if (user.friendRequests.includes(payload.newFriendId)) {
+        await userCollection.updateOne(
+            { _id: ObjectId.createFromHexString(payload.newFriendId) },
+            { $push: { friends: userId } },
+        );
+        await userCollection.updateOne(
+            { _id: ObjectId.createFromHexString(userId) },
+            {
+                $push: { friends: payload.newFriendId },
+                $pull: { friendRequests: payload.newFriendId },
+            },
+        );
+    } else {
+        await userCollection.updateOne(
+            { _id: ObjectId.createFromHexString(payload.newFriendId) },
+            { $push: { friendRequests: userId } },
+        );
+    }
 
     return { ok: "bro" };
 }
@@ -152,11 +199,11 @@ async function acceptFriend(req, res) {
         return;
     }
 
-    userCollection.updateOne(
+    await userCollection.updateOne(
         { _id: ObjectId.createFromHexString(payload.newFriendId) },
         { $push: { friends: userId } },
     );
-    userCollection.updateOne(
+    await userCollection.updateOne(
         { _id: ObjectId.createFromHexString(userId) },
         {
             $push: { friends: payload.newFriendId },
