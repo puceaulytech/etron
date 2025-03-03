@@ -13,7 +13,7 @@
     position: absolute;
     right: calc(-20px - var(--menu-width));
     top: 0;
-    background-color: pink;
+    background-color: #ade67f;
     border: var(--menu-border-size) solid black;
     z-index: 5;
     transition: transform 0.5s ease-in-out;
@@ -85,7 +85,7 @@
     font-size: 20px;
     font-weight: bold;
     color: var(--main-red);
-    background-color: #e68181;
+    background-color: #ade67f;
     border: medium solid var(--main-red);
     display: none;
     justify-content: center;
