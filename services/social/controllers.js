@@ -5,6 +5,7 @@ const ObjectId = require("mongodb").ObjectId;
 const { decodeJsonBody, createHandler, sendError } = require("../helpers/http");
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
+const { sanitizeUserInfo } = require("../helpers/sanitizer");
 
 const endpoints = {
     friendrequests: {
@@ -47,7 +48,7 @@ async function getFriendRequests(req, res) {
             userCollection
                 .findOne({ _id: ObjectId.createFromHexString(friendId) })
                 .then((doc) => {
-                    if (doc) result.push(doc);
+                    if (doc) result.push(sanitizeUserInfo(doc));
                     return true;
                 }),
         );
