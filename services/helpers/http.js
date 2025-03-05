@@ -1,9 +1,23 @@
 const http = require("http");
 
 /**
+ * Extract query params from request path
+ *
+ * @param {http.ClientRequest} req
+ * @returns {URLSearchParams} The query params
+ */
+function getQueryParams(req) {
+    console.log(req.url);
+    const url = new URL(`https://google.com${req.url}`);
+    console.log(url);
+
+    return url.searchParams;
+}
+
+/**
  * Sends an error to the client
  *
- * @param {http.ClientRequest} res
+ * @param {http.ServerResponse} res
  * @param {number} statusCode
  * @param {string} errorCode
  * @param {string} message
@@ -140,7 +154,8 @@ function encodeCookies(cookies) {
  */
 function createHandler(endpoints, handleNotFound) {
     return (req, res) => {
-        const path = req.url.split("/").filter((elem) => elem !== "..");
+        const url = new URL("https://google.com" + req.url);
+        const path = url.pathname.split("/").filter((elem) => elem !== "..");
 
         const endpoint = endpoints[path[3]];
 
@@ -163,4 +178,5 @@ module.exports = {
     encodeCookies,
     createHandler,
     sendError,
+    getQueryParams,
 };

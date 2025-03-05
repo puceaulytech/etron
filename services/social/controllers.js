@@ -2,7 +2,12 @@ const http = require("http");
 const jwt = require("jsonwebtoken");
 const ObjectId = require("mongodb").ObjectId;
 
-const { decodeJsonBody, createHandler, sendError } = require("../helpers/http");
+const {
+    decodeJsonBody,
+    createHandler,
+    sendError,
+    getQueryParams,
+} = require("../helpers/http");
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { sanitizeUserInfo } = require("../helpers/sanitizer");
@@ -15,7 +20,42 @@ const endpoints = {
     friends: {
         POST: acceptFriend,
     },
+    users: {
+        GET: findUser,
+    },
 };
+
+/**
+ * Find relevant users by username
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
+async function findUser(req, res) {
+    const params = getQueryParams(req);
+    const username = params.get("username");
+
+    if (!username) {
+        sendError(
+            res,
+            422,
+            "E_MISSING_QUERY_SEARCH",
+            "No username provided for search ('username').",
+        );
+        return;
+    }
+
+    if (username.length < 3) return [];
+
+    const userCollection = pool.get().collection("users");
+
+    await userCollection.createIndex({ username: "text" });
+
+    const results = await userCollection
+        .find({ username: { $regex: username, $options: "i" } })
+        .toArray();
+    return results.map(sanitizeUserInfo);
+}
 
 /**
  * Sends the user its pending friend requests
