@@ -153,3 +153,28 @@ function logOut() {
     sectionBindings.get(currentSection).classList.remove("active");
     loginSection.classList.add("active");
 }
+
+const usernameInput = document.querySelector("#search-container input");
+const searchResultsContainer = document.querySelector("#search-results");
+
+function userSearchInput() {
+    const input = usernameInput.value;
+    if (input.length < 3) return;
+
+    // Harmful injection possible?
+    fetch(`/api/social/users?username=${input}`, {
+        method: "GET",
+    }).then(async (res) => {
+        if (!res.ok) return;
+
+        const users = await res.json();
+        searchResultsContainer.replaceChildren(
+            ...users.map((user) => {
+                const elem = new SearchResult();
+                elem.setAttribute("user-id", user._id);
+                elem.setAttribute("username", user.username);
+                return elem;
+            }),
+        );
+    });
+}

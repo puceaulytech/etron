@@ -7,9 +7,7 @@ const http = require("http");
  * @returns {URLSearchParams} The query params
  */
 function getQueryParams(req) {
-    console.log(req.url);
     const url = new URL(`https://google.com${req.url}`);
-    console.log(url);
 
     return url.searchParams;
 }
