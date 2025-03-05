@@ -1,5 +1,6 @@
 const gameModeSelect = document.getElementById("game-mode");
 const playButton = document.getElementById("play-btn");
+const quitButton = document.getElementById("quit-btn");
 
 playButton.addEventListener("click", () => {
     let url;
@@ -16,4 +17,8 @@ playButton.addEventListener("click", () => {
     }
 
     location.assign(url);
+});
+
+quitButton.addEventListener("click", () => {
+    location.replace("/assets/bob.png");
 });
