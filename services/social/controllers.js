@@ -137,7 +137,7 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (user.friends.includes(payload.newFriendId)) {
+    if (user.friends && user.friends.includes(payload.newFriendId)) {
         sendError(
             res,
             400,
@@ -160,7 +160,7 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (friend.friendRequests.includes(userId)) {
+    if (friend.friendRequests && friend.friendRequests.includes(userId)) {
         sendError(
             res,
             400,
@@ -170,7 +170,10 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (user.friendRequests.includes(payload.newFriendId)) {
+    if (
+        user.friendRequests &&
+        user.friendRequests.includes(payload.newFriendId)
+    ) {
         await userCollection.updateOne(
             { _id: ObjectId.createFromHexString(payload.newFriendId) },
             { $push: { friends: userId } },
@@ -229,7 +232,7 @@ async function acceptFriend(req, res) {
     }
 
     const { friendRequests } = user;
-    if (!friendRequests.includes(payload.newFriendId)) {
+    if (!friendRequests || !friendRequests.includes(payload.newFriendId)) {
         sendError(
             res,
             400,
