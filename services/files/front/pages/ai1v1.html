@@ -8,18 +8,21 @@
             src="../components/keyboardcontrols/keyboardcontrols.js"
             defer
         ></script>
+        <script src="../components/gamegrid/gamegrid.js" defer></script>
     </head>
     <body>
         <div class="left side">
             left
             <keyboard-controls keys="E,D,X,W,Q,Z" />
         </div>
-        <div id="game"><canvas id="hexmap"></canvas></div>
+
+        <game-grid></game-grid>
+
+        <script src="../js/constants.js"></script>
         <script src="../js/authutils.js"></script>
         <script src="../js/socket.io.js"></script>
         <script src="../js/ws.js"></script>
-        <script src="../js/hexgrid.js"></script>
-        <script src="../js/jensaisrienmoivasy.js"></script>
+        <script src="../js/aigamelogic.js"></script>
         <script src="../js/gameutils.js"></script>
     </body>
 </html>

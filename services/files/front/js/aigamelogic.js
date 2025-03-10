@@ -1,8 +1,4 @@
-const ctx = canvas.getContext("2d");
-
-ctx.fillStyle = "#000000";
-ctx.strokeStyle = "#000000";
-ctx.lineWidth = 3;
+const gameGrid = document.querySelector("game-grid");
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
@@ -11,7 +7,8 @@ socket.on("connect", async () => {
 
     socket.on("gamestate", (payload) => {
         console.log(payload.result);
-        drawBoard(ctx, payload.board);
+        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+        // drawBoard(ctx, payload.board);
     });
 
     let gameId = ongoingGamesResp.ongoingGameId;

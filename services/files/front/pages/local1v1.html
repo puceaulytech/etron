@@ -8,21 +8,25 @@
             src="../components/keyboardcontrols/keyboardcontrols.js"
             defer
         ></script>
+        <script src="../components/gamegrid/gamegrid.js" defer></script>
     </head>
     <body>
         <div class="left side">
             left
             <keyboard-controls keys="E,D,X,W,Q,Z" />
         </div>
-        <div id="game"><canvas id="hexmap"></canvas></div>
+        <!-- <div id="game"><canvas id="hexmap"></canvas></div> -->
+        <game-grid></game-grid>
+
         <div class="right side">
             right
             <keyboard-controls keys="P,M,/,;,K,O" />
         </div>
+        <script src="../js/constants.js"></script>
         <script src="../js/socket.io.js"></script>
         <script src="../js/ws.js"></script>
-        <script src="../js/hexgrid.js"></script>
+        <!-- <script src="../js/hexgrid.js"></script> -->
         <script src="../js/gameutils.js"></script>
-        <script src="../js/gamelogic.js"></script>
+        <script src="../js/localgamelogic.js"></script>
     </body>
 </html>
