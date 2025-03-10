@@ -84,6 +84,8 @@ async function getFriendRequests(req, res) {
 
     const { friendRequests } = user;
 
+    if (!friendRequests) return [];
+
     const result = [];
     const promises = [];
     for (const friendId of friendRequests) {

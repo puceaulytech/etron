@@ -84,6 +84,7 @@ currentSection = sectionBindings.keys().next().value;
 if (localStorage.getItem("accessToken")) {
     loginSection.classList.remove("active");
     updateAccountInfo(); // async call with no await?
+    updateFriendRequests();
 }
 
 selectNewSection(currentSection);
@@ -177,4 +178,32 @@ function userSearchInput() {
             }),
         );
     });
+}
+
+const friendRequests = document.querySelector("#requests-section div");
+
+async function updateFriendRequests() {
+    authenticatedFetch("/api/social/friendrequests", {
+        method: "GET",
+    })
+        .then(async (users) => {
+            if (users.length === 0) {
+                friendRequests.innerHTML =
+                    "<p>No friend requests, try having some Curly's</p>";
+                return;
+            }
+
+            friendRequests.replaceChildren(
+                ...users.map((user) => {
+                    const elem = new FriendRequest();
+                    elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("username", user.username);
+                    return elem;
+                }),
+            );
+        })
+        .catch(() => {
+            friendRequests.innerHTML =
+                "<p>Error while fetching friend requests!</p>";
+        });
 }
