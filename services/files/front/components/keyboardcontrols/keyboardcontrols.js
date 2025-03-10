@@ -1,12 +1,18 @@
-const template = document.createElement("template");
-template.innerHTML = `
+class KeyboardControls extends HTMLElement {
+    constructor() {
+        super();
+
+        this.template = document.createElement("template");
+        this.template.innerHTML = `
     <style>
         #container {
-            background-color: red;
+            background-color: green;
+            border-radius: 10px;
             width: 200px;
             height: 200px;
             position: relative;
         }
+
         .control {
             position: absolute;
             width: 20px;
@@ -20,6 +26,7 @@ template.innerHTML = `
             font-size: 14px;
             font-weight: bold;
         }
+
         .hex-controls {
             position: absolute;
             left: 25%;
@@ -61,11 +68,8 @@ template.innerHTML = `
     </div>
 `;
 
-class KeyboardControls extends HTMLElement {
-    constructor() {
-        super();
         const shadow = this.attachShadow({ mode: "open" });
-        shadow.append(template.content.cloneNode(true));
+        shadow.append(this.template.content.cloneNode(true));
     }
 
     static get observedAttributes() {

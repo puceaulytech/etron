@@ -28,7 +28,6 @@ class GameGrid extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "grid") {
-            console.log(JSON.parse(newValue));
             this.updateGrid(JSON.parse(newValue));
         }
     }
