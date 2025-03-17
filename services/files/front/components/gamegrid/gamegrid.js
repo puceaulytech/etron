@@ -5,8 +5,8 @@ class GameGrid extends HTMLElement {
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
-        this.wrappingDiv.style.height = "100vh";
-        this.wrappingDiv.style.width = "auto";
+        this.wrappingDiv.style.height = "100%";
+        this.wrappingDiv.style.width = "100%";
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "hexmap";
@@ -36,6 +36,8 @@ class GameGrid extends HTMLElement {
     resizeCanvas() {
         this.canvas.width = this.canvas.parentElement.clientWidth;
         this.canvas.height = this.canvas.parentElement.clientHeight;
+
+        if (this.hasAttribute("grid")) this.redrawGrid();
     }
 
     connectedCallback() {
@@ -54,8 +56,12 @@ class GameGrid extends HTMLElement {
         this.hexRectangleWidth = 2 * this.hexRadius;
 
         if (this.hasAttribute("grid")) {
-            this.updateGrid(this.getAttribute("grid"));
+            this.redrawGrid();
         }
+    }
+
+    redrawGrid() {
+        this.updateGrid(JSON.parse(this.getAttribute("grid")));
     }
 
     updateGrid(grid) {

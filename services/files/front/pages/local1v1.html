@@ -9,6 +9,7 @@
             href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
             rel="stylesheet"
         />
+        <link href="../styles/ingame.css" rel="stylesheet" />
         <link href="local1v1.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
@@ -17,14 +18,12 @@
         <script src="../components/gamegrid/gamegrid.js" defer></script>
     </head>
     <body>
-        <div class="left side">
-            <keyboard-controls keys="E,D,X,W,Q,Z" />
-        </div>
+        <div class="container">
+            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
 
-        <game-grid></game-grid>
+            <game-grid></game-grid>
 
-        <div class="right side">
-            <keyboard-controls keys="P,M,/,;,K,O" />
+            <keyboard-controls keys="P,M,/,;,K,O"></keyboard-controls>
         </div>
 
         <script src="../js/constants.js"></script>

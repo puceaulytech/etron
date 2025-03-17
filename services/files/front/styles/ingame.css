@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+
+    background-image: url("../assets/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    font-family: "Fredoka", serif;
+    font-optical-sizing: auto;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr 1fr;
+    justify-items: center;
+    align-items: center;
+
+    height: 100vh;
+}
+
+game-grid {
+    height: 100%;
+    width: 100%;
+}
