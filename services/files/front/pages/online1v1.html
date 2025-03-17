@@ -3,12 +3,6 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
-            rel="stylesheet"
-        />
         <link href="../styles/ingame.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
@@ -18,17 +12,18 @@
     </head>
     <body>
         <div class="container">
-            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+            <div></div>
 
             <game-grid></game-grid>
 
-            <keyboard-controls keys="P,M,/,;,K,O"></keyboard-controls>
+            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
         </div>
 
         <script src="../js/constants.js"></script>
+        <script src="../js/authutils.js"></script>
         <script src="../js/socket.io.js"></script>
         <script src="../js/ws.js"></script>
         <script src="../js/gameutils.js"></script>
-        <script src="../js/localgamelogic.js"></script>
+        <script src="../js/onlinegamelogic.js"></script>
     </body>
 </html>

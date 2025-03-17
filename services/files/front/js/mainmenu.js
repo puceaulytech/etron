@@ -7,6 +7,7 @@ playButton.addEventListener("click", () => {
 
     switch (gameModeSelect.value) {
         case "online":
+            url = "pages/online1v1.html";
             break;
         case "ai":
             url = "pages/ai1v1.html";
