@@ -6,6 +6,7 @@ class GameGrid extends HTMLElement {
         this.wrappingDiv.id = "game";
 
         this.wrappingDiv.style.height = "100vh";
+        this.wrappingDiv.style.width = "auto";
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "hexmap";
@@ -32,9 +33,15 @@ class GameGrid extends HTMLElement {
         }
     }
 
-    connectedCallback() {
+    resizeCanvas() {
         this.canvas.width = this.canvas.parentElement.clientWidth;
         this.canvas.height = this.canvas.parentElement.clientHeight;
+    }
+
+    connectedCallback() {
+        this.resizeCanvas();
+        // FIXME
+        // window.addEventListener("resize", () => this.resizeCanvas(), false);
 
         console.log(this.canvas.width, this.canvas.height);
 
