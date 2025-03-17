@@ -83,8 +83,7 @@ async function updateAccountInfo() {
 currentSection = sectionBindings.keys().next().value;
 if (localStorage.getItem("accessToken")) {
     loginSection.classList.remove("active");
-    updateAccountInfo(); // async call with no await?
-    updateFriendRequests();
+    updateAll(); // async call with no await?
 }
 
 selectNewSection(currentSection);
@@ -122,7 +121,7 @@ async function submitLogin(event) {
         localStorage.setItem("refreshToken", tokens.refreshToken);
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
-        await updateAccountInfo();
+        await updateAll();
     });
 }
 
@@ -180,6 +179,33 @@ function userSearchInput() {
     });
 }
 
+const friendList = document.querySelector("#friend-list");
+
+async function updateFriendList() {
+    authenticatedFetch("/api/social/friends", {
+        method: "GET",
+    })
+        .then(async (friends) => {
+            if (friends.length === 0) {
+                friendRequests.innerHTML =
+                    "<p>No friends, it happens sometimes</p>";
+                return;
+            }
+
+            friendList.replaceChildren(
+                ...friends.map((user) => {
+                    const elem = new FriendItem();
+                    elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("username", user.username);
+                    return elem;
+                }),
+            );
+        })
+        .catch(() => {
+            friendList.innerHTML = "<p>Error while fetching friend list!</p>";
+        });
+}
+
 const friendRequests = document.querySelector("#requests-section div");
 
 async function updateFriendRequests() {
@@ -206,4 +232,13 @@ async function updateFriendRequests() {
             friendRequests.innerHTML =
                 "<p>Error while fetching friend requests!</p>";
         });
+}
+
+async function updateAll() {
+    const promises = [
+        updateAccountInfo(),
+        updateFriendList(),
+        updateFriendRequests(),
+    ];
+    await Promise.all(promises);
 }
