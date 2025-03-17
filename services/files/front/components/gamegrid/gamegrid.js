@@ -2,6 +2,12 @@ class GameGrid extends HTMLElement {
     constructor() {
         super();
 
+        this.donkeyImg = new Image();
+        this.donkeyImg.src = "../assets/donkey.png";
+
+        this.merdeImg = new Image();
+        this.merdeImg.src = "../assets/merde.png";
+
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
@@ -14,6 +20,7 @@ class GameGrid extends HTMLElement {
         this.wrappingDiv.appendChild(this.canvas);
 
         this.ctx = this.canvas.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
 
         this.ctx.fillStyle = "#000000";
         this.ctx.strokeStyle = "#000000";
@@ -73,27 +80,38 @@ class GameGrid extends HTMLElement {
             for (let j = 0; j < board[i].length; j++) {
                 let filling;
                 switch (board[i][j]) {
+                    // case -2:
+                    //     filling = "#0362fc";
+                    //     break;
+                    // case 2:
+                    //     filling = "#f59c0c";
+                    //     break;
+                    // case -1:
+                    //     filling = "#062659";
+                    //     break;
+                    // case 1:
+                    //     filling = "#965e03";
+                    //     break;
+                    default:
+                        filling = "#3caf3c";
+                }
+                let image;
+                switch (board[i][j]) {
                     case -2:
-                        filling = "#0362fc";
-                        break;
                     case 2:
-                        filling = "#f59c0c";
+                        image = this.donkeyImg;
                         break;
                     case -1:
-                        filling = "#062659";
-                        break;
                     case 1:
-                        filling = "#965e03";
+                        image = this.merdeImg;
                         break;
-                    default:
-                        filling = null;
                 }
-                this.drawHexagon(j, i, filling);
+                this.drawHexagon(j, i, filling, image);
             }
         }
     }
 
-    drawHexagon(x, y, filling) {
+    drawHexagon(x, y, filling, img) {
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
         x = x * this.hexRectangleWidth + xStart + this.offset;
         y = y * (this.sideLength + this.hexHeight) + this.offset;
@@ -115,6 +133,17 @@ class GameGrid extends HTMLElement {
             this.ctx.fill();
         }
         this.ctx.stroke();
+
+        if (img) {
+            this.ctx.drawImage(
+                img,
+                x,
+                y,
+                this.hexRectangleWidth,
+                this.hexRectangleHeight,
+            );
+            return;
+        }
     }
 }
 
