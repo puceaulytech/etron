@@ -18,6 +18,7 @@ const endpoints = {
         POST: addFriend,
     },
     friends: {
+        GET: getFriends,
         POST: acceptFriend,
     },
     users: {
@@ -195,6 +196,46 @@ async function addFriend(req, res) {
     }
 
     return { ok: "bro" };
+}
+
+/**
+ * Sends the user its friend list
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
+async function getFriends(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
+    const userCollection = pool.get().collection("users");
+
+    const user = await userCollection.findOne({
+        _id: ObjectId.createFromHexString(userId),
+    });
+    if (!user) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "User that generated token does not exist anymore.",
+        );
+        return;
+    }
+
+    const { friends } = user;
+
+    if (!friends) return [];
+
+    const friendsObjectIds = friends.map((id) =>
+        ObjectId.createFromHexString(id),
+    );
+
+    const result = await userCollection
+        .find({ _id: { $in: friendsObjectIds } })
+        .toArray();
+
+    return result.map((friend) => sanitizeUserInfo(friend));
 }
 
 /**
