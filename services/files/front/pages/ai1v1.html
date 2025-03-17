@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
-        <link href="local1v1.css" rel="stylesheet" />
+        <link href="../styles/ingame.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
             defer
@@ -11,11 +11,13 @@
         <script src="../components/gamegrid/gamegrid.js" defer></script>
     </head>
     <body>
-        <div class="left side">
-            <keyboard-controls keys="E,D,X,W,Q,Z" />
-        </div>
+        <div class="container">
+            <div></div>
 
-        <game-grid></game-grid>
+            <game-grid></game-grid>
+
+            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+        </div>
 
         <script src="../js/constants.js"></script>
         <script src="../js/authutils.js"></script>
