@@ -1,4 +1,15 @@
 const gameGrid = document.querySelector("game-grid");
+const dialog = document.querySelector("app-dialog");
+const dialogReturn = document.querySelector("#dialog-return");
+const dialogPlayAgain = document.querySelector("#dialog-play-again");
+
+dialogReturn.addEventListener("click", () => {
+    location.assign("/");
+});
+
+dialogPlayAgain.addEventListener("click", () => {
+    location.reload();
+});
 
 const directions = [
     "RIGHT",
@@ -17,9 +28,21 @@ socket.on("connect", async () => {
     );
 
     socket.on("gamestate", (payload) => {
-        console.log(payload.result);
         gameGrid.setAttribute("grid", JSON.stringify(payload.board));
-        // drawBoard(ctx, payload.board);
+
+        const gameResult = payload.result;
+        if (gameResult.type === "PLAYER_WIN") {
+            if (gameResult.winner == 1) {
+                dialog.setAttribute("content", "You lost!");
+            } else {
+                dialog.setAttribute("content", "You win!");
+            }
+
+            dialog.setAttribute("show", "yes");
+        } else if (gameResult.type === "DRAW") {
+            dialog.setAttribute("content", "It's a draw!");
+            dialog.setAttribute("show", "yes");
+        }
     });
 
     let gameId = ongoingGamesResp.ongoingGameId;

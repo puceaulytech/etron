@@ -1,10 +1,10 @@
 const gameGrid = document.querySelector("game-grid");
 const dialog = document.querySelector("app-dialog");
-const dialogClose = document.querySelector("#dialog-close");
+const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
 
-dialogClose.addEventListener("click", () => {
-    dialog.removeAttribute("show");
+dialogReturn.addEventListener("click", () => {
+    location.assign("/");
 });
 
 dialogPlayAgain.addEventListener("click", () => {
