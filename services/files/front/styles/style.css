@@ -52,7 +52,7 @@ body {
 }
 
 .main-button-group {
-    margin: 20px;
+    margin: 30px;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -100,6 +100,12 @@ body {
     font-family: inherit;
 }
 
+#play-btn {
+    animation-name: emphasize;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+}
+
 #account-button {
     position: absolute;
     max-width: 120px;
@@ -132,4 +138,13 @@ svg .svg-shit {
     stroke: #020202;
     stroke-miterlimit: 10;
     stroke-width: 1.91px;
+}
+
+@keyframes emphasize {
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
