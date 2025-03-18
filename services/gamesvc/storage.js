@@ -115,11 +115,11 @@ class Storage {
         return this.games.values().find((g) => g.secondPlayer === null);
     }
 
-    findGameByPlayerId(playerId) {
+    findGameByPlayerId(playerId, gameMode) {
         for (const [gameId, gameState] of this.games.entries()) {
-            if (gameState.ai) {
+            if (gameState.ai && gameMode === "ai") {
                 if (gameState.player === playerId) return gameId;
-            } else {
+            } else if (gameMode === "online") {
                 if (
                     gameState.firstPlayer === playerId ||
                     gameState.secondPlayer === playerId

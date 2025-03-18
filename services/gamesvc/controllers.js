@@ -1,6 +1,6 @@
 const storage = require("./storage");
 const jwt = require("jsonwebtoken");
-const { createHandler } = require("../helpers/http");
+const { createHandler, getQueryParams } = require("../helpers/http");
 const { authenticate } = require("../helpers/tokens");
 
 const endpoints = {
@@ -33,7 +33,12 @@ async function playAgainstAI(req, res) {
 
 async function getOngoingGames(req, res) {
     const userId = authenticate(req, res, jwt);
-    let ongoingGameId = storage.findGameByPlayerId(userId);
+    const params = getQueryParams(req);
+    console.log(params);
+    let ongoingGameId = storage.findGameByPlayerId(
+        userId,
+        params.get("gameMode"),
+    );
 
     // Because ongoingGameId is undefined, it doesn't even appear as a JSON key, because JS
     if (!ongoingGameId) ongoingGameId = null;

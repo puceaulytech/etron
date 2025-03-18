@@ -24,10 +24,26 @@ let lastMove;
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
-        "/api/gamesvc/ongoinggames",
+        "/api/gamesvc/ongoinggames?gameMode=ai",
     );
 
+    let gameId = ongoingGamesResp.ongoingGameId;
+
+    if (!ongoingGamesResp.ongoingGameId) {
+        const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
+            method: "POST",
+        });
+
+        if (!body.gameId) throw new Error("No game id in response body");
+
+        socket.emit("ready", { gameId: body.gameId });
+
+        gameId = body.gameId;
+    }
+
     socket.on("gamestate", (payload) => {
+        if (gameId !== payload.gameId) return;
+
         gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
         const gameResult = payload.result;
@@ -45,47 +61,33 @@ socket.on("connect", async () => {
         }
     });
 
-    let gameId = ongoingGamesResp.ongoingGameId;
+    document.addEventListener("mousemove", (event) => {
+        if (!gameGrid.somePlayerPos) return;
 
-    if (!ongoingGamesResp.ongoingGameId) {
-        const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
-            method: "POST",
-        });
+        const vector = {
+            x:
+                -event.clientX +
+                gameGrid.somePlayerPos.x +
+                gameGrid.absoluteOffset.x,
+            y:
+                -event.clientY +
+                gameGrid.somePlayerPos.y +
+                gameGrid.absoluteOffset.y,
+        };
 
-        if (!body.gameId) throw new Error("No game id in response body");
+        let radians = Math.atan2(vector.y, vector.x);
+        let degrees = radians * (180 / Math.PI);
 
-        socket.emit("ready", { gameId: body.gameId });
+        const newMove = getHexDirection(degrees + 180);
 
-        gameId = body.gameId;
-
-        document.addEventListener("mousemove", (event) => {
-            if (!gameGrid.somePlayerPos) return;
-
-            const vector = {
-                x:
-                    -event.clientX +
-                    gameGrid.somePlayerPos.x +
-                    gameGrid.absoluteOffset.x,
-                y:
-                    -event.clientY +
-                    gameGrid.somePlayerPos.y +
-                    gameGrid.absoluteOffset.y,
-            };
-
-            let radians = Math.atan2(vector.y, vector.x);
-            let degrees = radians * (180 / Math.PI);
-
-            const newMove = getHexDirection(degrees + 180);
-
-            if (newMove !== lastMove) {
-                socket.emit("move", {
-                    gameId,
-                    direction: newMove,
-                });
-                lastMove = newMove;
-            }
-        });
-    }
+        if (newMove !== lastMove) {
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
+        }
+    });
 
     document.addEventListener("keydown", (event) => {
         switch (event.key.toLowerCase()) {

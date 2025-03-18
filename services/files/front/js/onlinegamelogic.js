@@ -5,16 +5,8 @@ waitingForOpponent.style.visibility = "visible";
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
-        "/api/gamesvc/ongoinggames",
+        "/api/gamesvc/ongoinggames?gameMode=online",
     );
-
-    socket.on("gamestate", (payload) => {
-        waitingForOpponent.style.visibility = "hidden";
-
-        console.log(payload.result);
-        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
-        // drawBoard(ctx, payload.board);
-    });
 
     let gameId = ongoingGamesResp.ongoingGameId;
 
@@ -29,6 +21,14 @@ socket.on("connect", async () => {
 
         gameId = body.gameId;
     }
+
+    socket.on("gamestate", (payload) => {
+        if (gameId !== payload.gameId) return;
+
+        waitingForOpponent.style.visibility = "hidden";
+
+        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+    });
 
     document.addEventListener("keydown", (event) => {
         switch (event.key.toLowerCase()) {

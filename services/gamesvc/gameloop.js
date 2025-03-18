@@ -58,12 +58,14 @@ function startGameLoop(io) {
                     socket.emit("gamestate", {
                         board: placePlayersInBoard(game.state),
                         result,
+                        gameId: game.id,
                     });
                 }
             } else {
                 io.to(game.id).emit("gamestate", {
                     board: placePlayersInBoard(game.state),
                     result,
+                    gameId: game.id,
                 });
             }
 
