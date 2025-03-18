@@ -33,7 +33,10 @@ async function playAgainstAI(req, res) {
 
 async function getOngoingGames(req, res) {
     const userId = authenticate(req, res, jwt);
-    const ongoingGameId = storage.findGameByPlayerId(userId);
+    let ongoingGameId = storage.findGameByPlayerId(userId);
+
+    // Because ongoingGameId is undefined, it doesn't even appear as a JSON key, because JS
+    if (!ongoingGameId) ongoingGameId = null;
 
     return { ongoingGameId };
 }

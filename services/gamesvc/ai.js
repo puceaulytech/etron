@@ -699,7 +699,7 @@ function nextMoveStateless(gameState) {
         Number.POSITIVE_INFINITY,
     );
 
-    console.log(`move score: ${score}`);
+    // console.log(`move score: ${score}`);
 
     return move;
 }

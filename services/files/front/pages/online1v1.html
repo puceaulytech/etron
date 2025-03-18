@@ -3,6 +3,12 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
         <link href="../styles/ingame.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
@@ -17,6 +23,10 @@
             <game-grid></game-grid>
 
             <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+        </div>
+
+        <div id="waiting-for-opponent" class="blur-overlay">
+            <p>Waiting for opponent...</p>
         </div>
 
         <script src="../js/constants.js"></script>

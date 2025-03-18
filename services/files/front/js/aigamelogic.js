@@ -11,9 +11,11 @@ socket.on("connect", async () => {
         // drawBoard(ctx, payload.board);
     });
 
+    console.log(ongoingGamesResp);
+
     let gameId = ongoingGamesResp.ongoingGameId;
 
-    if (ongoingGamesResp.ongoingGameId === null) {
+    if (!ongoingGamesResp.ongoingGameId) {
         const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
             method: "POST",
         });

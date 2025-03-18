@@ -1,4 +1,7 @@
 const gameGrid = document.querySelector("game-grid");
+const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+
+waitingForOpponent.style.visibility = "visible";
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
@@ -6,6 +9,8 @@ socket.on("connect", async () => {
     );
 
     socket.on("gamestate", (payload) => {
+        waitingForOpponent.style.visibility = "hidden";
+
         console.log(payload.result);
         gameGrid.setAttribute("grid", JSON.stringify(payload.board));
         // drawBoard(ctx, payload.board);

@@ -1,6 +1,9 @@
 const crypto = require("crypto");
 const { GameState } = require("../helpers/gameutils");
 
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
+
 function uuidv4() {
     const bytes = crypto.randomBytes(16);
 
@@ -79,9 +82,17 @@ class Storage {
             .find((g) => g.secondPlayer === null);
 
         if (freeGame) {
+            logger.debug("there is a free game, joining...");
             freeGame.secondPlayer = player;
+
+            logger.debug(
+                `starting game, ${freeGame.firstPlayer} vs ${freeGame.secondPlayer}`,
+            );
+
             return freeGame.id;
         }
+
+        logger.debug("creating new online game");
 
         const id = uuidv4();
         const game = {

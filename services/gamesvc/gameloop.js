@@ -7,7 +7,7 @@ const {
     GameResult,
 } = require("../helpers/gameutils");
 
-const TURN_TIME = 500;
+const TURN_TIME = 2000;
 
 let intervalId;
 

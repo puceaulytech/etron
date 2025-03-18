@@ -1,7 +1,12 @@
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 const storage = require("./storage");
-const { Direction, GameState, OPPONENT } = require("../helpers/gameutils");
+const {
+    Direction,
+    GameState,
+    PLAYER,
+    OPPONENT,
+} = require("../helpers/gameutils");
 const { verifyAccessToken } = require("../helpers/tokens");
 
 function handleWS(httpServer) {
@@ -61,7 +66,7 @@ function handleWS(httpServer) {
                 );
             } else {
                 const currentPlayer =
-                    socket.userId === gameState.firstPlayer ? PLAYER : OPPONENT;
+                    socket.userId === game.firstPlayer ? PLAYER : OPPONENT;
 
                 gameState.setPlayerDirection(
                     currentPlayer,
