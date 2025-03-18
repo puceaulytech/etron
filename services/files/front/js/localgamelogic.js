@@ -9,11 +9,8 @@ for (let i = 0; i < BOARD_HEIGHT; i++)
 
 const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
 const playerOne = new Player(-2, 0, startingPosition);
-const playerTwo = new Player(
-    2,
-    BOARD_WIDTH - 1,
-    BOARD_HEIGHT - startingPosition - 1,
-);
+const playerTwoY = BOARD_HEIGHT - startingPosition - 1;
+const playerTwo = new Player(2, board[playerTwoY].length - 1, playerTwoY);
 
 playerOne.placeInBoard(board);
 playerTwo.placeInBoard(board);
