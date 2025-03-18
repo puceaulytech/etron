@@ -126,7 +126,7 @@ class FriendRequest extends HTMLElement {
 
         this.shadowRoot.querySelector(".reject").onclick = () => {
             this.dispatchEvent(
-                new CustomEvent("reject", {
+                new CustomEvent("rejectFriendRequest", {
                     detail: { userId },
                     bubbles: true,
                     composed: true,
@@ -136,7 +136,7 @@ class FriendRequest extends HTMLElement {
 
         this.shadowRoot.querySelector(".accept").onclick = () => {
             this.dispatchEvent(
-                new CustomEvent("accept", {
+                new CustomEvent("acceptFriendRequest", {
                     detail: { userId },
                     bubbles: true,
                     composed: true,

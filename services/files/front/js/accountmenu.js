@@ -1,3 +1,5 @@
+// TODO: clean this mess?
+
 /**
  * @param {string} message
  */
@@ -187,7 +189,7 @@ async function updateFriendList() {
     })
         .then(async (friends) => {
             if (friends.length === 0) {
-                friendRequests.innerHTML =
+                friendList.innerHTML =
                     "<p>No friends, it happens sometimes</p>";
                 return;
             }
@@ -242,3 +244,25 @@ async function updateAll() {
     ];
     await Promise.all(promises);
 }
+
+document.addEventListener("rejectFriendRequest", (event) => {
+    // TODO: better feedback for UX (pop up?)
+    authenticatedFetch(`/api/social/friendrequests/${event.detail.userId}`, {
+        method: "DELETE",
+    }).then(async () => {
+        await updateFriendRequests();
+    });
+});
+
+document.addEventListener("acceptFriendRequest", (event) => {
+    // TODO: better feedback for UX (pop up?)
+    authenticatedFetch("/api/social/friendrequests", {
+        method: "POST",
+        body: JSON.stringify({
+            newFriendId: event.detail.userId,
+        }),
+    }).then(async () => {
+        await updateFriendRequests();
+        await updateFriendList();
+    });
+});
