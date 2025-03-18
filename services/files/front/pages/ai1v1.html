@@ -3,23 +3,33 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
-        <link href="local1v1.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
+        <link href="../styles/ingame.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
             defer
         ></script>
+        <script src="../components/gamegrid/gamegrid.js" defer></script>
     </head>
     <body>
-        <div class="left side">
-            left
-            <keyboard-controls keys="E,D,X,W,Q,Z" />
+        <div class="container">
+            <div></div>
+
+            <game-grid></game-grid>
+
+            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
         </div>
-        <div id="game"><canvas id="hexmap"></canvas></div>
+
+        <script src="../js/constants.js"></script>
         <script src="../js/authutils.js"></script>
         <script src="../js/socket.io.js"></script>
         <script src="../js/ws.js"></script>
-        <script src="../js/hexgrid.js"></script>
-        <script src="../js/jensaisrienmoivasy.js"></script>
         <script src="../js/gameutils.js"></script>
+        <script src="../js/aigamelogic.js"></script>
     </body>
 </html>

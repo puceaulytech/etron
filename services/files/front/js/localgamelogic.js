@@ -1,28 +1,33 @@
-const ctx = canvas.getContext("2d");
+const gameGrid = document.querySelector("game-grid");
+const dialog = document.querySelector("app-dialog");
+const dialogClose = document.querySelector("#dialog-close");
+const dialogPlayAgain = document.querySelector("#dialog-play-again");
 
-ctx.fillStyle = "#000000";
-ctx.strokeStyle = "#000000";
-ctx.lineWidth = 3;
+dialogClose.addEventListener("click", () => {
+    dialog.removeAttribute("show");
+});
 
-const board = new Array(boardHeight);
+dialogPlayAgain.addEventListener("click", () => {
+    location.reload();
+});
 
-for (let i = 0; i < boardHeight; i++)
-    board[i] = new Array(i % 2 === 0 ? boardWidth : boardWidth - 1).fill(0);
+const board = new Array(BOARD_HEIGHT);
 
-const startingPosition = Math.floor(Math.random() * boardHeight);
+for (let i = 0; i < BOARD_HEIGHT; i++)
+    board[i] = new Array(i % 2 === 0 ? BOARD_WIDTH : BOARD_WIDTH - 1).fill(0);
+
+const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
 const playerOne = new Player(-2, 0, startingPosition);
-const playerTwo = new Player(
-    2,
-    boardWidth - 1,
-    boardHeight - startingPosition - 1,
-);
+const playerTwoY = BOARD_HEIGHT - startingPosition - 1;
+const playerTwo = new Player(2, board[playerTwoY].length - 1, playerTwoY);
 
 playerOne.placeInBoard(board);
 playerTwo.placeInBoard(board);
-drawBoard(ctx, board);
+// FIXME: this makes the canvas bug but commenting this will delay showing the game grid
+// gameGrid.setAttribute("grid", JSON.stringify(board));
 
-let playerOneMove = null;
-let playerTwoMove = null;
+let playerOneMove = "RIGHT";
+let playerTwoMove = "LEFT";
 
 document.addEventListener("keydown", (event) => {
     switch (event.key.toLowerCase()) {
@@ -71,13 +76,21 @@ const intervalId = setInterval(() => {
     console.log("Playing turn...");
     if (playerOneMove) playerOne.move(board, playerOneMove);
     if (playerTwoMove) playerTwo.move(board, playerTwoMove);
-    drawBoard(ctx, board);
+    gameGrid.setAttribute("grid", JSON.stringify(board));
 
-    if (gameDone(board)) {
+    const winner = getWinner(board);
+
+    if (winner) {
         clearInterval(intervalId);
-        alert("Game over!");
-    }
 
-    playerOneMove = null;
-    playerTwoMove = null;
+        let playerName;
+        if (winner === -2) {
+            playerName = "1";
+        } else {
+            playerName = "2";
+        }
+
+        dialog.setAttribute("content", `Player ${playerName} won!`);
+        dialog.setAttribute("show", "yes");
+    }
 }, 500);

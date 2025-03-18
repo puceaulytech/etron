@@ -1,6 +1,9 @@
 const crypto = require("crypto");
 const { GameState } = require("../helpers/gameutils");
 
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
+
 function uuidv4() {
     const bytes = crypto.randomBytes(16);
 
@@ -61,6 +64,7 @@ class Storage {
         const id = uuidv4();
         const game = {
             id,
+            ai: true,
             player: playerId,
             state: GameState.randomPositions(),
             lastTurnTime: Date.now(),
@@ -72,12 +76,59 @@ class Storage {
         return id;
     }
 
-    findGameByPlayerId(playerId) {
-        for (const [gameId, gameState] of this.games.entries()) {
-            if (gameState.player === playerId) return gameId;
+    createOrJoinGame(player) {
+        const freeGame = this.games
+            .values()
+            .find((g) => g.secondPlayer === null);
+
+        if (freeGame) {
+            logger.debug("there is a free game, joining...");
+            freeGame.secondPlayer = player;
+
+            logger.debug(
+                `starting game, ${freeGame.firstPlayer} vs ${freeGame.secondPlayer}`,
+            );
+
+            return freeGame.id;
         }
 
-        return null;
+        logger.debug("creating new online game");
+
+        const id = uuidv4();
+        const game = {
+            id,
+            ai: false,
+            state: GameState.randomPositions(),
+            lastTurnTime: Date.now(),
+            firstPlayer: player,
+            secondPlayer: null,
+            firstReady: false,
+            secondReady: false,
+        };
+
+        this.games.set(id, game);
+
+        return id;
+    }
+
+    findGameInMatchmaking() {
+        return this.games.values().find((g) => g.secondPlayer === null);
+    }
+
+    findGameByPlayerId(playerId) {
+        for (const [gameId, gameState] of this.games.entries()) {
+            if (gameState.ai) {
+                if (gameState.player === playerId) return gameId;
+            } else {
+                if (
+                    gameState.firstPlayer === playerId ||
+                    gameState.secondPlayer === playerId
+                )
+                    return gameId;
+            }
+
+            return null;
+        }
     }
 }
 

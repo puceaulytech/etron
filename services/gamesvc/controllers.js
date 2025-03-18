@@ -10,7 +10,18 @@ const endpoints = {
     playagainstai: {
         POST: playAgainstAI,
     },
+    play: {
+        POST: play,
+    },
 };
+
+async function play(req, res) {
+    const userId = authenticate(req, res, jwt);
+
+    const gameId = storage.createOrJoinGame(userId);
+
+    return { gameId };
+}
 
 async function playAgainstAI(req, res) {
     const userId = authenticate(req, res, jwt);
@@ -22,7 +33,10 @@ async function playAgainstAI(req, res) {
 
 async function getOngoingGames(req, res) {
     const userId = authenticate(req, res, jwt);
-    const ongoingGameId = storage.findGameByPlayerId(userId);
+    let ongoingGameId = storage.findGameByPlayerId(userId);
+
+    // Because ongoingGameId is undefined, it doesn't even appear as a JSON key, because JS
+    if (!ongoingGameId) ongoingGameId = null;
 
     return { ongoingGameId };
 }

@@ -1,8 +1,7 @@
-const ctx = canvas.getContext("2d");
+const gameGrid = document.querySelector("game-grid");
+const waitingForOpponent = document.querySelector("#waiting-for-opponent");
 
-ctx.fillStyle = "#000000";
-ctx.strokeStyle = "#000000";
-ctx.lineWidth = 3;
+waitingForOpponent.style.visibility = "visible";
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
@@ -10,14 +9,17 @@ socket.on("connect", async () => {
     );
 
     socket.on("gamestate", (payload) => {
+        waitingForOpponent.style.visibility = "hidden";
+
         console.log(payload.result);
-        drawBoard(ctx, payload.board);
+        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+        // drawBoard(ctx, payload.board);
     });
 
     let gameId = ongoingGamesResp.ongoingGameId;
 
     if (ongoingGamesResp.ongoingGameId === null) {
-        const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
+        const body = await authenticatedFetch("/api/gamesvc/play", {
             method: "POST",
         });
 

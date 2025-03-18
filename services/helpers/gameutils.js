@@ -303,9 +303,10 @@ class GameState {
     static randomPositions() {
         const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
         const leftPlayer = new Position(0, startingPosition);
+        const rightPlayerY = BOARD_HEIGHT - startingPosition - 1;
         const rightPlayer = new Position(
-            BOARD_WIDTH - 1,
-            BOARD_HEIGHT - startingPosition - 1,
+            startingPosition % 2 === 0 ? BOARD_WIDTH - 1 : BOARD_WIDTH - 2,
+            rightPlayerY,
         );
         return new GameState(leftPlayer, rightPlayer);
     }

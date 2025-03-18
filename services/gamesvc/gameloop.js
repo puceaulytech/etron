@@ -7,7 +7,7 @@ const {
     GameResult,
 } = require("../helpers/gameutils");
 
-const TURN_TIME = 500;
+const TURN_TIME = 2000;
 
 let intervalId;
 
@@ -26,23 +26,42 @@ function startGameLoop(io) {
     intervalId = setInterval(() => {
         const finishedGames = [];
         for (const game of storage.games.values()) {
-            if (!game.ready) continue;
+            if (game.ai) {
+                if (!game.ready) continue;
+            } else {
+                if (!game.firstReady || !game.secondReady) continue;
+            }
+
             if (Date.now() - game.lastTurnTime <= TURN_TIME) continue;
 
-            // TODO: move this somewhere else so that it doesn't use game time to think?
-            const aiMove = stateless.nextMove(game.state);
-            game.state.moveTo(PLAYER, aiMove);
-            game.state.move(OPPONENT);
+            if (game.ai) {
+                // TODO: move this somewhere else so that it doesn't use game time to think?
+                const aiMove = stateless.nextMove(game.state);
+                game.state.move(PLAYER, aiMove);
+                game.state.move(OPPONENT);
+            } else {
+                game.state.move(PLAYER);
+                game.state.move(OPPONENT);
+            }
 
             /** @type {GameResult} */
             const result = game.state.gameResult();
             if (!result.isUnfinished()) finishedGames.push(game.id);
 
-            const socketId = storage.getClientSocketId(game.player);
+            if (game.ai) {
+                // If it's an AI game, directly send the game state to the player
 
-            if (socketId) {
-                const socket = io.sockets.sockets.get(socketId);
-                socket.emit("gamestate", {
+                const socketId = storage.getClientSocketId(game.player);
+
+                if (socketId) {
+                    const socket = io.sockets.sockets.get(socketId);
+                    socket.emit("gamestate", {
+                        board: placePlayersInBoard(game.state),
+                        result,
+                    });
+                }
+            } else {
+                io.to(game.id).emit("gamestate", {
                     board: placePlayersInBoard(game.state),
                     result,
                 });
