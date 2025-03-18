@@ -7,6 +7,7 @@ const {
     createHandler,
     sendError,
     getQueryParams,
+    getLastSegment,
 } = require("../helpers/http");
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
@@ -15,11 +16,12 @@ const { sanitizeUserInfo } = require("../helpers/sanitizer");
 const endpoints = {
     friendrequests: {
         GET: getFriendRequests,
-        POST: addFriend,
+        POST: acceptFriend,
+        DELETE: deleteFriendRequest,
     },
     friends: {
         GET: getFriends,
-        POST: acceptFriend,
+        POST: addFriend,
     },
     users: {
         GET: findUser,
@@ -298,6 +300,52 @@ async function acceptFriend(req, res) {
     );
 
     return { still: "ok bro" };
+}
+
+/**
+ * Decline a pending friend request
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
+async function deleteFriendRequest(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
+    const userCollection = pool.get().collection("users");
+
+    const user = await userCollection.findOne({
+        _id: ObjectId.createFromHexString(userId),
+    });
+    if (!user) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "User that generated token does not exist anymore.",
+        );
+        return;
+    }
+
+    const friendRequestId = getLastSegment(req);
+
+    const { friendRequests } = user;
+    if (!friendRequests || !friendRequests.includes(friendRequestId)) {
+        sendError(
+            res,
+            400,
+            "E_NOT_IN_FRIEND_REQUESTS",
+            "Tried to accept a non-existing friend request.",
+        );
+        return;
+    }
+
+    await userCollection.updateOne(
+        { _id: ObjectId.createFromHexString(userId) },
+        { $pull: { friendRequests: friendRequestId } },
+    );
+
+    return { message: "Friend request deleted" };
 }
 
 module.exports = createHandler(endpoints, (res) => {

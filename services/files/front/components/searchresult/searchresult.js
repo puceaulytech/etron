@@ -81,7 +81,7 @@ class SearchResult extends HTMLElement {
 
     #onAddFriend() {
         const userId = this.getAttribute("user-id");
-        authenticatedFetch("/api/social/friendrequests", {
+        authenticatedFetch("/api/social/friends", {
             method: "POST",
             body: JSON.stringify({ newFriendId: userId }),
         }).then((res) => {

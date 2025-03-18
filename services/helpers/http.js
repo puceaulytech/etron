@@ -13,6 +13,16 @@ function getQueryParams(req) {
 }
 
 /**
+ * Extract query params from request path
+ *
+ * @param {http.ClientRequest} req
+ * @returns {URLSearchParams} The query params
+ */
+function getLastSegment(req) {
+    return req.url.split("/").at(-1);
+}
+
+/**
  * Sends an error to the client
  *
  * @param {http.ServerResponse} res
@@ -177,4 +187,5 @@ module.exports = {
     createHandler,
     sendError,
     getQueryParams,
+    getLastSegment,
 };
