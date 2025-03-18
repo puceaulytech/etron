@@ -11,8 +11,13 @@ class GameGrid extends HTMLElement {
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
-        this.wrappingDiv.style.height = "100%";
-        this.wrappingDiv.style.width = "100%";
+        this.wrappingDiv.style = `
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        `;
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "hexmap";
@@ -42,17 +47,6 @@ class GameGrid extends HTMLElement {
 
     resizeCanvas() {
         this.canvas.width = this.canvas.parentElement.clientWidth;
-        this.canvas.height = this.canvas.parentElement.clientHeight;
-
-        if (this.hasAttribute("grid")) this.redrawGrid();
-    }
-
-    connectedCallback() {
-        this.resizeCanvas();
-        // FIXME
-        // window.addEventListener("resize", () => this.resizeCanvas(), false);
-
-        console.log(this.canvas.width, this.canvas.height);
 
         this.hexagonAngle = 0.523598776;
         this.sideLength = (this.canvas.width - 40) / (2 * 0.866 * BOARD_WIDTH);
@@ -62,9 +56,16 @@ class GameGrid extends HTMLElement {
         this.hexRectangleHeight = this.sideLength + 2 * this.hexHeight;
         this.hexRectangleWidth = 2 * this.hexRadius;
 
-        if (this.hasAttribute("grid")) {
-            this.redrawGrid();
-        }
+        this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
+
+        if (this.hasAttribute("grid")) this.redrawGrid();
+    }
+
+    connectedCallback() {
+        this.resizeCanvas();
+        window.addEventListener("resize", () => this.resizeCanvas(), false);
+
+        if (this.hasAttribute("grid")) this.redrawGrid();
     }
 
     redrawGrid() {
