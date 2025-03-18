@@ -12,11 +12,17 @@ function displayLoginFormError(message) {
 const menu = document.querySelector("#account-menu");
 const button = document.querySelector("#account-button");
 let isToggled = false;
+let accountMenuSkipNext = false;
 
 /**
  * @param {PointerEvent} event
  */
 function clickOutsideOfMenu(event) {
+    if (accountMenuSkipNext) {
+        accountMenuSkipNext = false;
+        return;
+    }
+
     if (!menu.contains(event.target) && !button.contains(event.target))
         toggleMenu();
 }

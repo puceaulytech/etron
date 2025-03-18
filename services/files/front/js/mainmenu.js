@@ -5,11 +5,23 @@ const quitButton = document.getElementById("quit-btn");
 playButton.addEventListener("click", () => {
     let url;
 
+    const isLoggedIn = localStorage.getItem("accessToken") !== null;
+
     switch (gameModeSelect.value) {
         case "online":
+            if (!isLoggedIn) {
+                accountMenuSkipNext = true;
+                toggleMenu();
+                return;
+            }
             url = "pages/online1v1.html";
             break;
         case "ai":
+            if (!isLoggedIn) {
+                accountMenuSkipNext = true;
+                toggleMenu();
+                return;
+            }
             url = "pages/ai1v1.html";
             break;
         case "local":
