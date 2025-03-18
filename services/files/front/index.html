@@ -12,6 +12,7 @@
             rel="stylesheet"
         />
 
+        <link href="styles/common.css" rel="stylesheet" />
         <link href="styles/style.css" rel="stylesheet" />
         <link href="styles/accountmenu.css" rel="stylesheet" />
 
@@ -25,20 +26,20 @@
     <body>
         <h2 id="main-title">eTron</h2>
 
-        <div class="main-button-group">
+        <div class="app-button-group">
             <div id="game-mode-layout">
                 <label for="gamemode">Game mode :</label>
 
-                <select id="game-mode" name="gamemode" class="select">
+                <select id="game-mode" name="gamemode" class="app-select">
                     <option value="online">Online</option>
                     <option value="ai">AI</option>
                     <option value="local">Local</option>
                 </select>
             </div>
 
-            <button id="play-btn" class="menu-button big-button">Play</button>
-            <button class="menu-button big-button">Settings</button>
-            <button id="quit-btn" class="menu-button big-button">Quit</button>
+            <button id="play-btn" class="app-button big-button">Play</button>
+            <button class="app-button big-button">Settings</button>
+            <button id="quit-btn" class="app-button big-button">Quit</button>
         </div>
 
         <!-- The divs bellow aren't part of the layout -->
@@ -67,7 +68,7 @@
                     <h1>Welcome to your account</h1>
                     <p id="player-name">PLAYER</p>
                     <p>Here you can manage your account details.</p>
-                    <p class="menu-button" onclick="logOut()">Log out</p>
+                    <p class="app-button" onclick="logOut()">Log out</p>
                 </div>
                 <div class="content-section" id="friends-section">
                     <h1>Friends</h1>
@@ -109,14 +110,10 @@
                             placeholder="Password"
                             required
                         />
-                        <input
-                            type="submit"
-                            value="Login"
-                            class="menu-button"
-                        />
+                        <input type="submit" value="Login" class="app-button" />
                     </form>
                     <p>or</p>
-                    <button class="menu-button" onclick="registerUser()">
+                    <button class="app-button" onclick="registerUser()">
                         Create an account
                     </button>
                 </div>

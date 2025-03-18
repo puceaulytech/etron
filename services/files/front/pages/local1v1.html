@@ -9,12 +9,14 @@
             href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
             rel="stylesheet"
         />
+        <link href="../styles/common.css" rel="stylesheet" />
         <link href="../styles/ingame.css" rel="stylesheet" />
         <script
             src="../components/keyboardcontrols/keyboardcontrols.js"
             defer
         ></script>
         <script src="../components/gamegrid/gamegrid.js" defer></script>
+        <script src="../components/dialog/dialog.js" defer></script>
     </head>
     <body>
         <div class="container">
@@ -24,6 +26,13 @@
 
             <keyboard-controls keys="P,M,/,;,K,O"></keyboard-controls>
         </div>
+
+        <app-dialog content="That's a game over!">
+            <div slot="buttons" style="display: contents">
+                <button class="app-button">Close</button>
+                <button class="app-button">Play again</button>
+            </div>
+        </app-dialog>
 
         <script src="../js/constants.js"></script>
         <script src="../js/socket.io.js"></script>
