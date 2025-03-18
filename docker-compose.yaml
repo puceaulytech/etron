@@ -20,6 +20,7 @@ services:
       GAMESVC_ADDR: "gamesvc:8002"
       FILES_ADDR: "files:8001"
       AUTH_ADDR: "auth:8003"
+      SOCIAL_ADDR: "social:8004"
     ports:
         - "8000:8000"
 
@@ -36,6 +37,15 @@ services:
   auth:
     build: .
     command: auth
+    restart: always
+    environment:
+      DB_USER: "ps8"
+      DB_PASSWORD: "734741ec1209b29040ac"
+      DB_URL: "database"
+
+  social:
+    build: .
+    command: social
     restart: always
     environment:
       DB_USER: "ps8"

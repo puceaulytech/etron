@@ -15,6 +15,9 @@
         <link href="styles/style.css" rel="stylesheet" />
         <link href="styles/accountmenu.css" rel="stylesheet" />
         <script src="js/authutils.js"></script>
+        <script src="components/frienditem/frienditem.js"></script>
+        <script src="components/searchresult/searchresult.js"></script>
+        <script src="components/friendrequest/friendrequest.js"></script>
         <script src="js/mainmenu.js" defer></script>
         <script src="js/accountmenu.js" defer></script>
     </head>
@@ -67,14 +70,27 @@
                 </div>
                 <div class="content-section" id="friends-section">
                     <h1>Friends</h1>
-                    <p>Here is the list of your friends.</p>
+                    <div id="friend-list" style="width: 100%"></div>
+                    <div id="search-container">
+                        <input
+                            type="text"
+                            name="username"
+                            class="text-input"
+                            placeholder="Username"
+                            oninput="userSearchInput()"
+                        />
+                        <div id="search-button">
+                            <img src="assets/search-icon.svg" />
+                        </div>
+                    </div>
+                    <div id="search-results"></div>
                 </div>
                 <div class="content-section" id="requests-section">
                     <h1>Friend Requests</h1>
-                    <p>Here you can see your friend requests.</p>
+                    <div style="width: 75%"></div>
                 </div>
                 <!-- It is very important for the login section to be last-->
-                <div class="content-section active" id="login-section">
+                <div class="content-section" id="login-section">
                     <h1>Login to play</h1>
                     <div id="form-error"><span></span></div>
                     <form class="login-form" onsubmit="submitLogin(event)">

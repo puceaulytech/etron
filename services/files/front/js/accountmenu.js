@@ -1,3 +1,5 @@
+// TODO: clean this mess?
+
 /**
  * @param {string} message
  */
@@ -83,7 +85,7 @@ async function updateAccountInfo() {
 currentSection = sectionBindings.keys().next().value;
 if (localStorage.getItem("accessToken")) {
     loginSection.classList.remove("active");
-    updateAccountInfo(); // async call with no await?
+    updateAll(); // async call with no await?
 }
 
 selectNewSection(currentSection);
@@ -121,7 +123,7 @@ async function submitLogin(event) {
         localStorage.setItem("refreshToken", tokens.refreshToken);
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
-        await updateAccountInfo();
+        await updateAll();
     });
 }
 
@@ -153,3 +155,114 @@ function logOut() {
     sectionBindings.get(currentSection).classList.remove("active");
     loginSection.classList.add("active");
 }
+
+const usernameInput = document.querySelector("#search-container input");
+const searchResultsContainer = document.querySelector("#search-results");
+
+function userSearchInput() {
+    const input = usernameInput.value;
+    if (input.length < 3) return;
+
+    // Harmful injection possible?
+    fetch(`/api/social/users?username=${input}`, {
+        method: "GET",
+    }).then(async (res) => {
+        if (!res.ok) return;
+
+        const users = await res.json();
+        searchResultsContainer.replaceChildren(
+            ...users.map((user) => {
+                const elem = new SearchResult();
+                elem.setAttribute("user-id", user._id);
+                elem.setAttribute("username", user.username);
+                return elem;
+            }),
+        );
+    });
+}
+
+const friendList = document.querySelector("#friend-list");
+
+async function updateFriendList() {
+    authenticatedFetch("/api/social/friends", {
+        method: "GET",
+    })
+        .then(async (friends) => {
+            if (friends.length === 0) {
+                friendList.innerHTML =
+                    "<p>No friends, it happens sometimes</p>";
+                return;
+            }
+
+            friendList.replaceChildren(
+                ...friends.map((user) => {
+                    const elem = new FriendItem();
+                    elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("username", user.username);
+                    return elem;
+                }),
+            );
+        })
+        .catch(() => {
+            friendList.innerHTML = "<p>Error while fetching friend list!</p>";
+        });
+}
+
+const friendRequests = document.querySelector("#requests-section div");
+
+async function updateFriendRequests() {
+    authenticatedFetch("/api/social/friendrequests", {
+        method: "GET",
+    })
+        .then(async (users) => {
+            if (users.length === 0) {
+                friendRequests.innerHTML =
+                    "<p>No friend requests, try having some Curly's</p>";
+                return;
+            }
+
+            friendRequests.replaceChildren(
+                ...users.map((user) => {
+                    const elem = new FriendRequest();
+                    elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("username", user.username);
+                    return elem;
+                }),
+            );
+        })
+        .catch(() => {
+            friendRequests.innerHTML =
+                "<p>Error while fetching friend requests!</p>";
+        });
+}
+
+async function updateAll() {
+    const promises = [
+        updateAccountInfo(),
+        updateFriendList(),
+        updateFriendRequests(),
+    ];
+    await Promise.all(promises);
+}
+
+document.addEventListener("rejectFriendRequest", (event) => {
+    // TODO: better feedback for UX (pop up?)
+    authenticatedFetch(`/api/social/friendrequests/${event.detail.userId}`, {
+        method: "DELETE",
+    }).then(async () => {
+        await updateFriendRequests();
+    });
+});
+
+document.addEventListener("acceptFriendRequest", (event) => {
+    // TODO: better feedback for UX (pop up?)
+    authenticatedFetch("/api/social/friendrequests", {
+        method: "POST",
+        body: JSON.stringify({
+            newFriendId: event.detail.userId,
+        }),
+    }).then(async () => {
+        await updateFriendRequests();
+        await updateFriendList();
+    });
+});
