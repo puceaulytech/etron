@@ -37,6 +37,7 @@ class SearchResult extends HTMLElement {
                     border-radius: 4px;
                     cursor: pointer;
                     transition: background-color 0.3s ease;
+                    font-family: inherit;
                 }
                 .add-friend-btn:hover {
                     background-color: #45a049;
