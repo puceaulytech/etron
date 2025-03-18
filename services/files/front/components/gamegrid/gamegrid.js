@@ -33,6 +33,8 @@ class GameGrid extends HTMLElement {
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.append(this.wrappingDiv);
+
+        this.somePlayerArrayPos = { x: -69, y: -69 };
     }
 
     static get observedAttributes() {
@@ -57,6 +59,10 @@ class GameGrid extends HTMLElement {
         this.hexRectangleWidth = 2 * this.hexRadius;
 
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
+        this.absoluteOffset = {
+            x: this.canvas.offsetLeft,
+            y: this.canvas.offsetTop,
+        };
 
         if (this.hasAttribute("grid")) this.redrawGrid();
     }
@@ -99,6 +105,7 @@ class GameGrid extends HTMLElement {
                 let image;
                 switch (board[i][j]) {
                     case -2:
+                        this.somePlayerArrayPos = { x: j, y: i };
                     case 2:
                         image = this.donkeyImg;
                         break;
@@ -114,19 +121,30 @@ class GameGrid extends HTMLElement {
 
     drawHexagon(x, y, filling, img) {
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
-        x = x * this.hexRectangleWidth + xStart + this.offset;
-        y = y * (this.sideLength + this.hexHeight) + this.offset;
+        const newX = x * this.hexRectangleWidth + xStart + this.offset;
+        const newY = y * (this.sideLength + this.hexHeight) + this.offset;
+
+        if (
+            this.somePlayerArrayPos.x === x &&
+            this.somePlayerArrayPos.y === y &&
+            img === this.donkeyImg
+        ) {
+            this.somePlayerPos = {
+                x: newX + this.hexRadius,
+                y: newY + this.hexRadius,
+            };
+        }
 
         this.ctx.beginPath();
-        this.ctx.moveTo(x + this.hexRadius, y);
-        this.ctx.lineTo(x + this.hexRectangleWidth, y + this.hexHeight);
+        this.ctx.moveTo(newX + this.hexRadius, newY);
+        this.ctx.lineTo(newX + this.hexRectangleWidth, newY + this.hexHeight);
         this.ctx.lineTo(
-            x + this.hexRectangleWidth,
-            y + this.hexHeight + this.sideLength,
+            newX + this.hexRectangleWidth,
+            newY + this.hexHeight + this.sideLength,
         );
-        this.ctx.lineTo(x + this.hexRadius, y + this.hexRectangleHeight);
-        this.ctx.lineTo(x, y + this.sideLength + this.hexHeight);
-        this.ctx.lineTo(x, y + this.hexHeight);
+        this.ctx.lineTo(newX + this.hexRadius, newY + this.hexRectangleHeight);
+        this.ctx.lineTo(newX, newY + this.sideLength + this.hexHeight);
+        this.ctx.lineTo(newX, newY + this.hexHeight);
         this.ctx.closePath();
 
         if (filling) {
@@ -138,8 +156,8 @@ class GameGrid extends HTMLElement {
         if (img) {
             this.ctx.drawImage(
                 img,
-                x,
-                y,
+                newX,
+                newY,
                 this.hexRectangleWidth,
                 this.hexRectangleHeight,
             );
