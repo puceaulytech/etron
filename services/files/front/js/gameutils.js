@@ -7,6 +7,18 @@ function gameDone(board) {
     return !(flatBoard.includes(-2) && flatBoard.includes(2));
 }
 
+function getWinner(board) {
+    const flatBoard = board.flat();
+
+    const firstPlayerExists = flatBoard.includes(2);
+    const secondPlayerExists = flatBoard.includes(-2);
+
+    if (!firstPlayerExists) return -2;
+    if (!secondPlayerExists) return 2;
+
+    return null;
+}
+
 class Player {
     constructor(id, x = 0, y = 0) {
         this.id = id;

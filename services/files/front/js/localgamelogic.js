@@ -78,10 +78,19 @@ const intervalId = setInterval(() => {
     if (playerTwoMove) playerTwo.move(board, playerTwoMove);
     gameGrid.setAttribute("grid", JSON.stringify(board));
 
-    if (gameDone(board)) {
+    const winner = getWinner(board);
+
+    if (winner) {
         clearInterval(intervalId);
 
-        dialog.setAttribute("content", "Player x won!");
+        let playerName;
+        if (winner === -2) {
+            playerName = "1";
+        } else {
+            playerName = "2";
+        }
+
+        dialog.setAttribute("content", `Player ${playerName} won!`);
         dialog.setAttribute("show", "yes");
     }
 }, 500);
