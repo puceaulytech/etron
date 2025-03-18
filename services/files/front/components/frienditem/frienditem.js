@@ -19,16 +19,25 @@ class FriendItem extends HTMLElement {
             justify-content: space-around;
             gap: 20px;
         `;
+        const imageSize = 30;
         const fightButton = document.createElement("div");
         const chatButton = document.createElement("div");
         const buttonStyle = `
-            width: 20px;
-            height: 20px;
-            background-color: red;
+            width: ${imageSize}px;
+            height: ${imageSize}px;
         `;
         fightButton.style = buttonStyle;
         chatButton.style = buttonStyle;
 
+        const fightIcon = new Image(imageSize, imageSize);
+        fightIcon.src = "../../assets/fight-icon.svg";
+        fightIcon.alt = "Fight icon";
+        const chatIcon = new Image(imageSize, imageSize);
+        chatIcon.src = "../../assets/chat-icon.svg";
+        chatIcon.alt = "Chat icon";
+
+        fightButton.appendChild(fightIcon);
+        chatButton.appendChild(chatIcon);
         buttonContainer.appendChild(fightButton);
         buttonContainer.appendChild(chatButton);
         container.appendChild(buttonContainer);
