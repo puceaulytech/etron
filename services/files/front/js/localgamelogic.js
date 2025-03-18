@@ -1,6 +1,15 @@
 const gameGrid = document.querySelector("game-grid");
+const dialog = document.querySelector("app-dialog");
+const dialogClose = document.querySelector("#dialog-close");
+const dialogPlayAgain = document.querySelector("#dialog-play-again");
 
-console.log(gameGrid);
+dialogClose.addEventListener("click", () => {
+    dialog.removeAttribute("show");
+});
+
+dialogPlayAgain.addEventListener("click", () => {
+    location.reload();
+});
 
 const board = new Array(BOARD_HEIGHT);
 
@@ -71,6 +80,8 @@ const intervalId = setInterval(() => {
 
     if (gameDone(board)) {
         clearInterval(intervalId);
-        alert("Game over!");
+
+        dialog.setAttribute("content", "Player x won!");
+        dialog.setAttribute("show", "yes");
     }
 }, 500);

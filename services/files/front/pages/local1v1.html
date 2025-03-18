@@ -27,10 +27,12 @@
             <keyboard-controls keys="P,M,/,;,K,O"></keyboard-controls>
         </div>
 
-        <app-dialog content="That's a game over!">
+        <app-dialog>
             <div slot="buttons" style="display: contents">
-                <button class="app-button">Close</button>
-                <button class="app-button">Play again</button>
+                <button id="dialog-close" class="app-button">Close</button>
+                <button id="dialog-play-again" class="app-button">
+                    Play again
+                </button>
             </div>
         </app-dialog>
 
