@@ -7,12 +7,13 @@ class FriendItem extends HTMLElement {
         const container = document.createElement("div");
         container.classList.add("container");
         container.style = `
+            
         `;
 
         this.onlineMarker = document.createElement("div");
         this.onlineMarker.style = `
-            width: 10px;
-            height: 10px;
+            min-width: 10px;
+            min-height: 10px;
             background-color: red;
             border-radius: 50%;
         `;
@@ -20,6 +21,10 @@ class FriendItem extends HTMLElement {
 
         this.#usernameText = document.createElement("div");
         container.appendChild(this.#usernameText);
+
+        this.spacer = document.createElement("div");
+        this.spacer.style.width = "100%";
+        container.appendChild(this.spacer);
 
         const buttonContainer = document.createElement("div");
         buttonContainer.style = `
@@ -68,6 +73,7 @@ class FriendItem extends HTMLElement {
                     margin: 0 20px 0 20px;
                     border-bottom: 1px solid black;
                     font-size: 22px;
+                    gap: 20px;
                 }
                 .container:hover {
                     background-color: rgba(0, 0, 0, 0.2);
