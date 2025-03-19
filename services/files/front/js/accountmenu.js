@@ -186,6 +186,7 @@ function logOut() {
     localStorage.clear();
     sectionBindings.get(currentSection).classList.remove("active");
     loginSection.classList.add("active");
+    socket.disconnect();
 }
 
 const usernameInput = document.querySelector("#search-container input");
