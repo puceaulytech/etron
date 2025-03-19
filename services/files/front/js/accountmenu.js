@@ -169,14 +169,22 @@ async function registerUser() {
     const passwordInput = document.querySelector(
         "form.login-form input[name='password']",
     );
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+    if (username === "" || password === "") {
+        displayLoginFormError(emptyFieldErrorMsg);
+        return;
+    }
+
     await fetch("/api/auth/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            username: usernameInput.value,
-            password: passwordInput.value,
+            username,
+            password,
         }),
     }).then(async (response) => {
         if (!response.ok) {
