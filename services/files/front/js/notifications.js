@@ -11,6 +11,12 @@ function showNotification(notification) {
 
         content = `${targetUsername} wants to be your friend!`;
         updateFriendRequests();
+    } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
+        const targetUsername = notification.friendRequest.targetUsername;
+
+        content = `${targetUsername} accepted your friend request!`;
+        updateFriendRequests();
+        updateFriendList();
     }
 
     const notif = document.createElement("notification-card");

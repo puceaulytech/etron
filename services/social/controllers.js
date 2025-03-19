@@ -264,11 +264,12 @@ async function acceptFriend(req, res) {
     if (!userId) return;
 
     const userCollection = pool.get().collection("users");
+    const notifCollection = pool.get().collection("notifications");
 
-    const user = await userCollection.findOne({
+    const currentUser = await userCollection.findOne({
         _id: ObjectId.createFromHexString(userId),
     });
-    if (!user) {
+    if (!currentUser) {
         sendError(
             res,
             401,
@@ -289,7 +290,7 @@ async function acceptFriend(req, res) {
         return;
     }
 
-    const { friendRequests } = user;
+    const { friendRequests } = currentUser;
     if (!friendRequests || !friendRequests.includes(payload.newFriendId)) {
         sendError(
             res,
@@ -311,6 +312,15 @@ async function acceptFriend(req, res) {
             $pull: { friendRequests: payload.newFriendId },
         },
     );
+
+    await notifCollection.insertOne({
+        recipient: ObjectId.createFromHexString(payload.newFriendId),
+        type: "FRIEND_REQUEST_ACCEPTED",
+        shouldDisplay: true,
+        friendRequestAccepted: {
+            targetUsername: currentUser.username,
+        },
+    });
 
     return { still: "ok bro" };
 }
