@@ -1,4 +1,4 @@
-const NOTIF_TIMEOUT_S = 500;
+const NOTIF_TIMEOUT_S = 5;
 
 const notifQueue = [];
 
