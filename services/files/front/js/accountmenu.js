@@ -9,8 +9,8 @@ function displayLoginFormError(message) {
     messageDiv.classList.add("active");
 }
 
-const menu = document.querySelector("#account-menu");
-const button = document.querySelector("#account-button");
+const accountMenu = document.querySelector("#account-menu");
+const accountButton = document.querySelector("#account-button");
 let isToggled = false;
 let accountMenuSkipNext = false;
 
@@ -23,18 +23,21 @@ function clickOutsideOfMenu(event) {
         return;
     }
 
-    if (!menu.contains(event.target) && !button.contains(event.target))
+    if (
+        !accountMenu.contains(event.target) &&
+        !accountButton.contains(event.target)
+    )
         toggleMenu();
 }
 
 function toggleMenu() {
-    menu.classList.toggle("visible");
+    accountMenu.classList.toggle("visible");
     isToggled = !isToggled;
     if (isToggled) document.addEventListener("click", clickOutsideOfMenu);
     else document.removeEventListener("click", clickOutsideOfMenu);
 }
 
-button.addEventListener("click", toggleMenu);
+accountButton.addEventListener("click", toggleMenu);
 
 /** @type {Map<HTMLDivElement, HTMLDivElement>} */
 const sectionBindings = new Map();

@@ -1,4 +1,5 @@
 const http = require("http");
+const pool = require("../helpers/db");
 const { startGameLoop } = require("./gameloop");
 
 const { Logger } = require("../helpers/logger");
@@ -8,6 +9,9 @@ const handleRequest = require("./controllers");
 const handleWS = require("./ws");
 
 const PORT = 8002;
+
+const dbUrl = process.env["DB_URL"] ?? "127.0.0.1";
+pool.setup(require("mongodb"), `mongodb://${dbUrl}`, "ps8");
 
 const server = http.createServer((req, res) => {
     try {

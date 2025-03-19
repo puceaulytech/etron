@@ -8,9 +8,30 @@ const {
     OPPONENT,
 } = require("../helpers/gameutils");
 const { verifyAccessToken } = require("../helpers/tokens");
+const ObjectId = require("mongodb").ObjectId;
+const pool = require("../helpers/db");
 
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
+
+    const notifCollection = pool.get().collection("notifications");
+    const changeStream = notifCollection.watch();
+
+    changeStream.on("change", (change) => {
+        if (change.operationType === "insert") {
+            const notification = change.fullDocument;
+
+            const socketId = storage.getClientSocketId(
+                notification.recipient.toString(),
+            );
+
+            if (socketId) {
+                const socket = io.sockets.sockets.get(socketId);
+
+                socket.emit("notification", notification);
+            }
+        }
+    });
 
     io.use((socket, next) => {
         const accessToken = socket.handshake.auth.accessToken;

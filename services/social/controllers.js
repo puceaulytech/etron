@@ -117,11 +117,12 @@ async function addFriend(req, res) {
     if (!userId) return;
 
     const userCollection = pool.get().collection("users");
+    const notifCollection = pool.get().collection("notifications");
 
-    const user = await userCollection.findOne({
+    const currentUser = await userCollection.findOne({
         _id: ObjectId.createFromHexString(userId),
     });
-    if (!user) {
+    if (!currentUser) {
         sendError(
             res,
             401,
@@ -142,7 +143,10 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (user.friends && user.friends.includes(payload.newFriendId)) {
+    if (
+        currentUser.friends &&
+        currentUser.friends.includes(payload.newFriendId)
+    ) {
         sendError(
             res,
             400,
@@ -176,8 +180,8 @@ async function addFriend(req, res) {
     }
 
     if (
-        user.friendRequests &&
-        user.friendRequests.includes(payload.newFriendId)
+        currentUser.friendRequests &&
+        currentUser.friendRequests.includes(payload.newFriendId)
     ) {
         await userCollection.updateOne(
             { _id: ObjectId.createFromHexString(payload.newFriendId) },
@@ -196,6 +200,15 @@ async function addFriend(req, res) {
             { $push: { friendRequests: userId } },
         );
     }
+
+    await notifCollection.insertOne({
+        recipient: ObjectId.createFromHexString(payload.newFriendId),
+        type: "FRIEND_REQUEST",
+        shouldDisplay: true,
+        friendRequest: {
+            targetUsername: currentUser.username,
+        },
+    });
 
     return { ok: "bro" };
 }

@@ -1,15 +1,21 @@
 volumes:
   mongodb_data:
+  mongodb_config:
 
 services:
   database:
     image: mongo:5
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
     restart: always
+    ports:
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./docker/mongodb-replicaset.js:/docker-entrypoint-initdb.d/mongodb-replicaset.js
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ps8
-      MONGO_INITDB_ROOT_PASSWORD: 734741ec1209b29040ac
+      # MONGO_INITDB_ROOT_USERNAME: ps8
+      # MONGO_INITDB_ROOT_PASSWORD: 734741ec1209b29040ac
       MONGO_INITDB_DATABASE: ps8
 
   gateway:
@@ -28,6 +34,8 @@ services:
     build: .
     command: gamesvc
     restart: always
+    environment:
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
 
   files:
     build: .
@@ -39,15 +47,11 @@ services:
     command: auth
     restart: always
     environment:
-      DB_USER: "ps8"
-      DB_PASSWORD: "734741ec1209b29040ac"
-      DB_URL: "database"
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
 
   social:
     build: .
     command: social
     restart: always
     environment:
-      DB_USER: "ps8"
-      DB_PASSWORD: "734741ec1209b29040ac"
-      DB_URL: "database"
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
