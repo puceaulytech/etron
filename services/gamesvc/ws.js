@@ -36,19 +36,23 @@ function handleWS(httpServer) {
         if (change.operationType === "insert") {
             const notification = change.fullDocument;
 
-            const socketId = storage.getClientSocketId(
-                notification.recipient.toString(),
-            );
-
-            if (socketId) {
-                const socket = io.sockets.sockets.get(socketId);
-
-                socket.emit("notification", notification);
-
-                await notifCollection.updateOne(
-                    { _id: notification._id },
-                    { $set: { sended: true } },
+            if (notification.broadcast) {
+                io.emit("notification", notification);
+            } else {
+                const socketId = storage.getClientSocketId(
+                    notification.recipient.toString(),
                 );
+
+                if (socketId) {
+                    const socket = io.sockets.sockets.get(socketId);
+
+                    socket.emit("notification", notification);
+
+                    await notifCollection.updateOne(
+                        { _id: notification._id },
+                        { $set: { sended: true } },
+                    );
+                }
             }
         }
     });
@@ -119,10 +123,28 @@ function handleWS(httpServer) {
         // Register disconnection event
         socket.on("disconnect", (_reason) => {
             storage.removeClient(socket.userId);
+
+            notifCollection.insertOne({
+                type: "USER_DISCONNECT",
+                broadcast: true,
+                shouldDisplay: false,
+                disconnect: {
+                    userId: socket.userId,
+                },
+            });
         });
 
         socket.on("poll_notifs", () => {
             pollPendingNotifs(socket);
+        });
+
+        notifCollection.insertOne({
+            type: "USER_CONNECT",
+            broadcast: true,
+            shouldDisplay: false,
+            connect: {
+                userId: socket.userId,
+            },
         });
     });
 

@@ -56,6 +56,10 @@ class Storage {
         return this.wsClients.get(clientId);
     }
 
+    countClients() {
+        return this.wsClients.size;
+    }
+
     /**
      * Create a new game against an AI
      * @returns {any} The game ID
