@@ -161,6 +161,8 @@ async function submitLogin(event) {
 }
 
 async function registerUser() {
+    const emptyFieldErrorMsg = "Missing username or password!";
+
     const usernameInput = document.querySelector(
         "form.login-form input[name='username']",
     );
@@ -177,7 +179,10 @@ async function registerUser() {
             password: passwordInput.value,
         }),
     }).then(async (response) => {
-        if (!response.ok) return;
+        if (!response.ok) {
+            displayLoginFormError(emptyFieldErrorMsg);
+            return;
+        }
 
         await submitLogin(null);
     });

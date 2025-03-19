@@ -99,7 +99,22 @@ async function login(req, res) {
  */
 async function register(req, res) {
     const payload = await decodeJsonBody(req);
-    // TODO: check user input
+
+    if (
+        !payload.username ||
+        !payload.password ||
+        payload.username === "" ||
+        payload.password === ""
+    ) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_CREDENTIALS",
+            "One of username or password field is missing.",
+        );
+        return;
+    }
+
     const username = payload.username;
 
     const db = pool.get();
