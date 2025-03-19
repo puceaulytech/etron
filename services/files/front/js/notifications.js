@@ -1,4 +1,4 @@
-const NOTIF_TIMEOUT_S = 5;
+const NOTIF_TIMEOUT_S = 500;
 
 const notifQueue = [];
 
@@ -42,18 +42,32 @@ function showNotification(notification) {
         updateFriendList();
     }
 
-    const notif = document.createElement("notification-card");
-    notif.setAttribute("content", content);
+    const notifElem = document.createElement("notification-card");
+    notifElem.setAttribute("content", content);
 
     setTimeout(() => {
-        hideNotification(notif);
+        hideNotification(notifElem);
     }, NOTIF_TIMEOUT_S * 1000);
 
-    notif.addEventListener("close", () => {
-        hideNotification(notif);
+    notifElem.addEventListener("close", () => {
+        hideNotification(notifElem);
     });
 
-    body.appendChild(notif);
+    notifElem.addEventListener("action", () => {
+        if (notification.type === "FRIEND_REQUEST") {
+            accountMenuSkipNext = true;
+            showMenu();
+            focusSectionByName("requests");
+        } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
+            accountMenuSkipNext = true;
+            showMenu();
+            focusSectionByName("friends");
+        }
+
+        hideNotification(notifElem);
+    });
+
+    body.appendChild(notifElem);
 }
 
 function fakeNotif() {

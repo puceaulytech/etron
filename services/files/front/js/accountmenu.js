@@ -30,6 +30,12 @@ function clickOutsideOfMenu(event) {
         toggleMenu();
 }
 
+function showMenu() {
+    accountMenu.classList.add("visible");
+    isToggled = true;
+    document.addEventListener("click", clickOutsideOfMenu);
+}
+
 function toggleMenu() {
     accountMenu.classList.toggle("visible");
     isToggled = !isToggled;
@@ -98,6 +104,19 @@ if (localStorage.getItem("accessToken")) {
 }
 
 selectNewSection(currentSection);
+
+function focusSectionByName(sectionName) {
+    const sections = document.querySelectorAll("#menu-header .section");
+
+    for (const section of sections) {
+        if (section.getAttribute("name") === sectionName) {
+            if (section === currentSection) return;
+            selectNewSection(section);
+            unselectOldSection(currentSection);
+            currentSection = section;
+        }
+    }
+}
 
 /**
  * @param {SubmitEvent} event

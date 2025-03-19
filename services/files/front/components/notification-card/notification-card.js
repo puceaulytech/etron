@@ -17,6 +17,7 @@ class NotificationCard extends HTMLElement {
                     animation-name: slide-in;
                     animation-duration: 1s;
                     animation-timing-function: ease-in-out;
+                    cursor: pointer;
                 }
 
                 :host(.🌬️) {
@@ -40,7 +41,12 @@ class NotificationCard extends HTMLElement {
 
                 #close-icon {
                     max-width: 24px;
-                    cursor: pointer;
+                    border-radius: 5px;
+                    transition: 100ms;
+                }
+
+                #close-icon:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
                 }
 
                 @keyframes slide-in {
@@ -67,6 +73,7 @@ class NotificationCard extends HTMLElement {
         const shadow = this.attachShadow({ mode: "open" });
         shadow.appendChild(this.template.content.cloneNode(true));
 
+        this.container = shadow.querySelector(".container");
         this.contentElem = shadow.querySelector("#content");
         this.closeBtn = shadow.querySelector("#close-icon");
 
@@ -74,11 +81,20 @@ class NotificationCard extends HTMLElement {
             bubbles: true,
             cancelable: true,
         });
+
+        this.actionEvent = new CustomEvent("action", {
+            bubbles: true,
+            cancelable: true,
+        });
     }
 
     connectedCallback() {
-        this.closeBtn.addEventListener("click", () => {
-            this.dispatchEvent(this.closeEvent);
+        this.container.addEventListener("click", (event) => {
+            if (event.target === this.closeBtn) {
+                this.dispatchEvent(this.closeEvent);
+            } else {
+                this.dispatchEvent(this.actionEvent);
+            }
         });
     }
 
