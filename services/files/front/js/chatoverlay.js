@@ -6,16 +6,27 @@ const messageInput = document.querySelector("#chat-input-container input");
 
 let lastFriendId;
 
+function scrollToBottom() {
+    const messagesContainer = document.querySelector(
+        "#chat-section #chat-itself",
+    );
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
 function openChat(friendName, friendId) {
     if (friendId !== lastFriendId) {
         lastFriendId = friendId;
         friendNameContainer.innerHTML = friendName;
         messageInput.setAttribute("placeholder", `Message ${friendName}`);
         messageInput.value = "";
+
+        // TODO: real messages
     }
 
     chatOverlay.classList.remove("invisible");
     chatOverlay.classList.add("visible");
+
+    scrollToBottom();
 }
 
 function closeChat() {
