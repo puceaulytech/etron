@@ -1,13 +1,29 @@
+const onlineCountTxt = document.getElementById("online-count");
+
 const NOTIF_TIMEOUT_S = 5;
 
 const notifQueue = [];
 
 socket.on("notification", (payload) => {
-    notifQueue.push(payload);
+    if (payload.type === "USER_CONNECT") {
+        updateOnlineCount();
 
-    if (notifQueue.length === 1) {
-        // If the notification was the first one in the queue
-        if (payload.shouldDisplay) showNotification(payload);
+        const userId = payload.connect.userId;
+        setFriendOnlineStatus(userId, true);
+    } else if (payload.type === "USER_DISCONNECT") {
+        updateOnlineCount();
+
+        const userId = payload.disconnect.userId;
+        setFriendOnlineStatus(userId, false);
+    }
+
+    if (payload.shouldDisplay) {
+        notifQueue.push(payload);
+
+        if (notifQueue.length === 1) {
+            // If the notification was the first one in the queue
+            showNotification(payload);
+        }
     }
 });
 
@@ -68,6 +84,15 @@ function showNotification(notification) {
     });
 
     body.appendChild(notifElem);
+}
+
+async function updateOnlineCount() {
+    const resp = await fetch("/api/gamesvc/onlinecount", {
+        method: "GET",
+    });
+    const payload = await resp.json();
+
+    onlineCountTxt.innerText = `${payload.count} player(s) online`;
 }
 
 function fakeNotif() {

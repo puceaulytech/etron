@@ -13,6 +13,9 @@ const endpoints = {
     play: {
         POST: play,
     },
+    onlinecount: {
+        GET: getOnlineCount,
+    },
 };
 
 async function play(req, res) {
@@ -44,6 +47,10 @@ async function getOngoingGames(req, res) {
     if (!ongoingGameId) ongoingGameId = null;
 
     return { ongoingGameId };
+}
+
+async function getOnlineCount(_req, _res) {
+    return { count: storage.countClients() };
 }
 
 module.exports = createHandler(endpoints, (res) => {
