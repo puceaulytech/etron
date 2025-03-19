@@ -11,13 +11,28 @@ const { verifyAccessToken } = require("../helpers/tokens");
 const ObjectId = require("mongodb").ObjectId;
 const pool = require("../helpers/db");
 
+async function pollPendingNotifs(socket) {
+    const notifCollection = pool.get().collection("notifications");
+
+    const filter = {
+        recipient: ObjectId.createFromHexString(socket.userId),
+        $or: [{ sended: false }, { sended: { $exists: false } }],
+    };
+
+    const pendingNotifs = await notifCollection.find(filter).toArray();
+
+    for (const notif of pendingNotifs) socket.emit("notification", notif);
+
+    await notifCollection.updateMany(filter, { $set: { sended: true } });
+}
+
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
 
     const notifCollection = pool.get().collection("notifications");
     const changeStream = notifCollection.watch();
 
-    changeStream.on("change", (change) => {
+    changeStream.on("change", async (change) => {
         if (change.operationType === "insert") {
             const notification = change.fullDocument;
 
@@ -29,6 +44,11 @@ function handleWS(httpServer) {
                 const socket = io.sockets.sockets.get(socketId);
 
                 socket.emit("notification", notification);
+
+                await notifCollection.updateOne(
+                    { _id: notification._id },
+                    { $set: { sended: true } },
+                );
             }
         }
     });
@@ -99,6 +119,10 @@ function handleWS(httpServer) {
         // Register disconnection event
         socket.on("disconnect", (_reason) => {
             storage.removeClient(socket.userId);
+        });
+
+        socket.on("poll_notifs", () => {
+            pollPendingNotifs(socket);
         });
     });
 

@@ -1,6 +1,17 @@
+const NOTIF_TIMEOUT_S = 5;
+
 socket.on("notification", (payload) => {
     if (payload.shouldDisplay) showNotification(payload);
 });
+
+socket.emit("poll_notifs");
+
+function hideNotification(htmlElem) {
+    if (!htmlElem.isConnected) return;
+
+    htmlElem.setAttribute("closing", "true");
+    setTimeout(() => htmlElem.remove(), 1100);
+}
 
 function showNotification(notification) {
     const body = document.querySelector("body");
@@ -23,9 +34,12 @@ function showNotification(notification) {
     const notif = document.createElement("notification-card");
     notif.setAttribute("content", content);
 
+    setTimeout(() => {
+        hideNotification(notif);
+    }, NOTIF_TIMEOUT_S * 1000);
+
     notif.addEventListener("close", () => {
-        notif.setAttribute("closing", "true");
-        setTimeout(() => notif.remove(), 1100);
+        hideNotification(notif);
     });
 
     body.appendChild(notif);
