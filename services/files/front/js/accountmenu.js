@@ -26,8 +26,10 @@ function clickOutsideOfMenu(event) {
     if (
         !accountMenu.contains(event.target) &&
         !accountButton.contains(event.target)
-    )
+    ) {
         toggleMenu();
+        resetSearchInput();
+    }
 }
 
 function showMenu() {
@@ -206,6 +208,10 @@ function userSearchInput() {
             }),
         );
     });
+}
+
+function resetSearchInput() {
+    usernameInput.value = "";
 }
 
 const friendList = document.querySelector("#friend-list");
