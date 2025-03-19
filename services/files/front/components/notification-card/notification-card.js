@@ -14,6 +14,16 @@ class NotificationCard extends HTMLElement {
                     border: 2px solid green;
                     border-radius: 10px;
                     background-color: white;
+                    animation-name: slide-in;
+                    animation-duration: 1s;
+                    animation-timing-function: ease-in-out;
+                }
+
+                :host(.🌬️) {
+                    animation-name: slide-out;
+                    animation-duration: 0.6s;
+                    animation-timing-function: ease-in-out;
+                    animation-fill-mode: forwards;
                 }
 
                 .container {
@@ -31,6 +41,17 @@ class NotificationCard extends HTMLElement {
                 #close-icon {
                     max-width: 24px;
                     cursor: pointer;
+                }
+
+                @keyframes slide-in {
+                    0% { transform: translateY(400px); }
+                    70% { transform: translateY(-30px); }
+                    100% { transform: translateY(0); }
+                }
+                @keyframes slide-out {
+                    0% { transform: translateY(0); }
+                    30% { transform: translateY(-30px); }
+                    100% { transform: translateY(400px); }
                 }
             </style>
 
@@ -62,12 +83,14 @@ class NotificationCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["content"];
+        return ["content", "closing"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "content") {
             this.updateContent(newValue);
+        } else if (name === "closing") {
+            this.classList.add("🌬️");
         }
     }
 

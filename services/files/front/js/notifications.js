@@ -10,13 +10,15 @@ function showNotification(notification) {
         const targetUsername = notification.friendRequest.targetUsername;
 
         content = `${targetUsername} wants to be your friend!`;
+        updateFriendRequests();
     }
 
     const notif = document.createElement("notification-card");
     notif.setAttribute("content", content);
 
     notif.addEventListener("close", () => {
-        notif.remove();
+        notif.setAttribute("closing", "true");
+        setTimeout(() => notif.remove(), 1100);
     });
 
     body.appendChild(notif);
