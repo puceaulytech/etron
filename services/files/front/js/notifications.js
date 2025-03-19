@@ -5,8 +5,16 @@ const NOTIF_TIMEOUT_S = 5;
 const notifQueue = [];
 
 socket.on("notification", (payload) => {
-    if (payload.type === "USER_CONNECT" || payload.type === "USER_DISCONNECT") {
+    if (payload.type === "USER_CONNECT") {
         updateOnlineCount();
+
+        const userId = payload.connect.userId;
+        setFriendOnlineStatus(userId, true);
+    } else if (payload.type === "USER_DISCONNECT") {
+        updateOnlineCount();
+
+        const userId = payload.disconnect.userId;
+        setFriendOnlineStatus(userId, false);
     }
 
     if (payload.shouldDisplay) {

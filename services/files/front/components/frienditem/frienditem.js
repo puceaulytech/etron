@@ -9,6 +9,15 @@ class FriendItem extends HTMLElement {
         container.style = `
         `;
 
+        this.onlineMarker = document.createElement("div");
+        this.onlineMarker.style = `
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+        `;
+        container.appendChild(this.onlineMarker);
+
         this.#usernameText = document.createElement("div");
         container.appendChild(this.#usernameText);
 
@@ -68,8 +77,26 @@ class FriendItem extends HTMLElement {
         shadow.append(container);
     }
 
+    static get observedAttributes() {
+        return ["online"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "online") {
+            this.setOnline(newValue !== null);
+        }
+    }
+
     connectedCallback() {
         this.#usernameText.innerText = this.getUsername();
+    }
+
+    setOnline(val) {
+        if (val) {
+            this.onlineMarker.style.backgroundColor = "green";
+        } else {
+            this.onlineMarker.style.backgroundColor = "red";
+        }
     }
 
     getUsername() {

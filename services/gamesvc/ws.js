@@ -29,6 +29,8 @@ async function pollPendingNotifs(socket) {
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
 
+    const userCollection = pool.get().collection("users");
+
     const notifCollection = pool.get().collection("notifications");
     const changeStream = notifCollection.watch();
 
@@ -73,7 +75,7 @@ function handleWS(httpServer) {
         next();
     });
 
-    io.on("connection", (socket) => {
+    io.on("connection", async (socket) => {
         socket.on("ready", (payload) => {
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
@@ -121,10 +123,15 @@ function handleWS(httpServer) {
         });
 
         // Register disconnection event
-        socket.on("disconnect", (_reason) => {
+        socket.on("disconnect", async (_reason) => {
             storage.removeClient(socket.userId);
 
-            notifCollection.insertOne({
+            await userCollection.updateOne(
+                { _id: ObjectId.createFromHexString(socket.userId) },
+                { $set: { online: false } },
+            );
+
+            await notifCollection.insertOne({
                 type: "USER_DISCONNECT",
                 broadcast: true,
                 shouldDisplay: false,
@@ -138,7 +145,12 @@ function handleWS(httpServer) {
             pollPendingNotifs(socket);
         });
 
-        notifCollection.insertOne({
+        await userCollection.updateOne(
+            { _id: ObjectId.createFromHexString(socket.userId) },
+            { $set: { online: true } },
+        );
+
+        await notifCollection.insertOne({
             type: "USER_CONNECT",
             broadcast: true,
             shouldDisplay: false,

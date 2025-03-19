@@ -216,6 +216,15 @@ function resetSearchInput() {
 
 const friendList = document.querySelector("#friend-list");
 
+function setFriendOnlineStatus(userId, isOnline) {
+    for (const friendElem of friendList.children) {
+        if (friendElem.getAttribute("user-id") === userId) {
+            if (isOnline) friendElem.setAttribute("online", "yes");
+            else friendElem.removeAttribute("online");
+        }
+    }
+}
+
 async function updateFriendList() {
     authenticatedFetch("/api/social/friends", {
         method: "GET",
@@ -232,6 +241,11 @@ async function updateFriendList() {
                     const elem = new FriendItem();
                     elem.setAttribute("user-id", user._id);
                     elem.setAttribute("username", user.username);
+
+                    if (user.online) {
+                        elem.setAttribute("online", "yes");
+                    }
+
                     return elem;
                 }),
             );
