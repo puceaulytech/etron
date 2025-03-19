@@ -2,6 +2,13 @@
     --chat-header-height: 100px;
 }
 
+#chat-section.visible {
+    display: flex;
+}
+#chat-section.invisible {
+    display: none;
+}
+
 #menu-content #chat-section {
     background-color: red;
     position: absolute;
@@ -9,7 +16,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    display: flex;
     flex-direction: column;
 }
 
@@ -32,8 +38,26 @@
     -ms-user-select: none;
     user-select: none;
 }
-#chat-header #chat-back-button {
+#chat-header #backbutton-container {
+    height: var(--chat-header-height);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#backbutton-container #chat-back-button {
+    height: 60%;
+    aspect-ratio: 1;
+    width: auto;
+    font-size: 115%;
+    border-radius: 40%;
     cursor: pointer;
+    transition-property: background-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+}
+#backbutton-container #chat-back-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 #chat-section #chat-itself {

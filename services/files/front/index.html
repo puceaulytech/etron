@@ -26,6 +26,7 @@
         <script src="js/ws.js"></script>
         <script src="js/notifications.js" defer></script>
         <script src="js/accountmenu.js" defer></script>
+        <script src="js/chatoverlay.js" defer></script>
         <script src="js/mainmenu.js" defer></script>
     </head>
     <body>
@@ -126,9 +127,12 @@
                         Create an account
                     </button>
                 </div>
-                <div id="chat-section">
+                <!-- Chat overlay -->
+                <div id="chat-section" class="invisible">
                     <div id="chat-header">
-                        <div id="chat-back-button">&lt;</div>
+                        <div id="backbutton-container">
+                            <div id="chat-back-button">&lt;</div>
+                        </div>
                         <div id="friend-name">EpicGamerDu93</div>
                     </div>
                     <div id="chat-itself">
