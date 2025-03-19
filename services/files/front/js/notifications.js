@@ -1,7 +1,14 @@
 const NOTIF_TIMEOUT_S = 5;
 
+const notifQueue = [];
+
 socket.on("notification", (payload) => {
-    if (payload.shouldDisplay) showNotification(payload);
+    notifQueue.push(payload);
+
+    if (notifQueue.length === 1) {
+        // If the notification was the first one in the queue
+        if (payload.shouldDisplay) showNotification(payload);
+    }
 });
 
 socket.emit("poll_notifs");
@@ -10,7 +17,11 @@ function hideNotification(htmlElem) {
     if (!htmlElem.isConnected) return;
 
     htmlElem.setAttribute("closing", "true");
-    setTimeout(() => htmlElem.remove(), 1100);
+    setTimeout(() => {
+        htmlElem.remove();
+        notifQueue.shift();
+        if (notifQueue.length > 0) showNotification(notifQueue[0]);
+    }, 1100);
 }
 
 function showNotification(notification) {
