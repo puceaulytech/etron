@@ -13,7 +13,7 @@ class SearchResult extends HTMLElement {
             <style>
                 :host {
                     display: block;
-                    width: 60%;
+                    width: 100%;
                     background-color: #f0f0f0;
                     border-radius: 8px;
                     padding: 10px;
