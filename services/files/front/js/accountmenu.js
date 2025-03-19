@@ -175,12 +175,9 @@ function userSearchInput() {
     if (input.length < 3) return;
 
     // Harmful injection possible?
-    fetch(`/api/social/users?username=${input}`, {
+    authenticatedFetch(`/api/social/users?username=${input}`, {
         method: "GET",
-    }).then(async (res) => {
-        if (!res.ok) return;
-
-        const users = await res.json();
+    }).then(async (users) => {
         searchResultsContainer.replaceChildren(
             ...users.map((user) => {
                 const elem = new SearchResult();

@@ -35,6 +35,9 @@ const endpoints = {
  * @param {http.ServerResponse} res
  */
 async function findUser(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
     const params = getQueryParams(req);
     const username = params.get("username");
 
@@ -55,7 +58,10 @@ async function findUser(req, res) {
     await userCollection.createIndex({ username: "text" });
 
     const results = await userCollection
-        .find({ username: { $regex: username, $options: "i" } })
+        .find({
+            username: { $regex: username, $options: "i" },
+            _id: { $ne: ObjectId.createFromHexString(userId) },
+        })
         .toArray();
     return results.map(sanitizeUserInfo);
 }
