@@ -133,6 +133,8 @@ async function submitLogin(event) {
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
         await updateAll();
+
+        socket.connect();
     });
 }
 
