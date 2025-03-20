@@ -127,11 +127,13 @@ async function updateOnlineCount() {
 }
 
 async function requestSystemNotifPermissions() {
+    localStorage.setItem("systemNotifications", false);
+
     if (!("Notification" in window)) return;
 
-    const resp = await Notification.requestPermission();
-
-    localStorage.setItem("systemNotifications", resp === "granted");
+    Notification.requestPermission().then((resp) => {
+        localStorage.setItem("systemNotifications", resp === "granted");
+    });
 }
 
 function fakeNotif() {
