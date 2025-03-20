@@ -154,6 +154,7 @@ async function submitLogin(event) {
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
         await updateAll();
+        await requestSystemNotifPermissions();
 
         socket.connect();
     });

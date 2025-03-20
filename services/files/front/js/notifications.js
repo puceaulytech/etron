@@ -40,6 +40,20 @@ function hideNotification(htmlElem) {
     }, 1100);
 }
 
+function performNotifAction(notification, accountMenuWorkaround = true) {
+    if (notification.type === "FRIEND_REQUEST") {
+        if (accountMenuWorkaround) accountMenuSkipNext = true;
+
+        showMenu();
+        focusSectionByName("requests");
+    } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
+        if (accountMenuWorkaround) accountMenuSkipNext = true;
+
+        showMenu();
+        focusSectionByName("friends");
+    }
+}
+
 function showNotification(notification) {
     const body = document.querySelector("body");
 
@@ -58,6 +72,24 @@ function showNotification(notification) {
         updateFriendList();
     }
 
+    let systemNotif = null;
+
+    if (localStorage.getItem("systemNotifications")) {
+        systemNotif = new Notification("ETRON", {
+            body: content,
+            icon: "/favicon.png",
+        });
+
+        systemNotif.addEventListener("click", () => {
+            performNotifAction(notification, false);
+            hideNotification(notifElem);
+        });
+
+        systemNotif.addEventListener("close", () => {
+            hideNotification(notifElem);
+        });
+    }
+
     const notifElem = document.createElement("notification-card");
     notifElem.setAttribute("content", content);
 
@@ -66,20 +98,13 @@ function showNotification(notification) {
     }, NOTIF_TIMEOUT_S * 1000);
 
     notifElem.addEventListener("close", () => {
+        if (systemNotif) systemNotif.close();
+
         hideNotification(notifElem);
     });
 
     notifElem.addEventListener("action", () => {
-        if (notification.type === "FRIEND_REQUEST") {
-            accountMenuSkipNext = true;
-            showMenu();
-            focusSectionByName("requests");
-        } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
-            accountMenuSkipNext = true;
-            showMenu();
-            focusSectionByName("friends");
-        }
-
+        performNotifAction(notification);
         hideNotification(notifElem);
     });
 
@@ -93,6 +118,14 @@ async function updateOnlineCount() {
     const payload = await resp.json();
 
     onlineCountTxt.innerText = `${payload.count} player(s) online`;
+}
+
+async function requestSystemNotifPermissions() {
+    if (!("Notification" in window)) return;
+
+    const resp = await Notification.requestPermission();
+
+    localStorage.setItem("systemNotifications", resp === "granted");
 }
 
 function fakeNotif() {
