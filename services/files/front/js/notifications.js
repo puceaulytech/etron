@@ -55,8 +55,6 @@ function performNotifAction(notification, accountMenuWorkaround = true) {
 }
 
 function showNotification(notification) {
-    const body = document.querySelector("body");
-
     let content;
     if (notification.type === "FRIEND_REQUEST") {
         const targetUsername = notification.friendRequest.targetUsername;
