@@ -88,7 +88,7 @@
                             type="text"
                             name="username"
                             class="text-input"
-                            placeholder="Username"
+                            placeholder="Search for new friends"
                             oninput="userSearchInput()"
                         />
                         <div id="search-button">
@@ -150,8 +150,12 @@
                             type="text"
                             name="message"
                             placeholder="Message EpicGamerDu93"
+                            autocomplete="off"
                         />
-                        <input type="submit" id="send-msg-icon" value="" />
+                        <label id="send-msg-icon">
+                            <input type="submit" value="" />
+                            <img src="assets/send-message.svg" />
+                        </label>
                     </form>
                 </div>
             </div>
