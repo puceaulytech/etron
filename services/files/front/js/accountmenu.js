@@ -9,8 +9,8 @@ function displayLoginFormError(message) {
     messageDiv.classList.add("active");
 }
 
-const menu = document.querySelector("#account-menu");
-const button = document.querySelector("#account-button");
+const accountMenu = document.querySelector("#account-menu");
+const accountButton = document.querySelector("#account-button");
 let isToggled = false;
 let accountMenuSkipNext = false;
 
@@ -23,18 +23,29 @@ function clickOutsideOfMenu(event) {
         return;
     }
 
-    if (!menu.contains(event.target) && !button.contains(event.target))
+    if (
+        !accountMenu.contains(event.target) &&
+        !accountButton.contains(event.target)
+    ) {
         toggleMenu();
+        resetSearchInput();
+    }
+}
+
+function showMenu() {
+    accountMenu.classList.add("visible");
+    isToggled = true;
+    document.addEventListener("click", clickOutsideOfMenu);
 }
 
 function toggleMenu() {
-    menu.classList.toggle("visible");
+    accountMenu.classList.toggle("visible");
     isToggled = !isToggled;
     if (isToggled) document.addEventListener("click", clickOutsideOfMenu);
     else document.removeEventListener("click", clickOutsideOfMenu);
 }
 
-button.addEventListener("click", toggleMenu);
+accountButton.addEventListener("click", toggleMenu);
 
 /** @type {Map<HTMLDivElement, HTMLDivElement>} */
 const sectionBindings = new Map();
@@ -96,6 +107,19 @@ if (localStorage.getItem("accessToken")) {
 
 selectNewSection(currentSection);
 
+function focusSectionByName(sectionName) {
+    const sections = document.querySelectorAll("#menu-header .section");
+
+    for (const section of sections) {
+        if (section.getAttribute("name") === sectionName) {
+            if (section === currentSection) return;
+            selectNewSection(section);
+            unselectOldSection(currentSection);
+            currentSection = section;
+        }
+    }
+}
+
 /**
  * @param {SubmitEvent} event
  */
@@ -130,6 +154,9 @@ async function submitLogin(event) {
         selectNewSection(currentSection);
         loginSection.classList.remove("active");
         await updateAll();
+        await requestSystemNotifPermissions();
+
+        socket.connect();
     });
 }
 
@@ -160,6 +187,7 @@ function logOut() {
     localStorage.clear();
     sectionBindings.get(currentSection).classList.remove("active");
     loginSection.classList.add("active");
+    socket.disconnect();
 }
 
 const usernameInput = document.querySelector("#search-container input");
@@ -170,12 +198,9 @@ function userSearchInput() {
     if (input.length < 3) return;
 
     // Harmful injection possible?
-    fetch(`/api/social/users?username=${input}`, {
+    authenticatedFetch(`/api/social/users?username=${input}`, {
         method: "GET",
-    }).then(async (res) => {
-        if (!res.ok) return;
-
-        const users = await res.json();
+    }).then(async (users) => {
         searchResultsContainer.replaceChildren(
             ...users.map((user) => {
                 const elem = new SearchResult();
@@ -187,7 +212,20 @@ function userSearchInput() {
     });
 }
 
+function resetSearchInput() {
+    usernameInput.value = "";
+}
+
 const friendList = document.querySelector("#friend-list");
+
+function setFriendOnlineStatus(userId, isOnline) {
+    for (const friendElem of friendList.children) {
+        if (friendElem.getAttribute("user-id") === userId) {
+            if (isOnline) friendElem.setAttribute("online", "yes");
+            else friendElem.removeAttribute("online");
+        }
+    }
+}
 
 async function updateFriendList() {
     authenticatedFetch("/api/social/friends", {
@@ -205,6 +243,11 @@ async function updateFriendList() {
                     const elem = new FriendItem();
                     elem.setAttribute("user-id", user._id);
                     elem.setAttribute("username", user.username);
+
+                    if (user.online) {
+                        elem.setAttribute("online", "yes");
+                    }
+
                     return elem;
                 }),
             );

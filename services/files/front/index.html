@@ -15,15 +15,23 @@
         <link href="styles/common.css" rel="stylesheet" />
         <link href="styles/style.css" rel="stylesheet" />
         <link href="styles/accountmenu.css" rel="stylesheet" />
+        <link href="styles/chat.css" rel="stylesheet" />
 
         <script src="js/authutils.js"></script>
         <script src="components/frienditem/frienditem.js"></script>
         <script src="components/searchresult/searchresult.js"></script>
         <script src="components/friendrequest/friendrequest.js"></script>
+        <script src="components/notification-card/notification-card.js"></script>
+        <script src="js/socket.io.js"></script>
+        <script src="js/ws.js"></script>
+        <script src="js/notifications.js" defer></script>
         <script src="js/accountmenu.js" defer></script>
+        <script src="js/chatoverlay.js" defer></script>
         <script src="js/mainmenu.js" defer></script>
     </head>
     <body>
+        <p id="online-count"></p>
+
         <h2 id="main-title">eTron</h2>
 
         <div class="app-button-group">
@@ -57,11 +65,13 @@
 
         <div id="account-menu">
             <div id="menu-header">
-                <div class="section"><span>My account</span></div>
+                <div name="account" class="section">
+                    <span>My account</span>
+                </div>
                 <div class="separator"></div>
-                <div class="section"><span>Friends</span></div>
+                <div name="friends" class="section"><span>Friends</span></div>
                 <div class="separator"></div>
-                <div class="section"><span>Requests</span></div>
+                <div name="requests" class="section"><span>Requests</span></div>
             </div>
             <div id="menu-content">
                 <div class="content-section" id="account-section">
@@ -78,7 +88,7 @@
                             type="text"
                             name="username"
                             class="text-input"
-                            placeholder="Username"
+                            placeholder="Search for new friends"
                             oninput="userSearchInput()"
                         />
                         <div id="search-button">
@@ -89,7 +99,7 @@
                 </div>
                 <div class="content-section" id="requests-section">
                     <h1>Friend Requests</h1>
-                    <div style="width: 75%"></div>
+                    <div style="width: 85%"></div>
                 </div>
                 <!-- It is very important for the login section to be last-->
                 <div class="content-section" id="login-section">
@@ -116,6 +126,37 @@
                     <button class="app-button" onclick="registerUser()">
                         Create an account
                     </button>
+                </div>
+                <!-- Chat overlay -->
+                <div id="chat-section" class="invisible">
+                    <div id="chat-header">
+                        <div id="backbutton-container">
+                            <div id="chat-back-button">&lt;</div>
+                        </div>
+                        <div id="friend-name">EpicGamerDu93</div>
+                    </div>
+                    <div id="chat-itself">
+                        <div class="chat-message received-message">
+                            vient jouer sinon conséquences
+                        </div>
+                        <div class="chat-message sent-message">j'arriv</div>
+                        <div class="chat-message sent-message">
+                            je finis mes pates au nutella
+                        </div>
+                        <div class="chat-message received-message">UwU</div>
+                    </div>
+                    <form id="chat-input-container">
+                        <input
+                            type="text"
+                            name="message"
+                            placeholder="Message EpicGamerDu93"
+                            autocomplete="off"
+                        />
+                        <label id="send-msg-icon">
+                            <input type="submit" value="" />
+                            <img src="assets/send-message.svg" />
+                        </label>
+                    </form>
                 </div>
             </div>
         </div>

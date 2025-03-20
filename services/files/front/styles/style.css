@@ -96,6 +96,14 @@ svg .svg-shit {
     stroke-width: 1.91px;
 }
 
+#online-count {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 30px;
+    font-size: 20px;
+}
+
 @keyframes emphasize {
     50% {
         transform: scale(1.2);

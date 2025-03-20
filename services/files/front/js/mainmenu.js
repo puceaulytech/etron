@@ -11,7 +11,7 @@ playButton.addEventListener("click", () => {
         case "online":
             if (!isLoggedIn) {
                 accountMenuSkipNext = true;
-                toggleMenu();
+                showMenu();
                 return;
             }
             url = "pages/online1v1.html";
@@ -19,7 +19,7 @@ playButton.addEventListener("click", () => {
         case "ai":
             if (!isLoggedIn) {
                 accountMenuSkipNext = true;
-                toggleMenu();
+                showMenu();
                 return;
             }
             url = "pages/ai1v1.html";

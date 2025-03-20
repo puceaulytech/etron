@@ -12,6 +12,9 @@ const {
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { sanitizeUserInfo } = require("../helpers/sanitizer");
+const { objectIdIncludes } = require("../helpers/mongoldb");
+
+const chatEndpoints = require("./chatcontrollers");
 
 const endpoints = {
     friendrequests: {
@@ -26,6 +29,10 @@ const endpoints = {
     users: {
         GET: findUser,
     },
+    chat: {
+        GET: chatEndpoints.getConversationWith,
+        POST: chatEndpoints.sendMessage,
+    },
 };
 
 /**
@@ -35,6 +42,26 @@ const endpoints = {
  * @param {http.ServerResponse} res
  */
 async function findUser(req, res) {
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const userId = ObjectId.createFromHexString(rawUserId);
+
+    const userCollection = pool.get().collection("users");
+
+    const currentUser = await userCollection.findOne({
+        _id: userId,
+    });
+    if (!currentUser) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "User that generated token does not exist anymore.",
+        );
+        return;
+    }
+
     const params = getQueryParams(req);
     const username = params.get("username");
 
@@ -50,12 +77,17 @@ async function findUser(req, res) {
 
     if (username.length < 3) return [];
 
-    const userCollection = pool.get().collection("users");
-
     await userCollection.createIndex({ username: "text" });
 
+    const friends = currentUser.friends ?? [];
+
+    let excludedUserIds = [userId, ...friends];
+
     const results = await userCollection
-        .find({ username: { $regex: username, $options: "i" } })
+        .find({
+            username: { $regex: username, $options: "i" },
+            _id: { $nin: excludedUserIds },
+        })
         .toArray();
     return results.map(sanitizeUserInfo);
 }
@@ -89,20 +121,11 @@ async function getFriendRequests(req, res) {
 
     if (!friendRequests) return [];
 
-    const result = [];
-    const promises = [];
-    for (const friendId of friendRequests) {
-        promises.push(
-            userCollection
-                .findOne({ _id: ObjectId.createFromHexString(friendId) })
-                .then((doc) => {
-                    if (doc) result.push(sanitizeUserInfo(doc));
-                    return true;
-                }),
-        );
-    }
+    const users = await userCollection
+        .find({ _id: { $in: friendRequests } })
+        .toArray();
+    const result = users.map((user) => sanitizeUserInfo(user));
 
-    await Promise.all(promises);
     return result;
 }
 
@@ -113,15 +136,18 @@ async function getFriendRequests(req, res) {
  * @param {http.ServerResponse} res
  */
 async function addFriend(req, res) {
-    const userId = authenticate(req, res, jwt);
-    if (!userId) return;
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const userId = ObjectId.createFromHexString(rawUserId);
 
     const userCollection = pool.get().collection("users");
+    const notifCollection = pool.get().collection("notifications");
 
-    const user = await userCollection.findOne({
-        _id: ObjectId.createFromHexString(userId),
+    const currentUser = await userCollection.findOne({
+        _id: userId,
     });
-    if (!user) {
+    if (!currentUser) {
         sendError(
             res,
             401,
@@ -142,7 +168,12 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (user.friends && user.friends.includes(payload.newFriendId)) {
+    const newFriendId = ObjectId.createFromHexString(payload.newFriendId);
+
+    if (
+        currentUser.friends &&
+        objectIdIncludes(currentUser.friends, newFriendId)
+    ) {
         sendError(
             res,
             400,
@@ -153,7 +184,7 @@ async function addFriend(req, res) {
     }
 
     const friend = await userCollection.findOne({
-        _id: ObjectId.createFromHexString(payload.newFriendId),
+        _id: newFriendId,
     });
     if (!friend) {
         sendError(
@@ -165,7 +196,10 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (friend.friendRequests && friend.friendRequests.includes(userId)) {
+    if (
+        friend.friendRequests &&
+        objectIdIncludes(friend.friendRequests, userId)
+    ) {
         sendError(
             res,
             400,
@@ -176,26 +210,35 @@ async function addFriend(req, res) {
     }
 
     if (
-        user.friendRequests &&
-        user.friendRequests.includes(payload.newFriendId)
+        currentUser.friendRequests &&
+        objectIdIncludes(currentUser.friendRequests, newFriendId)
     ) {
         await userCollection.updateOne(
-            { _id: ObjectId.createFromHexString(payload.newFriendId) },
+            { _id: newFriendId },
             { $push: { friends: userId } },
         );
         await userCollection.updateOne(
-            { _id: ObjectId.createFromHexString(userId) },
+            { _id: userId },
             {
-                $push: { friends: payload.newFriendId },
-                $pull: { friendRequests: payload.newFriendId },
+                $push: { friends: newFriendId },
+                $pull: { friendRequests: newFriendId },
             },
         );
     } else {
         await userCollection.updateOne(
-            { _id: ObjectId.createFromHexString(payload.newFriendId) },
+            { _id: newFriendId },
             { $push: { friendRequests: userId } },
         );
     }
+
+    await notifCollection.insertOne({
+        recipient: newFriendId,
+        type: "FRIEND_REQUEST",
+        shouldDisplay: true,
+        friendRequest: {
+            targetUsername: currentUser.username,
+        },
+    });
 
     return { ok: "bro" };
 }
@@ -229,12 +272,8 @@ async function getFriends(req, res) {
 
     if (!friends) return [];
 
-    const friendsObjectIds = friends.map((id) =>
-        ObjectId.createFromHexString(id),
-    );
-
     const result = await userCollection
-        .find({ _id: { $in: friendsObjectIds } })
+        .find({ _id: { $in: friends } })
         .toArray();
 
     return result.map((friend) => sanitizeUserInfo(friend));
@@ -247,15 +286,18 @@ async function getFriends(req, res) {
  * @param {http.ServerResponse} res
  */
 async function acceptFriend(req, res) {
-    const userId = authenticate(req, res, jwt);
-    if (!userId) return;
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const userId = ObjectId.createFromHexString(rawUserId);
 
     const userCollection = pool.get().collection("users");
+    const notifCollection = pool.get().collection("notifications");
 
-    const user = await userCollection.findOne({
-        _id: ObjectId.createFromHexString(userId),
+    const currentUser = await userCollection.findOne({
+        _id: userId,
     });
-    if (!user) {
+    if (!currentUser) {
         sendError(
             res,
             401,
@@ -276,8 +318,10 @@ async function acceptFriend(req, res) {
         return;
     }
 
-    const { friendRequests } = user;
-    if (!friendRequests || !friendRequests.includes(payload.newFriendId)) {
+    const newFriendId = ObjectId.createFromHexString(payload.newFriendId);
+
+    const { friendRequests } = currentUser;
+    if (!friendRequests || !objectIdIncludes(friendRequests, newFriendId)) {
         sendError(
             res,
             400,
@@ -288,16 +332,29 @@ async function acceptFriend(req, res) {
     }
 
     await userCollection.updateOne(
-        { _id: ObjectId.createFromHexString(payload.newFriendId) },
+        { _id: newFriendId },
         { $push: { friends: userId } },
     );
     await userCollection.updateOne(
-        { _id: ObjectId.createFromHexString(userId) },
+        { _id: userId },
         {
-            $push: { friends: payload.newFriendId },
-            $pull: { friendRequests: payload.newFriendId },
+            $push: {
+                friends: newFriendId,
+            },
+            $pull: {
+                friendRequests: newFriendId,
+            },
         },
     );
+
+    await notifCollection.insertOne({
+        recipient: newFriendId,
+        type: "FRIEND_REQUEST_ACCEPTED",
+        shouldDisplay: true,
+        friendRequestAccepted: {
+            targetUsername: currentUser.username,
+        },
+    });
 
     return { still: "ok bro" };
 }
@@ -309,15 +366,17 @@ async function acceptFriend(req, res) {
  * @param {http.ServerResponse} res
  */
 async function deleteFriendRequest(req, res) {
-    const userId = authenticate(req, res, jwt);
-    if (!userId) return;
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const userId = ObjectId.createFromHexString(rawUserId);
 
     const userCollection = pool.get().collection("users");
 
-    const user = await userCollection.findOne({
-        _id: ObjectId.createFromHexString(userId),
+    const currentUser = await userCollection.findOne({
+        _id: userId,
     });
-    if (!user) {
+    if (!currentUser) {
         sendError(
             res,
             401,
@@ -327,10 +386,10 @@ async function deleteFriendRequest(req, res) {
         return;
     }
 
-    const friendRequestId = getLastSegment(req);
+    const friendRequestId = ObjectId.createFromHexString(getLastSegment(req));
 
-    const { friendRequests } = user;
-    if (!friendRequests || !friendRequests.includes(friendRequestId)) {
+    const { friendRequests } = currentUser;
+    if (!friendRequests || !objectIdIncludes(friendRequests, friendRequestId)) {
         sendError(
             res,
             400,
@@ -341,7 +400,7 @@ async function deleteFriendRequest(req, res) {
     }
 
     await userCollection.updateOne(
-        { _id: ObjectId.createFromHexString(userId) },
+        { _id: userId },
         { $pull: { friendRequests: friendRequestId } },
     );
 

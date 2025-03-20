@@ -14,12 +14,10 @@ services:
       - mongodb_config:/data/configdb
       - ./docker/mongodb-replicaset.js:/docker-entrypoint-initdb.d/mongodb-replicaset.js
     environment:
-      # MONGO_INITDB_ROOT_USERNAME: ps8
-      # MONGO_INITDB_ROOT_PASSWORD: 734741ec1209b29040ac
       MONGO_INITDB_DATABASE: ps8
 
   gateway:
-    build: .
+    image: romch007/ps8
     command: gateway
     restart: always
     environment:
@@ -31,26 +29,26 @@ services:
         - "8000:8000"
 
   gamesvc:
-    build: .
+    image: romch007/ps8
     command: gamesvc
     restart: always
     environment:
       DB_URL: "database?replicaSet=rs0&directConnection=true"
 
   files:
-    build: .
+    image: romch007/ps8
     command: files
     restart: always
 
   auth:
-    build: .
+    image: romch007/ps8
     command: auth
     restart: always
     environment:
       DB_URL: "database?replicaSet=rs0&directConnection=true"
 
   social:
-    build: .
+    image: romch007/ps8
     command: social
     restart: always
     environment:
