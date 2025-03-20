@@ -103,6 +103,7 @@
 #chat-input-container input[name="message"] {
     height: calc(100% - 40px);
     font-size: 150%;
+    font-family: inherit;
     padding-left: 25px;
     padding-right: 25px;
     background-color: #a8d139;

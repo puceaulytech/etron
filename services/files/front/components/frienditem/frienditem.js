@@ -6,9 +6,6 @@ class FriendItem extends HTMLElement {
 
         const container = document.createElement("div");
         container.classList.add("container");
-        container.style = `
-            
-        `;
 
         this.onlineMarker = document.createElement("div");
         this.onlineMarker.style = `
@@ -23,16 +20,9 @@ class FriendItem extends HTMLElement {
         container.appendChild(this.#usernameText);
 
         this.spacer = document.createElement("div");
-        this.spacer.style.width = "100%";
+        this.spacer.style.flexGrow = 1;
         container.appendChild(this.spacer);
 
-        const buttonContainer = document.createElement("div");
-        buttonContainer.style = `
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            gap: 20px;
-        `;
         const imageSize = 25;
         const fightButton = document.createElement("div");
         const chatButton = document.createElement("div");
@@ -49,9 +39,9 @@ class FriendItem extends HTMLElement {
         fightButton.appendChild(fightIcon);
         chatButton.appendChild(chatIcon);
         chatButton.addEventListener("click", this.chat.bind(this));
-        buttonContainer.appendChild(fightButton);
-        buttonContainer.appendChild(chatButton);
-        container.appendChild(buttonContainer);
+
+        container.appendChild(fightButton);
+        container.appendChild(chatButton);
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.innerHTML = `
