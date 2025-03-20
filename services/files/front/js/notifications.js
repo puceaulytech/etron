@@ -113,7 +113,7 @@ function showNotification(notification) {
         hideNotification(notifElem);
     });
 
-    document.appendChild(notifElem);
+    body.appendChild(notifElem);
 }
 
 async function updateOnlineCount() {
