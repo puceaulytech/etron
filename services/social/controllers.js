@@ -13,6 +13,8 @@ const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { sanitizeUserInfo } = require("../helpers/sanitizer");
 
+const chatEndpoints = require("./chatcontrollers");
+
 const endpoints = {
     friendrequests: {
         GET: getFriendRequests,
@@ -25,6 +27,10 @@ const endpoints = {
     },
     users: {
         GET: findUser,
+    },
+    chat: {
+        GET: chatEndpoints.getConversationWith,
+        POST: chatEndpoints.sendMessage,
     },
 };
 
