@@ -14,7 +14,7 @@ class FriendItem extends HTMLElement {
         this.onlineMarker.style = `
             min-width: 10px;
             min-height: 10px;
-            background-color: red;
+            background-color: gray;
             border-radius: 50%;
         `;
         container.appendChild(this.onlineMarker);
@@ -101,7 +101,7 @@ class FriendItem extends HTMLElement {
         if (val) {
             this.onlineMarker.style.backgroundColor = "green";
         } else {
-            this.onlineMarker.style.backgroundColor = "red";
+            this.onlineMarker.style.backgroundColor = "gray";
         }
     }
 
