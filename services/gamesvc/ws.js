@@ -16,7 +16,10 @@ async function pollPendingNotifs(socket) {
 
     const filter = {
         recipient: ObjectId.createFromHexString(socket.userId),
-        $or: [{ sended: false }, { sended: { $exists: false } }],
+        $and: [
+            { $or: [{ sended: false }, { sended: { $exists: false } }] },
+            { $or: [{ deferred: true }, { deferred: { $exists: false } }] },
+        ],
     };
 
     const pendingNotifs = await notifCollection.find(filter).toArray();

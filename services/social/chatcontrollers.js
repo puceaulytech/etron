@@ -9,6 +9,7 @@ const {
 } = require("../helpers/http");
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
+const { objectIdIncludes } = require("../helpers/mongoldb");
 
 /**
  * Send a message to a friend
@@ -49,7 +50,9 @@ async function sendMessage(req, res) {
     }
 
     const { friends } = currentUser;
-    if (!friends || !friends.includes(payload.receiver)) {
+    const receiverId = ObjectId.createFromHexString(payload.receiver);
+
+    if (!friends || !objectIdIncludes(friends, receiverId)) {
         sendError(
             res,
             400,
@@ -61,8 +64,20 @@ async function sendMessage(req, res) {
 
     await messageCollection.insertOne({
         content: payload.content,
-        receiver: ObjectId.createFromHexString(payload.receiver),
+        receiver: receiverId,
         sender: currentUser._id,
+    });
+
+    await notifCollection.insertOne({
+        recipient: receiverId,
+        type: "CHAT_MESSAGE",
+        shouldDisplay: false,
+        deferred: false,
+        message: {
+            senderId: currentUser._id,
+            senderUsername: currentUser.username,
+            content: payload.content,
+        },
     });
 
     return { message: "Message has been sent" };

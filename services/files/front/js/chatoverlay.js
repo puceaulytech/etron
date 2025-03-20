@@ -1,17 +1,19 @@
 const chatOverlay = document.querySelector("#chat-section");
-const backButton = document.querySelector("#chat-header #chat-back-button");
-const friendNameContainer = document.querySelector("#chat-header #friend-name");
+const chatBackButton = document.querySelector("#chat-header #chat-back-button");
+const chatFriendNameContainer = document.querySelector(
+    "#chat-header #friend-name",
+);
 
 const messagesContainer = document.querySelector("#chat-section #chat-itself");
 
 const chatForm = document.querySelector("#chat-section #chat-input-container");
 /** @type {HTMLInputElement} */
-const messageInput = document.querySelector(
+const chatMessageInput = document.querySelector(
     "#chat-input-container input[name='message']",
 );
 
-let lastFriendId;
-let lastSubmitHandler;
+let lastChatFriendId;
+let lastChatSubmitHandler;
 
 async function sendChatTo(friendId, message) {
     await authenticatedFetch("/api/social/chat", {
@@ -28,44 +30,54 @@ function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+function createMessageDiv(content, received) {
+    const div = document.createElement("div");
+    div.innerText = content;
+    div.classList.add(
+        "chat-message",
+        received ? "received-message" : "sent-message",
+    );
+    return div;
+}
+
+function insertMessage(content, received) {
+    messagesContainer.appendChild(createMessageDiv(content, received));
+}
+
 async function openChat(friendName, friendId) {
-    if (friendId !== lastFriendId) {
-        friendNameContainer.innerHTML = friendName;
-        messageInput.setAttribute("placeholder", `Message ${friendName}`);
-        messageInput.value = "";
+    if (friendId !== lastChatFriendId) {
+        chatFriendNameContainer.innerHTML = friendName;
+        chatMessageInput.setAttribute("placeholder", `Message ${friendName}`);
+        chatMessageInput.value = "";
 
         const submitHandler = async (event) => {
             event.preventDefault();
 
-            const message = messageInput.value;
+            const message = chatMessageInput.value;
             if (message === "") return;
 
-            await sendChatTo(friendId, message);
+            insertMessage(message, false);
             scrollToBottom();
-            messageInput.value = "";
+            chatMessageInput.value = "";
+            await sendChatTo(friendId, message);
         };
 
-        if (lastSubmitHandler)
-            chatForm.removeEventListener("submit", lastSubmitHandler);
+        if (lastChatSubmitHandler)
+            chatForm.removeEventListener("submit", lastChatSubmitHandler);
         chatForm.addEventListener("submit", submitHandler);
-        lastSubmitHandler = submitHandler;
-        lastFriendId = friendId;
+        lastChatSubmitHandler = submitHandler;
+        lastChatFriendId = friendId;
 
         await authenticatedFetch(`/api/social/chat/${friendId}`, {
             method: "GET",
         })
             .then((messages) =>
-                messages.map((message) => {
-                    const div = document.createElement("div");
-                    div.innerText = message.content;
-                    div.classList.add(
-                        "chat-message",
-                        friendId === message.sender
-                            ? "received-message"
-                            : "sent-message",
-                    );
-                    return div;
-                }),
+                messages.map((message) =>
+                    createMessageDiv(
+                        message.content,
+                        friendId === message.sender,
+                    ),
+                ),
             )
             .then((divs) => {
                 messagesContainer.replaceChildren(...divs);
@@ -83,4 +95,4 @@ function closeChat() {
     chatOverlay.classList.add("invisible");
 }
 
-backButton.addEventListener("click", closeChat);
+chatBackButton.addEventListener("click", closeChat);

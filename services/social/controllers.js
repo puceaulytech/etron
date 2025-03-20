@@ -12,6 +12,7 @@ const {
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { sanitizeUserInfo } = require("../helpers/sanitizer");
+const { objectIdIncludes } = require("../helpers/mongoldb");
 
 const chatEndpoints = require("./chatcontrollers");
 
@@ -169,7 +170,10 @@ async function addFriend(req, res) {
 
     const newFriendId = ObjectId.createFromHexString(payload.newFriendId);
 
-    if (currentUser.friends && currentUser.friends.includes(newFriendId)) {
+    if (
+        currentUser.friends &&
+        objectIdIncludes(currentUser.friends, newFriendId)
+    ) {
         sendError(
             res,
             400,
@@ -192,7 +196,10 @@ async function addFriend(req, res) {
         return;
     }
 
-    if (friend.friendRequests && friend.friendRequests.includes(userId)) {
+    if (
+        friend.friendRequests &&
+        objectIdIncludes(friend.friendRequests, userId)
+    ) {
         sendError(
             res,
             400,
@@ -204,7 +211,7 @@ async function addFriend(req, res) {
 
     if (
         currentUser.friendRequests &&
-        currentUser.friendRequests.includes(newFriendId)
+        objectIdIncludes(currentUser.friendRequests, newFriendId)
     ) {
         await userCollection.updateOne(
             { _id: newFriendId },
@@ -314,10 +321,7 @@ async function acceptFriend(req, res) {
     const newFriendId = ObjectId.createFromHexString(payload.newFriendId);
 
     const { friendRequests } = currentUser;
-    if (
-        !friendRequests ||
-        !friendRequests.some((id) => id.toString() === newFriendId.toString())
-    ) {
+    if (!friendRequests || !objectIdIncludes(friendRequests, newFriendId)) {
         sendError(
             res,
             400,
@@ -385,7 +389,7 @@ async function deleteFriendRequest(req, res) {
     const friendRequestId = ObjectId.createFromHexString(getLastSegment(req));
 
     const { friendRequests } = currentUser;
-    if (!friendRequests || !friendRequests.includes(friendRequestId)) {
+    if (!friendRequests || !objectIdIncludes(friendRequests, friendRequestId)) {
         sendError(
             res,
             400,

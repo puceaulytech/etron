@@ -15,6 +15,11 @@ socket.on("notification", (payload) => {
 
         const userId = payload.disconnect.userId;
         setFriendOnlineStatus(userId, false);
+    } else if (payload.type === "CHAT_MESSAGE") {
+        const message = payload.message;
+        if (message.senderId === lastChatFriendId) {
+            insertMessage(message.content, true);
+        }
     }
 
     if (payload.shouldDisplay) {
@@ -106,7 +111,7 @@ function showNotification(notification) {
         hideNotification(notifElem);
     });
 
-    body.appendChild(notifElem);
+    document.appendChild(notifElem);
 }
 
 async function updateOnlineCount() {
