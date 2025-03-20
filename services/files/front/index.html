@@ -15,6 +15,7 @@
         <link href="styles/common.css" rel="stylesheet" />
         <link href="styles/style.css" rel="stylesheet" />
         <link href="styles/accountmenu.css" rel="stylesheet" />
+        <link href="styles/chat.css" rel="stylesheet" />
 
         <script src="js/authutils.js"></script>
         <script src="components/frienditem/frienditem.js"></script>
@@ -25,6 +26,7 @@
         <script src="js/ws.js"></script>
         <script src="js/notifications.js" defer></script>
         <script src="js/accountmenu.js" defer></script>
+        <script src="js/chatoverlay.js" defer></script>
         <script src="js/mainmenu.js" defer></script>
     </head>
     <body>
@@ -86,7 +88,7 @@
                             type="text"
                             name="username"
                             class="text-input"
-                            placeholder="Username"
+                            placeholder="Search for new friends"
                             oninput="userSearchInput()"
                         />
                         <div id="search-button">
@@ -124,6 +126,37 @@
                     <button class="app-button" onclick="registerUser()">
                         Create an account
                     </button>
+                </div>
+                <!-- Chat overlay -->
+                <div id="chat-section" class="invisible">
+                    <div id="chat-header">
+                        <div id="backbutton-container">
+                            <div id="chat-back-button">&lt;</div>
+                        </div>
+                        <div id="friend-name">EpicGamerDu93</div>
+                    </div>
+                    <div id="chat-itself">
+                        <div class="chat-message received-message">
+                            vient jouer sinon conséquences
+                        </div>
+                        <div class="chat-message sent-message">j'arriv</div>
+                        <div class="chat-message sent-message">
+                            je finis mes pates au nutella
+                        </div>
+                        <div class="chat-message received-message">UwU</div>
+                    </div>
+                    <form id="chat-input-container">
+                        <input
+                            type="text"
+                            name="message"
+                            placeholder="Message EpicGamerDu93"
+                            autocomplete="off"
+                        />
+                        <label id="send-msg-icon">
+                            <input type="submit" value="" />
+                            <img src="assets/send-message.svg" />
+                        </label>
+                    </form>
                 </div>
             </div>
         </div>

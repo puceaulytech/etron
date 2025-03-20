@@ -33,15 +33,11 @@ class FriendItem extends HTMLElement {
             justify-content: space-around;
             gap: 20px;
         `;
-        const imageSize = 30;
+        const imageSize = 25;
         const fightButton = document.createElement("div");
         const chatButton = document.createElement("div");
-        const buttonStyle = `
-            width: ${imageSize}px;
-            height: ${imageSize}px;
-        `;
-        fightButton.style = buttonStyle;
-        chatButton.style = buttonStyle;
+        fightButton.classList.add("button");
+        chatButton.classList.add("button");
 
         const fightIcon = new Image(imageSize, imageSize);
         fightIcon.src = "../../assets/fight-icon.svg";
@@ -52,6 +48,7 @@ class FriendItem extends HTMLElement {
 
         fightButton.appendChild(fightIcon);
         chatButton.appendChild(chatIcon);
+        chatButton.addEventListener("click", this.chat.bind(this));
         buttonContainer.appendChild(fightButton);
         buttonContainer.appendChild(chatButton);
         container.appendChild(buttonContainer);
@@ -76,7 +73,19 @@ class FriendItem extends HTMLElement {
                     gap: 20px;
                 }
                 .container:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+                .button {
+                    width: ${imageSize + 10}px;
+                    height: ${imageSize + 10}px;
+                    border-radius: 10%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .button:hover {
                     background-color: rgba(0, 0, 0, 0.2);
+                    cursor: pointer;
                 }
             </style>
         `;
@@ -111,6 +120,10 @@ class FriendItem extends HTMLElement {
 
     getUserId() {
         return this.getAttribute("user-id");
+    }
+
+    chat() {
+        openChat(this.getUsername(), this.getUserId());
     }
 }
 
