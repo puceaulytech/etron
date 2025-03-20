@@ -19,6 +19,7 @@ socket.on("notification", (payload) => {
         const message = payload.message;
         if (message.senderId === lastChatFriendId) {
             insertMessage(message.content, true);
+            scrollToBottom();
         }
     }
 
