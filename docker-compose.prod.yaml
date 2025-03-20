@@ -1,0 +1,55 @@
+volumes:
+  mongodb_data:
+  mongodb_config:
+
+services:
+  database:
+    image: mongo:5
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./docker/mongodb-replicaset.js:/docker-entrypoint-initdb.d/mongodb-replicaset.js
+    environment:
+      MONGO_INITDB_DATABASE: ps8
+
+  gateway:
+    image: romch007/ps8
+    command: gateway
+    restart: always
+    environment:
+      GAMESVC_ADDR: "gamesvc:8002"
+      FILES_ADDR: "files:8001"
+      AUTH_ADDR: "auth:8003"
+      SOCIAL_ADDR: "social:8004"
+    ports:
+        - "8000:8000"
+
+  gamesvc:
+    image: romch007/ps8
+    command: gamesvc
+    restart: always
+    environment:
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
+
+  files:
+    image: romch007/ps8
+    command: files
+    restart: always
+
+  auth:
+    image: romch007/ps8
+    command: auth
+    restart: always
+    environment:
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
+
+  social:
+    image: romch007/ps8
+    command: social
+    restart: always
+    environment:
+      DB_URL: "database?replicaSet=rs0&directConnection=true"
