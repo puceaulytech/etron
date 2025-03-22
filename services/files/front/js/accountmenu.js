@@ -252,7 +252,8 @@ async function updateFriendList() {
                 }),
             );
         })
-        .catch(() => {
+        .catch((e) => {
+            console.error(e);
             friendList.innerHTML = "<p>Error while fetching friend list!</p>";
         });
 }
@@ -279,7 +280,8 @@ async function updateFriendRequests() {
                 }),
             );
         })
-        .catch(() => {
+        .catch((e) => {
+            console.error(e);
             friendRequests.innerHTML =
                 "<p>Error while fetching friend requests!</p>";
         });

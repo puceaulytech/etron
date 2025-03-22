@@ -1,29 +1,13 @@
 class FriendRequest extends HTMLElement {
     static get observedAttributes() {
-        return ["username", "user-id", "avatar"];
+        return ["username", "user-id"];
     }
 
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
-    }
 
-    connectedCallback() {
-        this.render();
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            this.render();
-        }
-    }
-
-    render() {
-        const username = this.getAttribute("username") || "Unknown";
-        const userId = this.getAttribute("user-id") || "";
-        const avatar = this.getAttribute("avatar") || "";
-
-        this.shadowRoot.innerHTML = `
+        this.template = document.createElement("template");
+        this.template.innerHTML = `
       <style>
         :host {
           display: block;
@@ -106,37 +90,55 @@ class FriendRequest extends HTMLElement {
       
       <div class="container">
         <div class="user-info">
-          <div class="avatar">
-            ${avatar ? `<img src="${avatar}" alt="${username}">` : username.charAt(0).toUpperCase()}
-          </div>
-          <span class="username">${username}</span>
+          <div class="avatar"></div>
+          <span class="username"></span>
         </div>
         <div class="buttons">
           <button class="reject">Decline</button>
           <button class="accept">Accept</button>
         </div>
       </div>
-    `;
+        `;
 
-        this.shadowRoot.querySelector(".reject").onclick = () => {
+        const shadow = this.attachShadow({ mode: "open" });
+        shadow.appendChild(this.template.content.cloneNode(true));
+
+        this.usernameSpan = shadow.querySelector(".username");
+        this.avatarDiv = shadow.querySelector(".avatar");
+
+        this.usernameSpan.innerText = this.getAttribute("username") ?? "";
+        this.avatarDiv.innerText = this.usernameSpan.innerText
+            .charAt(0)
+            .toUpperCase();
+
+        shadow.querySelector(".reject").addEventListener("click", () => {
             this.dispatchEvent(
                 new CustomEvent("rejectFriendRequest", {
-                    detail: { userId },
+                    detail: { userId: this.getAttribute("user-id") ?? "" },
                     bubbles: true,
                     composed: true,
                 }),
             );
-        };
+        });
 
-        this.shadowRoot.querySelector(".accept").onclick = () => {
+        shadow.querySelector(".accept").addEventListener("click", () => {
             this.dispatchEvent(
                 new CustomEvent("acceptFriendRequest", {
-                    detail: { userId },
+                    detail: { userId: this.getAttribute("user-id") ?? "" },
                     bubbles: true,
                     composed: true,
                 }),
             );
-        };
+        });
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "username") {
+            this.usernameSpan.innerText = this.getAttribute("username") ?? "";
+            this.avatarDiv.innerText = this.usernameSpan.innerText
+                .charAt(0)
+                .toUpperCase();
+        }
     }
 }
 
