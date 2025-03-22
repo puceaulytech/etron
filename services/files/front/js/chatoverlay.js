@@ -46,7 +46,7 @@ function insertMessage(content, received) {
 
 async function openChat(friendName, friendId) {
     if (friendId !== lastChatFriendId) {
-        chatFriendNameContainer.innerHTML = friendName;
+        chatFriendNameContainer.innerText = friendName;
         chatMessageInput.setAttribute("placeholder", `Message ${friendName}`);
         chatMessageInput.value = "";
 
