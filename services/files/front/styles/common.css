@@ -41,3 +41,7 @@
     display: inline-block;
     transition: 100ms;
 }
+
+.app-select option {
+    font-family: sans-serif;
+}
