@@ -52,10 +52,6 @@ body {
     box-shadow: 0 0 8px rgba(0, 128, 0, 0.8);
 }
 
-.text-input {
-    font-family: inherit;
-}
-
 #play-btn {
     animation-name: emphasize;
     animation-duration: 1s;

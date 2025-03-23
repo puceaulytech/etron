@@ -113,7 +113,7 @@
 }
 
 .content-section#login-section h1 {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 
 .content-section#login-section #form-error {
@@ -129,6 +129,7 @@
     display: none;
     justify-content: center;
     align-items: center;
+    border-radius: 5px;
 }
 
 form.login-form {

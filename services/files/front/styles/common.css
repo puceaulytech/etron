@@ -45,3 +45,9 @@
 .app-select option {
     font-family: sans-serif;
 }
+
+.app-text-input {
+    font-family: inherit;
+    border: 3px solid green;
+    border-radius: 4px;
+}

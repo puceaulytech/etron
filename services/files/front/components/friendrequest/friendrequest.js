@@ -61,6 +61,7 @@ class FriendRequest extends HTMLElement {
         }
         
         button {
+          font-family: inherit;
           border: none;
           border-radius: 6px;
           padding: 8px 16px;
