@@ -11,12 +11,17 @@
         />
         <link href="../styles/common.css" rel="stylesheet" />
         <link href="../styles/ingame.css" rel="stylesheet" />
-        <script
-            src="../components/keyboardcontrols/keyboardcontrols.js"
-            defer
-        ></script>
-        <script src="../components/gamegrid/gamegrid.js" defer></script>
-        <script src="../components/dialog/dialog.js" defer></script>
+
+        <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
+        <script src="../components/gamegrid/gamegrid.js"></script>
+        <script src="../components/dialog/dialog.js"></script>
+
+        <script src="../js/constants.js" defer></script>
+        <script src="../js/authutils.js" defer></script>
+        <script src="../js/socket.io.js" defer></script>
+        <script src="../js/ws.js" defer></script>
+        <script src="../js/gameutils.js" defer></script>
+        <script src="../js/aigamelogic.js" defer></script>
     </head>
     <body>
         <div class="container">
@@ -37,12 +42,5 @@
                 </div>
             </app-dialog>
         </div>
-
-        <script src="../js/constants.js"></script>
-        <script src="../js/authutils.js"></script>
-        <script src="../js/socket.io.js"></script>
-        <script src="../js/ws.js"></script>
-        <script src="../js/gameutils.js"></script>
-        <script src="../js/aigamelogic.js"></script>
     </body>
 </html>
