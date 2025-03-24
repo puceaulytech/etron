@@ -19,6 +19,10 @@ class FriendItem extends HTMLElement {
         this.#usernameText = document.createElement("div");
         container.appendChild(this.#usernameText);
 
+        this.eloText = document.createElement("div");
+        this.eloText.style.fontSize = "15px";
+        container.appendChild(this.eloText);
+
         this.spacer = document.createElement("div");
         this.spacer.style.flexGrow = 1;
         container.appendChild(this.spacer);
@@ -94,6 +98,7 @@ class FriendItem extends HTMLElement {
 
     connectedCallback() {
         this.#usernameText.innerText = this.getUsername();
+        this.eloText.innerText = this.displayElo();
     }
 
     setOnline(val) {
@@ -106,6 +111,14 @@ class FriendItem extends HTMLElement {
 
     getUsername() {
         return this.getAttribute("username");
+    }
+
+    displayElo() {
+        return `ELO: ${Math.floor(this.getUserElo())}`;
+    }
+
+    getUserElo() {
+        return Number(this.getAttribute("user-elo"));
     }
 
     getUserId() {
