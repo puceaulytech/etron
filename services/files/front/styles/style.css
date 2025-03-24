@@ -15,6 +15,7 @@ body {
     background-image: url("../assets/background-with-donkeys.jpg");
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center center;
 
     font-family: "Fredoka", serif;
     font-optical-sizing: auto;
@@ -98,6 +99,23 @@ svg .svg-shit {
     left: 0;
     margin: 30px;
     font-size: 20px;
+}
+
+#leaderboard {
+    position: fixed;
+    top: 100px;
+    left: 0;
+    margin: 30px;
+}
+
+#leaderboard h3 {
+    margin-top: 0;
+}
+
+#leaderboard-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 @keyframes emphasize {
