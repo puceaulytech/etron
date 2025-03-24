@@ -63,10 +63,6 @@ class GameGrid extends HTMLElement {
         this.hexRectangleWidth = 2 * this.hexRadius;
 
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
-        this.absoluteOffset = {
-            x: this.canvas.offsetLeft,
-            y: this.canvas.offsetTop,
-        };
 
         if (this.hasAttribute("grid")) this.redrawGrid();
     }
