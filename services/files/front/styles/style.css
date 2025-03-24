@@ -118,6 +118,17 @@ svg .svg-shit {
     gap: 10px;
 }
 
+.leaderboard-item {
+    display: flex;
+    background-image: url("/assets/wooden-plank.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    padding: 3px 20px;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 @keyframes emphasize {
     50% {
         transform: scale(1.2);

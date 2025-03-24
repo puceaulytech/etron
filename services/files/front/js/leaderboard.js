@@ -7,7 +7,7 @@ async function updateLeaderboard() {
 
     for (const userInfo of leaderboard) {
         const itemDiv = document.createElement("div");
-        itemDiv.style.display = "flex";
+        itemDiv.classList.add("leaderboard-item");
 
         const usernameDiv = document.createElement("div");
         usernameDiv.innerText = userInfo.username;
@@ -25,3 +25,5 @@ async function updateLeaderboard() {
         leaderboardItems.appendChild(itemDiv);
     }
 }
+
+updateLeaderboard();
