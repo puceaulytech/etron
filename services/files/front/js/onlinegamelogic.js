@@ -1,10 +1,22 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+const dialog = document.querySelector("app-dialog");
+const dialogReturn = document.querySelector("#dialog-return");
+const dialogPlayAgain = document.querySelector("#dialog-play-again");
+
 const myUserId = localStorage.getItem("userId");
 
 let inverted = false;
 
 waitingForOpponent.style.visibility = "visible";
+
+dialogReturn.addEventListener("click", () => {
+    location.assign("/");
+});
+
+dialogPlayAgain.addEventListener("click", () => {
+    location.reload();
+});
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
@@ -28,19 +40,36 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        waitingForOpponent.style.visibility = "hidden";
-
         const side = payload.sides[myUserId];
 
         inverted = side === "right";
 
-        if (inverted) {
-            gameGrid.setAttribute("inverted", "yes");
-        } else {
-            gameGrid.removeAttribute("inverted");
-        }
+        waitingForOpponent.style.visibility = "hidden";
 
-        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+        const gameResult = payload.result;
+
+        if (gameResult.type === "PLAYER_WIN") {
+            const myNb = side === "left" ? 1 : -1;
+
+            if (gameResult.winner === myNb) {
+                dialog.setAttribute("content", "You win!");
+            } else {
+                dialog.setAttribute("content", "You lost!");
+            }
+
+            dialog.setAttribute("show", "yes");
+        } else if (gameResult.type === "DRAW") {
+            dialog.setAttribute("content", "It's a draw!");
+            dialog.setAttribute("show", "yes");
+        } else {
+            if (inverted) {
+                gameGrid.setAttribute("inverted", "yes");
+            } else {
+                gameGrid.removeAttribute("inverted");
+            }
+
+            gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+        }
     });
 
     document.addEventListener("keydown", (event) => {

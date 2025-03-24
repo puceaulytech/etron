@@ -9,12 +9,14 @@
             href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
             rel="stylesheet"
         />
+        <link href="../styles/common.css" rel="stylesheet" />
         <link href="../styles/ingame.css" rel="stylesheet" />
 
         <script src="../js/constants.js"></script>
 
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
+        <script src="../components/dialog/dialog.js"></script>
 
         <script src="../js/authutils.js" defer></script>
         <script src="../js/socket.io.js" defer></script>
@@ -30,6 +32,17 @@
 
             <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
         </div>
+
+        <app-dialog>
+            <div slot="buttons" style="display: contents">
+                <button id="dialog-return" class="app-button">
+                    Return to home
+                </button>
+                <button id="dialog-play-again" class="app-button">
+                    Play again
+                </button>
+            </div>
+        </app-dialog>
 
         <div id="waiting-for-opponent" class="blur-overlay">
             <p>Waiting for opponent...</p>

@@ -56,14 +56,18 @@ function startGameLoop(io) {
                 if (socketId) {
                     const socket = io.sockets.sockets.get(socketId);
                     socket.emit("gamestate", {
-                        board: placePlayersInBoard(game.state),
+                        board: result.isUnfinished()
+                            ? placePlayersInBoard(game.state)
+                            : null,
                         result,
                         gameId: game.id,
                     });
                 }
             } else {
                 io.to(game.id).emit("gamestate", {
-                    board: placePlayersInBoard(game.state),
+                    board: result.isUnfinished()
+                        ? placePlayersInBoard(game.state)
+                        : null,
                     result,
                     gameId: game.id,
                     sides: {
