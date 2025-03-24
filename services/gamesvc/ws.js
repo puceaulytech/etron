@@ -70,7 +70,8 @@ function handleWS(httpServer) {
         try {
             const decoded = verifyAccessToken(jwt, accessToken);
             socket.userId = decoded._id;
-            storage.addClient(socket.userId, socket.id);
+            socket.ingame = socket.handshake.auth.ingame;
+            storage.addClient(socket.userId, socket.id, socket.ingame);
         } catch (err) {
             return next(new Error("Invalid token"));
         }
@@ -142,6 +143,8 @@ function handleWS(httpServer) {
                     userId: socket.userId,
                 },
             });
+
+            storage.clearEmptyGames();
         });
 
         socket.on("poll_notifs", () => {

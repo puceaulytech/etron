@@ -33,8 +33,8 @@ class Storage {
      * @param {string} clientId Client ID
      * @param {string} socket socket.io ID
      */
-    addClient(clientId, socketId) {
-        this.wsClients.set(clientId, socketId);
+    addClient(clientId, socketId, ingame) {
+        this.wsClients.set(clientId, { socketId, ingame });
     }
 
     /**
@@ -53,7 +53,19 @@ class Storage {
      * @returns {string} The socket.io ID
      */
     getClientSocketId(clientId) {
-        return this.wsClients.get(clientId);
+        const infos = this.wsClients.get(clientId);
+
+        if (!infos) return;
+
+        return infos.socketId;
+    }
+
+    isClientInGame(clientId) {
+        const infos = this.wsClients.get(clientId);
+
+        if (!infos) return;
+
+        return infos.ingame;
     }
 
     countClients() {
@@ -132,6 +144,34 @@ class Storage {
             }
 
             return null;
+        }
+    }
+
+    clearEmptyGames() {
+        const gamesToRemove = [];
+
+        for (const game of this.games.values()) {
+            if (game.ai) {
+                if (!this.isClientInGame(game.playerId)) {
+                    // Client has disconnected
+                    gamesToRemove.push(game.id);
+                }
+            } else {
+                if (!this.isClientInGame(game.firstPlayer)) {
+                    if (
+                        game.secondPlayer === undefined ||
+                        !this.isClientInGame(game.secondPlayer)
+                    ) {
+                        // Still in matchmaking
+                        gamesToRemove.push(game.id);
+                    }
+                }
+            }
+        }
+
+        for (const gameToRemove of gamesToRemove) {
+            this.games.delete(gameToRemove);
+            logger.debug(`removing game ${gameToRemove} because of inactivity`);
         }
     }
 }
