@@ -141,11 +141,13 @@ form.login-form {
 }
 
 form.login-form input {
-    width: 40%;
-    height: 30px;
+    width: 50%;
+    height: 40px;
+    font-size: 20px;
+    padding-left: 10px;
 }
 
-form.login-form input[type="submit"] {
+form.login-form button[type="submit"] {
     width: 9vw;
     height: auto;
     margin-top: 25px;
