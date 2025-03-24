@@ -122,6 +122,12 @@ svg .svg-shit {
 
     text-shadow: 2px 2px 5px #000000;
     color: white;
+
+    background-image: url("/assets/wooden-stick.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    padding-bottom: 60px;
 }
 
 .leaderboard-item {
