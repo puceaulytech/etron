@@ -21,6 +21,19 @@ const directions = [
 ];
 
 let lastMove;
+let mousePos;
+
+function computeMove(mouseX, mouseY) {
+    const vector = {
+        x: -mouseX + gameGrid.somePlayerPos.x + gameGrid.offsetLeft,
+        y: -mouseY + gameGrid.somePlayerPos.y + gameGrid.offsetTop,
+    };
+
+    let radians = Math.atan2(vector.y, vector.x);
+    let degrees = radians * (180 / Math.PI);
+
+    return getHexDirection(degrees + 180);
+}
 
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
@@ -58,27 +71,22 @@ socket.on("connect", async () => {
         } else if (gameResult.type === "DRAW") {
             dialog.setAttribute("content", "It's a draw!");
             dialog.setAttribute("show", "yes");
+        } else {
+            if (!mousePos) return;
+            const newMove = computeMove(mousePos.x, mousePos.y);
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
         }
     });
 
     document.addEventListener("mousemove", (event) => {
         if (!gameGrid.somePlayerPos) return;
 
-        const vector = {
-            x:
-                -event.clientX +
-                gameGrid.somePlayerPos.x +
-                gameGrid.absoluteOffset.x,
-            y:
-                -event.clientY +
-                gameGrid.somePlayerPos.y +
-                gameGrid.absoluteOffset.y,
-        };
-
-        let radians = Math.atan2(vector.y, vector.x);
-        let degrees = radians * (180 / Math.PI);
-
-        const newMove = getHexDirection(degrees + 180);
+        mousePos = { x: event.clientX, y: event.clientY };
+        const newMove = computeMove(event.clientX, event.clientY);
 
         if (newMove !== lastMove) {
             socket.emit("move", {
