@@ -92,14 +92,15 @@ class Storage {
         return id;
     }
 
-    createOrJoinGame(player) {
+    createOrJoinGame(playerId, playerUsername) {
         const freeGame = this.games
             .values()
             .find((g) => g.secondPlayer === null);
 
         if (freeGame) {
             logger.debug("there is a free game, joining...");
-            freeGame.secondPlayer = player;
+            freeGame.secondPlayer = playerId;
+            freeGame.secondPlayerUsername = playerUsername;
 
             logger.debug(
                 `starting game, ${freeGame.firstPlayer} vs ${freeGame.secondPlayer}`,
@@ -116,8 +117,10 @@ class Storage {
             ai: false,
             state: GameState.randomPositions(),
             lastTurnTime: Date.now(),
-            firstPlayer: player,
+            firstPlayer: playerId,
+            firstPlayerUsername: playerUsername,
             secondPlayer: null,
+            secondPlayerUsername: null,
             firstReady: false,
             secondReady: false,
         };
