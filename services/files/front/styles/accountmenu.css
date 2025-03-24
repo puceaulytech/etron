@@ -118,9 +118,8 @@
 
 .content-section#login-section #form-error {
     --main-red: #912020;
-    width: 50%;
-    height: 50px;
-    margin-bottom: 40px;
+    padding: 5px 20px;
+    margin: 0 10px 40px 10px;
     font-size: 20px;
     font-weight: bold;
     color: var(--main-red);
@@ -141,14 +140,13 @@ form.login-form {
 }
 
 form.login-form input {
-    width: 50%;
     height: 40px;
     font-size: 20px;
     padding-left: 10px;
 }
 
 form.login-form button[type="submit"] {
-    width: 9vw;
+    min-width: 150px;
     height: auto;
     margin-top: 25px;
 }
