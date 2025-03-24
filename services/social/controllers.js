@@ -33,6 +33,9 @@ const endpoints = {
         GET: chatEndpoints.getConversationWith,
         POST: chatEndpoints.sendMessage,
     },
+    leaderboard: {
+        GET: getLeaderboard,
+    },
 };
 
 /**
@@ -405,6 +408,18 @@ async function deleteFriendRequest(req, res) {
     );
 
     return { message: "Friend request deleted" };
+}
+
+const LEADBORD_LIMIT = 5;
+
+async function getLeaderboard(req, res) {
+    const userCollection = pool.get().collection("users");
+
+    const leaderboard = await userCollection
+        .aggregate([{ $sort: { elo: -1 } }, { $limit: LEADBORD_LIMIT }])
+        .toArray();
+
+    return leaderboard.map((user) => sanitizeUserInfo(user));
 }
 
 module.exports = createHandler(endpoints, (res) => {
