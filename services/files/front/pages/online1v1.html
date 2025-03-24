@@ -10,11 +10,17 @@
             rel="stylesheet"
         />
         <link href="../styles/ingame.css" rel="stylesheet" />
-        <script
-            src="../components/keyboardcontrols/keyboardcontrols.js"
-            defer
-        ></script>
-        <script src="../components/gamegrid/gamegrid.js" defer></script>
+
+        <script src="../js/constants.js"></script>
+
+        <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
+        <script src="../components/gamegrid/gamegrid.js"></script>
+
+        <script src="../js/authutils.js" defer></script>
+        <script src="../js/socket.io.js" defer></script>
+        <script src="../js/ws.js" defer></script>
+        <script src="../js/gameutils.js" defer></script>
+        <script src="../js/onlinegamelogic.js" defer></script>
     </head>
     <body>
         <div class="container">
@@ -28,12 +34,5 @@
         <div id="waiting-for-opponent" class="blur-overlay">
             <p>Waiting for opponent...</p>
         </div>
-
-        <script src="../js/constants.js"></script>
-        <script src="../js/authutils.js"></script>
-        <script src="../js/socket.io.js"></script>
-        <script src="../js/ws.js"></script>
-        <script src="../js/gameutils.js"></script>
-        <script src="../js/onlinegamelogic.js"></script>
     </body>
 </html>
