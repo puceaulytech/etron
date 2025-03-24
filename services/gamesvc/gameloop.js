@@ -7,7 +7,7 @@ const {
     GameResult,
 } = require("../helpers/gameutils");
 
-const TURN_TIME = 500;
+const TURN_TIME = 2000;
 
 let intervalId;
 
@@ -66,6 +66,14 @@ function startGameLoop(io) {
                     board: placePlayersInBoard(game.state),
                     result,
                     gameId: game.id,
+                    sides: {
+                        [game.firstPlayer]: "left",
+                        [game.secondPlayer]: "right",
+                    },
+                    positions: {
+                        [game.firstPlayer]: game.state.playerPosition,
+                        [game.secondPlayer]: game.state.opponentPosition,
+                    },
                 });
             }
 

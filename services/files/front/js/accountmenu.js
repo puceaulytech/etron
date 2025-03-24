@@ -92,6 +92,8 @@ async function updateAccountInfo() {
     await authenticatedFetch("/api/auth/me", {
         method: "GET",
     }).then(async (userInfo) => {
+        localStorage.setItem("userId", userInfo._id);
+
         const playerNameElement = document.querySelector(
             "#account-section #player-name",
         );

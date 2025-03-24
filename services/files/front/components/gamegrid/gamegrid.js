@@ -38,13 +38,17 @@ class GameGrid extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["grid"];
+        return ["grid", "inverted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "grid") {
             this.updateGrid(JSON.parse(newValue));
         }
+    }
+
+    isInverted() {
+        return this.getAttribute("inverted") !== null;
     }
 
     resizeCanvas() {
@@ -120,6 +124,12 @@ class GameGrid extends HTMLElement {
     }
 
     drawHexagon(x, y, filling, img) {
+        if (this.isInverted()) {
+            const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
+
+            x = rowWidth - 1 - x;
+        }
+
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
         const newX = x * this.hexRectangleWidth + xStart + this.offset;
         const newY = y * (this.sideLength + this.hexHeight) + this.offset;

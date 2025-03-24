@@ -1,5 +1,8 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+const myUserId = localStorage.getItem("userId");
+
+let inverted = false;
 
 waitingForOpponent.style.visibility = "visible";
 
@@ -27,6 +30,16 @@ socket.on("connect", async () => {
 
         waitingForOpponent.style.visibility = "hidden";
 
+        const side = payload.sides[myUserId];
+
+        inverted = side === "right";
+
+        if (inverted) {
+            gameGrid.setAttribute("inverted", "yes");
+        } else {
+            gameGrid.removeAttribute("inverted");
+        }
+
         gameGrid.setAttribute("grid", JSON.stringify(payload.board));
     });
 
@@ -36,37 +49,37 @@ socket.on("connect", async () => {
             case "q":
                 socket.emit("move", {
                     gameId,
-                    direction: "LEFT",
+                    direction: inverted ? "RIGHT" : "LEFT",
                 });
                 break;
             case "d":
                 socket.emit("move", {
                     gameId,
-                    direction: "RIGHT",
+                    direction: inverted ? "LEFT" : "RIGHT",
                 });
                 break;
             case "w":
                 socket.emit("move", {
                     gameId,
-                    direction: "BOTTOM_LEFT",
+                    direction: inverted ? "BOTTOM_RIGHT" : "BOTTOM_LEFT",
                 });
                 break;
             case "x":
                 socket.emit("move", {
                     gameId,
-                    direction: "BOTTOM_RIGHT",
+                    direction: inverted ? "BOTTOM_LEFT" : "BOTTOM_RIGHT",
                 });
                 break;
             case "z":
                 socket.emit("move", {
                     gameId,
-                    direction: "TOP_LEFT",
+                    direction: inverted ? "TOP_RIGHT" : "TOP_LEFT",
                 });
                 break;
             case "e":
                 socket.emit("move", {
                     gameId,
-                    direction: "TOP_RIGHT",
+                    direction: inverted ? "TOP_LEFT" : "TOP_RIGHT",
                 });
                 break;
         }

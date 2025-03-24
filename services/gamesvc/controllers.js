@@ -37,7 +37,7 @@ async function playAgainstAI(req, res) {
 async function getOngoingGames(req, res) {
     const userId = authenticate(req, res, jwt);
     const params = getQueryParams(req);
-    console.log(params);
+
     let ongoingGameId = storage.findGameByPlayerId(
         userId,
         params.get("gameMode"),
