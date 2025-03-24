@@ -51,3 +51,7 @@
     border: 3px solid green;
     border-radius: 4px;
 }
+.app-text-input:focus {
+    outline: 1px solid white;
+    box-shadow: 0 2px 8px rgba(0, 128, 0, 0.6);
+}
