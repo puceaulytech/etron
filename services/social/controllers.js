@@ -410,7 +410,7 @@ async function deleteFriendRequest(req, res) {
     return { message: "Friend request deleted" };
 }
 
-const LEADBORD_LIMIT = 5;
+const LEADBORD_LIMIT = 4;
 
 async function getLeaderboard(req, res) {
     const userCollection = pool.get().collection("users");

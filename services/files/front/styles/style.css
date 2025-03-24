@@ -103,9 +103,12 @@ svg .svg-shit {
 
 #leaderboard {
     position: fixed;
-    top: 100px;
+    top: 80px;
     left: 0;
     margin: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #leaderboard h3 {
@@ -116,6 +119,9 @@ svg .svg-shit {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    text-shadow: 2px 2px 5px #000000;
+    color: white;
 }
 
 .leaderboard-item {
