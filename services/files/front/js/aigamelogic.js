@@ -69,7 +69,7 @@ socket.on("connect", async () => {
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
             if (!mousePos) return;
-            const newMove = computeMove(mousePos.x, mousePos.y);
+            const newMove = computeMove(mousePos.x, mousePos.y, true);
             socket.emit("move", {
                 gameId,
                 direction: newMove,
@@ -84,7 +84,7 @@ socket.on("connect", async () => {
         if (!gameGrid.somePlayerPos) return;
 
         mousePos = { x: event.clientX, y: event.clientY };
-        const newMove = computeMove(event.clientX, event.clientY);
+        const newMove = computeMove(event.clientX, event.clientY, true);
 
         updateNextMousePos(newMove);
 
