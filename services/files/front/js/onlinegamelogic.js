@@ -12,6 +12,7 @@ let inverted = false;
 
 let lastMove;
 let mousePos;
+let gameId;
 
 waitingForOpponent.style.visibility = "visible";
 
@@ -28,7 +29,7 @@ socket.on("connect", async () => {
         "/api/gamesvc/ongoinggames?gameMode=online",
     );
 
-    let gameId = ongoingGamesResp.ongoingGameId;
+    gameId = ongoingGamesResp.ongoingGameId;
 
     if (ongoingGamesResp.ongoingGameId === null) {
         const body = await authenticatedFetch("/api/gamesvc/play", {
