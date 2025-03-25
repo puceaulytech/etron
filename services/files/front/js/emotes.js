@@ -13,9 +13,13 @@ function displayEmote(emoteChar, isFromOpponent) {
     } else {
         newEmote.style.left = "15%";
     }
+    newEmote.classList.add("animated-emote");
 
     document.body.appendChild(newEmote);
-    setTimeout(() => newEmote.remove(), 2000);
+    setTimeout(() => {
+        newEmote.classList.add("disappearing-emote");
+        setTimeout(() => newEmote.remove(), 450);
+    }, 1800);
 }
 
 const emotes = ["😂", "😎", "😡", "😭", "💩"];

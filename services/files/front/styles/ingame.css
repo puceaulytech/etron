@@ -85,3 +85,34 @@ game-grid {
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.animated-emote {
+    animation-name: slide-in;
+    animation-timing-function: ease-in-out;
+    animation-duration: 600ms;
+}
+.disappearing-emote {
+    animation-name: fade-out;
+    animation-duration: 350ms;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(500px);
+    }
+    70% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
