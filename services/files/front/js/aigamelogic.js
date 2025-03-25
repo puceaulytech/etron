@@ -50,7 +50,7 @@ socket.on("connect", async () => {
             if (gameResult.winner === 1) {
                 dialog.setAttribute("content", "You lost!");
             } else {
-                dialog.setAttribute("content", "You win!");
+                dialog.setAttribute("content", "You won!");
             }
 
             dialog.setAttribute("show", "yes");

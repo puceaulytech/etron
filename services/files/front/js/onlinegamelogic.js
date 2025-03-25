@@ -58,7 +58,7 @@ socket.on("connect", async () => {
             const myNb = side === "left" ? 1 : -1;
 
             if (gameResult.winner === myNb) {
-                dialog.setAttribute("content", "You win!");
+                dialog.setAttribute("content", "You won!");
             } else {
                 dialog.setAttribute("content", "You lost!");
             }
