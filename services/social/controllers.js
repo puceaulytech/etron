@@ -26,8 +26,11 @@ const endpoints = {
         GET: getFriends,
         POST: addFriend,
     },
-    users: {
+    searchuser: {
         GET: findUser,
+    },
+    users: {
+        GET: getUser,
     },
     chat: {
         GET: chatEndpoints.getConversationWith,
@@ -90,6 +93,25 @@ async function findUser(req, res) {
         })
         .toArray();
     return results.map(sanitizeUserInfo);
+}
+
+async function getUser(req, res) {
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const targetRawUserId = getLastSegment(req);
+    if (!targetRawUserId) {
+        sendError(res, 422, "E_MISSING_ID", "No user id provided");
+        return;
+    }
+
+    const targetUserId = ObjectId.createFromHexString(targetRawUserId);
+
+    const userCollection = pool.get().collection("users");
+
+    const targetUser = await userCollection.findOne({ _id: targetUserId });
+
+    return sanitizeUserInfo(targetUser);
 }
 
 /**

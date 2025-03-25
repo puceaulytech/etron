@@ -213,7 +213,7 @@ function userSearchInput() {
     if (input.length < 3) return;
 
     // Harmful injection possible?
-    authenticatedFetch(`/api/social/users?username=${input}`, {
+    authenticatedFetch(`/api/social/searchuser?username=${input}`, {
         method: "GET",
     }).then(async (users) => {
         searchResultsContainer.replaceChildren(

@@ -78,10 +78,6 @@ function startGameLoop(io) {
                         [game.firstPlayer]: game.state.playerPosition,
                         [game.secondPlayer]: game.state.opponentPosition,
                     },
-                    usernames: {
-                        [game.firstPlayer]: game.firstPlayerUsername,
-                        [game.secondPlayer]: game.secondPlayerUsername,
-                    },
                 });
             }
 
