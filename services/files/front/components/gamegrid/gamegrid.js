@@ -38,7 +38,7 @@ class GameGrid extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["grid", "inverted"];
+        return ["grid", "inverted", "playerpos"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -87,25 +87,12 @@ class GameGrid extends HTMLElement {
             for (let j = 0; j < board[i].length; j++) {
                 let filling;
                 switch (board[i][j]) {
-                    // case -2:
-                    //     filling = "#0362fc";
-                    //     break;
-                    // case 2:
-                    //     filling = "#f59c0c";
-                    //     break;
-                    // case -1:
-                    //     filling = "#062659";
-                    //     break;
-                    // case 1:
-                    //     filling = "#965e03";
-                    //     break;
                     default:
                         filling = "#3caf3c";
                 }
                 let image;
                 switch (board[i][j]) {
                     case -2:
-                        this.somePlayerArrayPos = { x: j, y: i };
                     case 2:
                         image = this.donkeyImg;
                         break;
@@ -120,16 +107,20 @@ class GameGrid extends HTMLElement {
     }
 
     drawHexagon(x, y, filling, img) {
-        if (this.isInverted()) {
-            const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
-
-            x = rowWidth - 1 - x;
-        }
+        const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
+        if (this.isInverted()) x = rowWidth - 1 - x;
 
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
         const newX = x * this.hexRectangleWidth + xStart + this.offset;
         const newY = y * (this.sideLength + this.hexHeight) + this.offset;
 
+        const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
+        this.somePlayerArrayPos = {
+            x: inverted
+                ? rowWidth - 1 - rowsColumnsThingy.column
+                : rowsColumnsThingy.column,
+            y: rowsColumnsThingy.row,
+        };
         if (
             this.somePlayerArrayPos.x === x &&
             this.somePlayerArrayPos.y === y &&

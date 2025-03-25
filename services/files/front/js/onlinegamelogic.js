@@ -8,6 +8,22 @@ const myUserId = localStorage.getItem("userId");
 
 let inverted = false;
 
+let lastMove;
+let mousePos;
+
+function computeMove(mouseX, mouseY, inverted) {
+    const vector = {
+        x: -mouseX + gameGrid.somePlayerPos.x + gameGrid.offsetLeft,
+        y: -mouseY + gameGrid.somePlayerPos.y + gameGrid.offsetTop,
+    };
+    if (inverted) vector.x *= -1;
+
+    let radians = Math.atan2(vector.y, vector.x);
+    let degrees = radians * (180 / Math.PI);
+
+    return getHexDirection(degrees + 180);
+}
+
 waitingForOpponent.style.visibility = "visible";
 
 dialogReturn.addEventListener("click", () => {
@@ -68,7 +84,33 @@ socket.on("connect", async () => {
                 gameGrid.removeAttribute("inverted");
             }
 
+            const myPos = payload.positions[myUserId];
+            gameGrid.setAttribute("playerpos", JSON.stringify(myPos));
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+
+            if (!mousePos || !gameGrid.somePlayerPos) return; // I don't know if this is necessary
+
+            const newMove = computeMove(mousePos.x, mousePos.y, inverted);
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
+        }
+    });
+
+    document.addEventListener("mousemove", (event) => {
+        mousePos = { x: event.clientX, y: event.clientY };
+        if (!gameGrid.somePlayerPos) return;
+
+        const newMove = computeMove(event.clientX, event.clientY, inverted);
+
+        if (newMove !== lastMove) {
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
         }
     });
 
@@ -114,3 +156,12 @@ socket.on("connect", async () => {
         }
     });
 });
+
+function getHexDirection(angle) {
+    if (angle >= 330 || angle < 30) return "RIGHT";
+    if (angle >= 30 && angle < 90) return "BOTTOM_RIGHT";
+    if (angle >= 90 && angle < 150) return "BOTTOM_LEFT";
+    if (angle >= 150 && angle < 210) return "LEFT";
+    if (angle >= 210 && angle < 270) return "TOP_LEFT";
+    if (angle >= 270 && angle < 330) return "TOP_RIGHT";
+}
