@@ -97,7 +97,10 @@ socket.on("connect", async () => {
         if (playerPos) {
             playerPos = JSON.parse(playerPos);
 
-            const nextMousePos = moveInDirection(playerPos, newMove);
+            const nextMousePos = moveInDirection(
+                { x: playerPos.column, y: playerPos.row },
+                newMove,
+            );
 
             gameGrid.setAttribute("nextmousepos", JSON.stringify(nextMousePos));
         }
