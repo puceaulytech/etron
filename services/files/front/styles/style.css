@@ -103,9 +103,8 @@ svg .svg-shit {
 
 #leaderboard {
     position: fixed;
-    top: 80px;
-    left: 0;
-    margin: 30px;
+    bottom: 0;
+    right: 225px;
     display: flex;
     flex-direction: column;
     align-items: center;
