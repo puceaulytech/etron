@@ -96,7 +96,9 @@ socket.on("connect", async () => {
 
                 authenticatedFetch(`/api/social/users/${opponentId}`).then(
                     (userInfo) => {
-                        console.log("opponent", userInfo);
+                        if (!userInfo) return;
+
+                        document.title = `eTron - Playing against ${userInfo.username}`;
 
                         opponentInfo = userInfo;
                     },
