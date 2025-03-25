@@ -37,7 +37,7 @@ function startGameLoop(io) {
             if (game.ai) {
                 // TODO: move this somewhere else so that it doesn't use game time to think?
                 const aiMove = stateless.nextMove(game.state);
-                game.state.move(PLAYER, aiMove);
+                game.state.moveTo(PLAYER, aiMove);
                 game.state.move(OPPONENT);
             } else {
                 game.state.move(PLAYER);
