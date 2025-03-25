@@ -98,6 +98,11 @@ async function updateAccountInfo() {
             "#account-section #player-name",
         );
         playerNameElement.textContent = userInfo.username;
+
+        const playerEloElement = document.querySelector(
+            "#account-section #player-elo",
+        );
+        playerEloElement.textContent = `ELO: ${Math.floor(userInfo.elo)}`;
     });
 }
 
@@ -257,6 +262,7 @@ async function updateFriendList() {
                 ...friends.map((user) => {
                     const elem = new FriendItem();
                     elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("user-elo", user.elo);
                     elem.setAttribute("username", user.username);
 
                     if (user.online) {

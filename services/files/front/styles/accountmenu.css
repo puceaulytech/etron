@@ -80,6 +80,11 @@
     font-size: 40px;
     font-weight: bolder;
     font-family: arial;
+    margin-bottom: 20px;
+}
+
+.content-section#account-section #player-elo {
+    font-size: 30px;
 }
 
 #search-container {

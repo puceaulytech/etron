@@ -6,6 +6,8 @@ const {
     GameState,
     GameResult,
 } = require("../helpers/gameutils");
+const { ObjectId } = require("mongodb");
+const pool = require("../helpers/db");
 
 const TURN_TIME = 2000;
 
@@ -84,8 +86,61 @@ function startGameLoop(io) {
             game.lastTurnTime = Date.now();
         }
 
-        for (const gameId of finishedGames) storage.games.delete(gameId);
+        for (const gameId of finishedGames) {
+            const game = storage.games.get(gameId);
+            if (!game.ai) {
+                handleScore(
+                    game.firstPlayer,
+                    game.secondPlayer,
+                    game.state.gameResult(),
+                );
+            }
+
+            storage.games.delete(gameId);
+        }
     }, 20);
+}
+
+const ELO_K = 40;
+
+async function handleScore(rawFirstPlayerId, rawSecondPlayerId, result) {
+    if (result.type === "PLAYER_WIN") {
+        const firstPlayerId = ObjectId.createFromHexString(rawFirstPlayerId);
+        const secondPlayerId = ObjectId.createFromHexString(rawSecondPlayerId);
+
+        const userCollection = pool.get().collection("users");
+
+        const firstPlayer = await userCollection.findOne({
+            _id: firstPlayerId,
+        });
+        const secondPlayer = await userCollection.findOne({
+            _id: secondPlayerId,
+        });
+
+        const firstPlayerExpected =
+            1 / (1 + Math.pow(10, (secondPlayer.elo - firstPlayer.elo) / 400));
+        const secondPlayerExpected =
+            1 / (1 + Math.pow(10, (firstPlayer.elo - secondPlayer.elo) / 400));
+
+        const firstPlayerOutcome = result.winner === 1 ? 1 : 0;
+        const secondPlayerOutcome = result.winner === -1 ? 1 : 0;
+
+        const firstPlayerNew =
+            firstPlayer.elo +
+            ELO_K * (firstPlayerOutcome - firstPlayerExpected);
+        const secondPlayerNew =
+            secondPlayer.elo +
+            ELO_K * (secondPlayerOutcome - secondPlayerExpected);
+
+        await userCollection.updateOne(
+            { _id: firstPlayerId },
+            { $set: { elo: firstPlayerNew } },
+        );
+        await userCollection.updateOne(
+            { _id: secondPlayerId },
+            { $set: { elo: secondPlayerNew } },
+        );
+    }
 }
 
 function stopGameLoop() {
