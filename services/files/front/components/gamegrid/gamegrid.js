@@ -42,12 +42,14 @@ class GameGrid extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["grid", "inverted", "playerpos"];
+        return ["grid", "inverted", "playerpos", "nextmousepos"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "grid") {
             this.updateGrid(JSON.parse(newValue));
+        } else if (name === "nextmousepos") {
+            this.redrawGrid();
         }
     }
 
@@ -87,13 +89,22 @@ class GameGrid extends HTMLElement {
     }
 
     drawBoard(board) {
+        const nextMousePos = this.hasAttribute("nextmousepos")
+            ? JSON.parse(this.getAttribute("nextmousepos"))
+            : null;
+
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                let filling;
-                switch (board[i][j]) {
-                    default:
-                        filling = "#3caf3c";
+                let filling = "#3caf3c";
+
+                if (
+                    nextMousePos &&
+                    nextMousePos.y == i &&
+                    nextMousePos.x == j
+                ) {
+                    filling = "#ff0000";
                 }
+
                 let image;
                 switch (board[i][j]) {
                     case -2:
