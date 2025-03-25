@@ -23,15 +23,7 @@ const endpoints = {
 async function play(req, res) {
     const rawUserId = authenticate(req, res, jwt);
 
-    const userId = ObjectId.createFromHexString(rawUserId);
-
-    const userCollection = pool.get().collection("users");
-
-    const currentUser = await userCollection.findOne({
-        _id: userId,
-    });
-
-    const gameId = storage.createOrJoinGame(rawUserId, currentUser.username);
+    const gameId = storage.createOrJoinGame(rawUserId);
 
     return { gameId };
 }
