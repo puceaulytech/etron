@@ -74,19 +74,18 @@ const contentSections = document.querySelectorAll(
     "#menu-content .content-section",
 );
 
-document
-    .querySelectorAll("#menu-header .section")
-    .entries()
-    .forEach((entry) => {
-        const section = entry[1];
-        sectionBindings.set(section, contentSections[entry[0]]);
-        section.addEventListener("click", () => {
-            if (section === currentSection) return;
-            selectNewSection(section);
-            unselectOldSection(currentSection);
-            currentSection = section;
-        });
+Array.from(
+    document.querySelectorAll("#menu-header .section").entries(),
+).forEach((entry) => {
+    const section = entry[1];
+    sectionBindings.set(section, contentSections[entry[0]]);
+    section.addEventListener("click", () => {
+        if (section === currentSection) return;
+        selectNewSection(section);
+        unselectOldSection(currentSection);
+        currentSection = section;
     });
+});
 
 async function updateAccountInfo() {
     await authenticatedFetch("/api/auth/me", {
