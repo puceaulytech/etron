@@ -100,7 +100,6 @@ function handleWS(httpServer) {
         });
 
         socket.on("move", (payload) => {
-            console.log(payload);
             // TODO: check payload coming from client
             const game = storage.games.get(payload.gameId);
 
@@ -110,7 +109,7 @@ function handleWS(httpServer) {
             /** @type {GameState} */
             const gameState = game.state;
 
-            if (gameState.ai) {
+            if (game.ai) {
                 gameState.setPlayerDirection(
                     OPPONENT,
                     new Direction(payload.direction),
@@ -123,6 +122,27 @@ function handleWS(httpServer) {
                     currentPlayer,
                     new Direction(payload.direction),
                 );
+            }
+        });
+
+        socket.on("emote", (payload) => {
+            const game = storage.games.get(payload.gameId);
+
+            // Game doesn't exist, ignore
+            if (!game) return;
+            if (game.ai) return;
+
+            const receiver =
+                socket.userId === game.firstPlayer
+                    ? game.secondPlayer
+                    : game.firstPlayer;
+
+            const socketId = storage.getClientSocketId(receiver);
+
+            if (socketId) {
+                const socket = io.sockets.sockets.get(socketId);
+
+                socket.emit("emote", payload);
             }
         });
 
