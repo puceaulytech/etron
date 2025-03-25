@@ -15,6 +15,7 @@ body {
     background-image: url("../assets/background-with-donkeys.jpg");
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center center;
 
     font-family: "Fredoka", serif;
     font-optical-sizing: auto;
@@ -98,6 +99,45 @@ svg .svg-shit {
     left: 0;
     margin: 30px;
     font-size: 20px;
+}
+
+#leaderboard {
+    position: fixed;
+    bottom: 0;
+    right: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#leaderboard h3 {
+    margin-top: 0;
+}
+
+#leaderboard-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    text-shadow: 2px 2px 5px #000000;
+    color: white;
+
+    background-image: url("/assets/wooden-stick.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    padding-bottom: 60px;
+}
+
+.leaderboard-item {
+    display: flex;
+    background-image: url("/assets/wooden-plank.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    padding: 3px 20px;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 @keyframes emphasize {

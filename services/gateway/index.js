@@ -56,9 +56,6 @@ const server = http.createServer(function (req, res) {
         } else if (filePath[1] === "socket.io") {
             proxy.web(req, res, { target: microservices["gamesvc"] });
         } else {
-            logger.debug(
-                "request for a file received, transferring to the file service",
-            );
             proxy.web(req, res, { target: `http://${filesAddr}` });
         }
     } catch (error) {

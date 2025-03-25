@@ -4,7 +4,7 @@
         <title>eTron</title>
         <meta charset="utf-8" />
         <meta name="description" content="A TRON game with donkeys" />
-        <link rel="icon" href="favicon.png" />
+        <link rel="icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,9 +31,16 @@
         <script src="js/accountmenu.js" defer></script>
         <script src="js/chatoverlay.js" defer></script>
         <script src="js/mainmenu.js" defer></script>
+        <script src="js/leaderboard.js" defer></script>
     </head>
     <body>
         <p id="online-count"></p>
+
+        <div id="leaderboard">
+            <h3>Leaderboard</h3>
+
+            <div id="leaderboard-items"></div>
+        </div>
 
         <h2 id="main-title">eTron</h2>
 
@@ -80,6 +87,7 @@
                 <div class="content-section" id="account-section">
                     <h1>Welcome to your account</h1>
                     <p id="player-name">PLAYER</p>
+                    <p id="player-elo">ELO: 1500</p>
                     <p>Here you can manage your account details.</p>
                     <p class="app-button" onclick="logOut()">Log out</p>
                 </div>

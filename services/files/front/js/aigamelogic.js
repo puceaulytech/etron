@@ -23,18 +23,6 @@ const directions = [
 let lastMove;
 let mousePos;
 
-function computeMove(mouseX, mouseY) {
-    const vector = {
-        x: -mouseX + gameGrid.somePlayerPos.x + gameGrid.offsetLeft,
-        y: -mouseY + gameGrid.somePlayerPos.y + gameGrid.offsetTop,
-    };
-
-    let radians = Math.atan2(vector.y, vector.x);
-    let degrees = radians * (180 / Math.PI);
-
-    return getHexDirection(degrees + 180);
-}
-
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
         "/api/gamesvc/ongoinggames?gameMode=ai",
@@ -57,11 +45,9 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        gameGrid.setAttribute("grid", JSON.stringify(payload.board));
-
         const gameResult = payload.result;
         if (gameResult.type === "PLAYER_WIN") {
-            if (gameResult.winner == 1) {
+            if (gameResult.winner === 1) {
                 dialog.setAttribute("content", "You lost!");
             } else {
                 dialog.setAttribute("content", "You win!");
@@ -72,13 +58,25 @@ socket.on("connect", async () => {
             dialog.setAttribute("content", "It's a draw!");
             dialog.setAttribute("show", "yes");
         } else {
+            const playerPos = findPlayerPos(payload.board);
+            gameGrid.setAttribute(
+                "playerpos",
+                JSON.stringify({
+                    column: playerPos.x,
+                    row: playerPos.y,
+                }),
+            );
+            gameGrid.setAttribute("grid", JSON.stringify(payload.board));
+
             if (!mousePos) return;
-            const newMove = computeMove(mousePos.x, mousePos.y);
+            const newMove = computeMove(mousePos.x, mousePos.y, true);
             socket.emit("move", {
                 gameId,
                 direction: newMove,
             });
             lastMove = newMove;
+
+            updateNextMousePos(newMove);
         }
     });
 
@@ -86,7 +84,9 @@ socket.on("connect", async () => {
         if (!gameGrid.somePlayerPos) return;
 
         mousePos = { x: event.clientX, y: event.clientY };
-        const newMove = computeMove(event.clientX, event.clientY);
+        const newMove = computeMove(event.clientX, event.clientY, true);
+
+        updateNextMousePos(newMove);
 
         if (newMove !== lastMove) {
             socket.emit("move", {
@@ -146,13 +146,4 @@ function findPlayerPos(board) {
             if (board[i][j] === -2) return { x: j, y: i };
         }
     }
-}
-
-function getHexDirection(angle) {
-    if (angle >= 330 || angle < 30) return "RIGHT";
-    if (angle >= 30 && angle < 90) return "BOTTOM_RIGHT";
-    if (angle >= 90 && angle < 150) return "BOTTOM_LEFT";
-    if (angle >= 150 && angle < 210) return "LEFT";
-    if (angle >= 210 && angle < 270) return "TOP_LEFT";
-    if (angle >= 270 && angle < 330) return "TOP_RIGHT";
 }

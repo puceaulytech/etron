@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf-8" />
         <title>éTronc</title>
+        <meta name="description" content="A TRON game with donkeys" />
+        <link rel="icon" href="/favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -13,6 +16,7 @@
         <link href="../styles/ingame.css" rel="stylesheet" />
 
         <script src="../js/constants.js"></script>
+        <script src="../js/mousemovement.js"></script>
 
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
@@ -28,7 +32,7 @@
         <div class="container">
             <div></div>
 
-            <game-grid></game-grid>
+            <game-grid inverted crosshair></game-grid>
 
             <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
 

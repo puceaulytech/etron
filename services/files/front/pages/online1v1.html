@@ -2,34 +2,60 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>éTronc</title>
+        <title>eTron</title>
+        <meta name="description" content="A TRON game with donkeys" />
+        <link rel="icon" href="/favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
             rel="stylesheet"
         />
+        <link href="../styles/common.css" rel="stylesheet" />
         <link href="../styles/ingame.css" rel="stylesheet" />
 
         <script src="../js/constants.js"></script>
+        <script src="../js/mousemovement.js"></script>
 
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
+        <script src="../components/dialog/dialog.js"></script>
 
         <script src="../js/authutils.js" defer></script>
         <script src="../js/socket.io.js" defer></script>
         <script src="../js/ws.js" defer></script>
+        <script src="../js/emotes.js" defer></script>
         <script src="../js/gameutils.js" defer></script>
         <script src="../js/onlinegamelogic.js" defer></script>
     </head>
     <body>
         <div class="container">
-            <div></div>
-
-            <game-grid></game-grid>
-
             <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+
+            <game-grid crosshair></game-grid>
+
+            <div id="emote-container">
+                <h1>Emotes</h1>
+                <div class="emote-item" id="emote-template">
+                    <div class="dialogue-container">
+                        <span class="emote"></span>
+                    </div>
+                    <div class="emote-number"></div>
+                </div>
+            </div>
         </div>
+
+        <app-dialog>
+            <div slot="buttons" style="display: contents">
+                <button id="dialog-return" class="app-button">
+                    Return to home
+                </button>
+                <button id="dialog-play-again" class="app-button">
+                    Play again
+                </button>
+            </div>
+        </app-dialog>
 
         <div id="waiting-for-opponent" class="blur-overlay">
             <p>Waiting for opponent...</p>

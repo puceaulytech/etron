@@ -24,6 +24,49 @@ game-grid {
     height: 100%;
 }
 
+#emote-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+#emote-container h1 {
+    margin-bottom: 20px;
+}
+
+#emote-template {
+    display: none;
+}
+.emote-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.dialogue-container {
+    max-width: 300px;
+    background-color: white;
+    border: 2px solid #333;
+    border-radius: 15px 15px 0 15px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.emote {
+    font-size: 48px;
+    text-align: center;
+}
+
+.emote-number {
+    background-color: white;
+    border: 2px solid #333;
+    font-size: 20px;
+    text-align: center;
+    width: 3ex;
+    height: 3ex;
+    line-height: 3ex;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .blur-overlay {
     visibility: hidden;
     position: fixed;
@@ -41,4 +84,35 @@ game-grid {
     font-size: 40px;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+.animated-emote {
+    animation-name: slide-in;
+    animation-timing-function: ease-in-out;
+    animation-duration: 600ms;
+}
+.disappearing-emote {
+    animation-name: fade-out;
+    animation-duration: 350ms;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(500px);
+    }
+    70% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }

@@ -26,12 +26,18 @@ const endpoints = {
         GET: getFriends,
         POST: addFriend,
     },
-    users: {
+    searchuser: {
         GET: findUser,
+    },
+    users: {
+        GET: getUser,
     },
     chat: {
         GET: chatEndpoints.getConversationWith,
         POST: chatEndpoints.sendMessage,
+    },
+    leaderboard: {
+        GET: getLeaderboard,
     },
 };
 
@@ -90,6 +96,25 @@ async function findUser(req, res) {
         })
         .toArray();
     return results.map(sanitizeUserInfo);
+}
+
+async function getUser(req, res) {
+    const rawUserId = authenticate(req, res, jwt);
+    if (!rawUserId) return;
+
+    const targetRawUserId = getLastSegment(req);
+    if (!targetRawUserId) {
+        sendError(res, 422, "E_MISSING_ID", "No user id provided");
+        return;
+    }
+
+    const targetUserId = ObjectId.createFromHexString(targetRawUserId);
+
+    const userCollection = pool.get().collection("users");
+
+    const targetUser = await userCollection.findOne({ _id: targetUserId });
+
+    return sanitizeUserInfo(targetUser);
 }
 
 /**
@@ -405,6 +430,18 @@ async function deleteFriendRequest(req, res) {
     );
 
     return { message: "Friend request deleted" };
+}
+
+const LEADBORD_LIMIT = 4;
+
+async function getLeaderboard(req, res) {
+    const userCollection = pool.get().collection("users");
+
+    const leaderboard = await userCollection
+        .aggregate([{ $sort: { elo: -1 } }, { $limit: LEADBORD_LIMIT }])
+        .toArray();
+
+    return leaderboard.map((user) => sanitizeUserInfo(user));
 }
 
 module.exports = createHandler(endpoints, (res) => {

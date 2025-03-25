@@ -2,6 +2,8 @@ const storage = require("./storage");
 const jwt = require("jsonwebtoken");
 const { createHandler, getQueryParams } = require("../helpers/http");
 const { authenticate } = require("../helpers/tokens");
+const { ObjectId } = require("mongodb");
+const pool = require("../helpers/db");
 
 const endpoints = {
     ongoinggames: {
@@ -19,17 +21,17 @@ const endpoints = {
 };
 
 async function play(req, res) {
-    const userId = authenticate(req, res, jwt);
+    const rawUserId = authenticate(req, res, jwt);
 
-    const gameId = storage.createOrJoinGame(userId);
+    const gameId = storage.createOrJoinGame(rawUserId);
 
     return { gameId };
 }
 
 async function playAgainstAI(req, res) {
-    const userId = authenticate(req, res, jwt);
+    const rawUserId = authenticate(req, res, jwt);
 
-    const gameId = storage.createAIGame(userId);
+    const gameId = storage.createAIGame(rawUserId);
 
     return { gameId };
 }
@@ -37,7 +39,7 @@ async function playAgainstAI(req, res) {
 async function getOngoingGames(req, res) {
     const userId = authenticate(req, res, jwt);
     const params = getQueryParams(req);
-    console.log(params);
+
     let ongoingGameId = storage.findGameByPlayerId(
         userId,
         params.get("gameMode"),

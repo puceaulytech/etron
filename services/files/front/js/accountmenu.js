@@ -92,10 +92,17 @@ async function updateAccountInfo() {
     await authenticatedFetch("/api/auth/me", {
         method: "GET",
     }).then(async (userInfo) => {
+        localStorage.setItem("userId", userInfo._id);
+
         const playerNameElement = document.querySelector(
             "#account-section #player-name",
         );
         playerNameElement.textContent = userInfo.username;
+
+        const playerEloElement = document.querySelector(
+            "#account-section #player-elo",
+        );
+        playerEloElement.textContent = `ELO: ${Math.floor(userInfo.elo)}`;
     });
 }
 
@@ -211,7 +218,7 @@ function userSearchInput() {
     if (input.length < 3) return;
 
     // Harmful injection possible?
-    authenticatedFetch(`/api/social/users?username=${input}`, {
+    authenticatedFetch(`/api/social/searchuser?username=${input}`, {
         method: "GET",
     }).then(async (users) => {
         searchResultsContainer.replaceChildren(
@@ -255,6 +262,7 @@ async function updateFriendList() {
                 ...friends.map((user) => {
                     const elem = new FriendItem();
                     elem.setAttribute("user-id", user._id);
+                    elem.setAttribute("user-elo", user.elo);
                     elem.setAttribute("username", user.username);
 
                     if (user.online) {

@@ -8,6 +8,9 @@ class GameGrid extends HTMLElement {
         this.merdeImg = new Image();
         this.merdeImg.src = "../assets/merde.png";
 
+        this.footprintImg = new Image();
+        this.footprintImg.src = "../assets/footprint.png";
+
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
@@ -18,6 +21,10 @@ class GameGrid extends HTMLElement {
             justify-content: center;
             align-items: center;
         `;
+
+        if (this.getAttribute("crosshair") !== undefined) {
+            this.wrappingDiv.style.cursor = "crosshair";
+        }
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "hexmap";
@@ -38,13 +45,19 @@ class GameGrid extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["grid"];
+        return ["grid", "inverted", "playerpos", "nextmousepos"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "grid") {
             this.updateGrid(JSON.parse(newValue));
+        } else if (name === "nextmousepos") {
+            this.redrawGrid();
         }
+    }
+
+    isInverted() {
+        return this.getAttribute("inverted") !== null;
     }
 
     resizeCanvas() {
@@ -79,29 +92,17 @@ class GameGrid extends HTMLElement {
     }
 
     drawBoard(board) {
+        const nextMousePos = this.hasAttribute("nextmousepos")
+            ? JSON.parse(this.getAttribute("nextmousepos"))
+            : null;
+
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                let filling;
-                switch (board[i][j]) {
-                    // case -2:
-                    //     filling = "#0362fc";
-                    //     break;
-                    // case 2:
-                    //     filling = "#f59c0c";
-                    //     break;
-                    // case -1:
-                    //     filling = "#062659";
-                    //     break;
-                    // case 1:
-                    //     filling = "#965e03";
-                    //     break;
-                    default:
-                        filling = "#3caf3c";
-                }
+                let filling = "#3caf3c";
+
                 let image;
                 switch (board[i][j]) {
                     case -2:
-                        this.somePlayerArrayPos = { x: j, y: i };
                     case 2:
                         image = this.donkeyImg;
                         break;
@@ -110,20 +111,41 @@ class GameGrid extends HTMLElement {
                         image = this.merdeImg;
                         break;
                 }
-                this.drawHexagon(j, i, filling, image);
+
+                let overImage;
+                if (
+                    nextMousePos &&
+                    nextMousePos.y == i &&
+                    nextMousePos.x == j
+                ) {
+                    overImage = this.footprintImg;
+                }
+
+                this.drawHexagon(j, i, filling, image, overImage);
             }
         }
     }
 
-    drawHexagon(x, y, filling, img) {
+    drawHexagon(x, y, filling, underImg, overImg) {
+        const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
+        const isInverted = this.isInverted();
+        if (isInverted) x = rowWidth - 1 - x;
+
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
         const newX = x * this.hexRectangleWidth + xStart + this.offset;
         const newY = y * (this.sideLength + this.hexHeight) + this.offset;
 
+        const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
+        this.somePlayerArrayPos = {
+            x: isInverted
+                ? rowWidth - 1 - rowsColumnsThingy.column
+                : rowsColumnsThingy.column,
+            y: rowsColumnsThingy.row,
+        };
         if (
             this.somePlayerArrayPos.x === x &&
             this.somePlayerArrayPos.y === y &&
-            img === this.donkeyImg
+            underImg === this.donkeyImg
         ) {
             this.somePlayerPos = {
                 x: newX + this.hexRadius,
@@ -149,7 +171,7 @@ class GameGrid extends HTMLElement {
         }
         this.ctx.stroke();
 
-        if (img) {
+        const drawImg = (img) => {
             this.ctx.drawImage(
                 img,
                 newX,
@@ -157,8 +179,11 @@ class GameGrid extends HTMLElement {
                 this.hexRectangleWidth,
                 this.hexRectangleHeight,
             );
-            return;
-        }
+        };
+
+        if (underImg) drawImg(underImg);
+
+        if (overImg) drawImg(overImg);
     }
 }
 
