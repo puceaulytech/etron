@@ -108,7 +108,8 @@ class GameGrid extends HTMLElement {
 
     drawHexagon(x, y, filling, img) {
         const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
-        if (this.isInverted()) x = rowWidth - 1 - x;
+        const isInverted = this.isInverted();
+        if (isInverted) x = rowWidth - 1 - x;
 
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
         const newX = x * this.hexRectangleWidth + xStart + this.offset;
@@ -116,7 +117,7 @@ class GameGrid extends HTMLElement {
 
         const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
         this.somePlayerArrayPos = {
-            x: inverted
+            x: isInverted
                 ? rowWidth - 1 - rowsColumnsThingy.column
                 : rowsColumnsThingy.column,
             y: rowsColumnsThingy.row,

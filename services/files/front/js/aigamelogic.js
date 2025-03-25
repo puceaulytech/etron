@@ -70,6 +70,14 @@ socket.on("connect", async () => {
             dialog.setAttribute("content", "It's a draw!");
             dialog.setAttribute("show", "yes");
         } else {
+            const playerPos = findPlayerPos(payload.board);
+            gameGrid.setAttribute(
+                "playerpos",
+                JSON.stringify({
+                    column: playerPos.x,
+                    row: playerPos.y,
+                }),
+            );
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
             if (!mousePos) return;
