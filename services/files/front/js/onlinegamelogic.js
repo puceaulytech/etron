@@ -86,6 +86,8 @@ socket.on("connect", async () => {
             });
             lastMove = newMove;
 
+            updateNextMousePos(newMove);
+
             if (!opponentInfo) {
                 const opponentId = Object.keys(payload.sides).find(
                     (id) => id !== myUserId,
@@ -108,18 +110,7 @@ socket.on("connect", async () => {
 
         const newMove = computeMove(event.clientX, event.clientY, inverted);
 
-        let playerPos = gameGrid.getAttribute("playerpos");
-
-        if (playerPos) {
-            playerPos = JSON.parse(playerPos);
-
-            const nextMousePos = moveInDirection(
-                { x: playerPos.column, y: playerPos.row },
-                newMove,
-            );
-
-            gameGrid.setAttribute("nextmousepos", JSON.stringify(nextMousePos));
-        }
+        updateNextMousePos(newMove);
 
         if (newMove !== lastMove) {
             socket.emit("move", {

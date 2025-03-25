@@ -52,3 +52,18 @@ function moveInDirection(pos, dir) {
     }
     return { x: pos.x + delta.x, y: pos.y + delta.y };
 }
+
+function updateNextMousePos(newMove) {
+    let playerPos = gameGrid.getAttribute("playerpos");
+
+    if (playerPos) {
+        playerPos = JSON.parse(playerPos);
+
+        const nextMousePos = moveInDirection(
+            { x: playerPos.column, y: playerPos.row },
+            newMove,
+        );
+
+        gameGrid.setAttribute("nextmousepos", JSON.stringify(nextMousePos));
+    }
+}
