@@ -19,6 +19,10 @@ class GameGrid extends HTMLElement {
             align-items: center;
         `;
 
+        if (this.getAttribute("crosshair") !== undefined) {
+            this.wrappingDiv.style.cursor = "crosshair";
+        }
+
         this.canvas = document.createElement("canvas");
         this.canvas.id = "hexmap";
 
