@@ -127,6 +127,20 @@ function focusSectionByName(sectionName) {
     }
 }
 
+const passwordToggle = document.querySelector("#password-toggle");
+passwordToggle.addEventListener("click", () => {
+    const passwordInput = document.querySelector(
+        "form.login-form input[name='password']",
+    );
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        passwordToggle.classList.add("always-visible");
+    } else {
+        passwordInput.type = "password";
+        passwordToggle.classList.remove("always-visible");
+    }
+});
+
 /**
  * @param {SubmitEvent} event
  */
