@@ -8,6 +8,9 @@ class GameGrid extends HTMLElement {
         this.merdeImg = new Image();
         this.merdeImg.src = "../assets/merde.png";
 
+        this.footprintImg = new Image();
+        this.footprintImg.src = "../assets/footprint.png";
+
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
@@ -97,14 +100,6 @@ class GameGrid extends HTMLElement {
             for (let j = 0; j < board[i].length; j++) {
                 let filling = "#3caf3c";
 
-                if (
-                    nextMousePos &&
-                    nextMousePos.y == i &&
-                    nextMousePos.x == j
-                ) {
-                    filling = "#ff0000";
-                }
-
                 let image;
                 switch (board[i][j]) {
                     case -2:
@@ -116,12 +111,22 @@ class GameGrid extends HTMLElement {
                         image = this.merdeImg;
                         break;
                 }
-                this.drawHexagon(j, i, filling, image);
+
+                let overImage;
+                if (
+                    nextMousePos &&
+                    nextMousePos.y == i &&
+                    nextMousePos.x == j
+                ) {
+                    overImage = this.footprintImg;
+                }
+
+                this.drawHexagon(j, i, filling, image, overImage);
             }
         }
     }
 
-    drawHexagon(x, y, filling, img) {
+    drawHexagon(x, y, filling, underImg, overImg) {
         const rowWidth = y % 2 == 0 ? BOARD_WIDTH : BOARD_WIDTH - 1;
         const isInverted = this.isInverted();
         if (isInverted) x = rowWidth - 1 - x;
@@ -140,7 +145,7 @@ class GameGrid extends HTMLElement {
         if (
             this.somePlayerArrayPos.x === x &&
             this.somePlayerArrayPos.y === y &&
-            img === this.donkeyImg
+            underImg === this.donkeyImg
         ) {
             this.somePlayerPos = {
                 x: newX + this.hexRadius,
@@ -166,7 +171,7 @@ class GameGrid extends HTMLElement {
         }
         this.ctx.stroke();
 
-        if (img) {
+        const drawImg = (img) => {
             this.ctx.drawImage(
                 img,
                 newX,
@@ -174,8 +179,11 @@ class GameGrid extends HTMLElement {
                 this.hexRectangleWidth,
                 this.hexRectangleHeight,
             );
-            return;
-        }
+        };
+
+        if (underImg) drawImg(underImg);
+
+        if (overImg) drawImg(overImg);
     }
 }
 
