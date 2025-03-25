@@ -6,6 +6,8 @@ const dialogPlayAgain = document.querySelector("#dialog-play-again");
 
 const myUserId = localStorage.getItem("userId");
 
+let opponentInfo;
+
 let inverted = false;
 
 let lastMove;
@@ -83,6 +85,20 @@ socket.on("connect", async () => {
                 direction: newMove,
             });
             lastMove = newMove;
+
+            if (!opponentInfo) {
+                const opponentId = Object.keys(payload.sides).find(
+                    (id) => id !== myUserId,
+                );
+
+                authenticatedFetch(`/api/social/users/${opponentId}`).then(
+                    (userInfo) => {
+                        console.log("opponent", userInfo);
+
+                        opponentInfo = userInfo;
+                    },
+                );
+            }
         }
     });
 
