@@ -124,6 +124,10 @@
                             placeholder="Username"
                             required
                             autocomplete="on"
+                            pattern="[a-zA-Z0-9._]"
+                            title="Must be 3-25 characters long and contain only letters, numbers, '.', and '_'"
+                            minlength="3"
+                            maxlength="25"
                         />
                         <div id="password-container">
                             <input
