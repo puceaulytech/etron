@@ -149,7 +149,7 @@ class GameGrid extends HTMLElement {
         ) {
             this.somePlayerPos = {
                 x: newX + this.hexRadius,
-                y: newY + this.hexRadius,
+                y: newY + 120, // do not ask questions
             };
         }
 
