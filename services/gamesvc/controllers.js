@@ -66,7 +66,9 @@ async function getOngoingGames(req, res) {
     }
 
     const game = storage.games.get(ongoingGameId);
-    const notReady = !!game.challenge;
+    let notReady = null;
+
+    if (game) notReady = !!game.challenge;
 
     // Because ongoingGameId is undefined, it doesn't even appear as a JSON key, because JS
     if (!ongoingGameId) ongoingGameId = null;
