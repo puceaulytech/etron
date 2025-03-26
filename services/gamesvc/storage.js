@@ -152,6 +152,8 @@ class Storage {
             lastTurnTime: Date.now(),
             firstPlayer: firstPlayerId,
             secondPlayer: secondPlayerId,
+            firstPlayerRoundWon: 0,
+            secondPlayerRoundWon: 0,
             firstReady: false,
             secondReady: false,
             challenge: true,
