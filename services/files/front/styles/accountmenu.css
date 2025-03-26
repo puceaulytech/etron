@@ -103,10 +103,15 @@
 }
 
 #search-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
     width: 30px;
     height: 30px;
-    border: 2px solid black;
     padding: 8px;
+    border: 3px solid black;
+    cursor: pointer;
 }
 
 #search-results {
