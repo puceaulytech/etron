@@ -33,6 +33,9 @@ class FriendItem extends HTMLElement {
         fightButton.classList.add("button");
         chatButton.classList.add("button");
 
+        fightButton.title = "Challenge friend";
+        chatButton.title = "Chat with friend";
+
         this.fightIconPath = "/assets/fight-icon.svg";
         this.feedbackIconPath = "/assets/check.png";
 
