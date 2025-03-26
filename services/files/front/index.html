@@ -22,16 +22,17 @@
         <script src="components/searchresult/searchresult.js"></script>
         <script src="components/friendrequest/friendrequest.js"></script>
         <script src="components/notification-card/notification-card.js"></script>
+        <script src="components/dialog/dialog.js"></script>
 
         <script src="js/socket.io.js" defer></script>
         <script src="js/ws.js" defer></script>
-
         <script src="js/authutils.js" defer></script>
         <script src="js/notifications.js" defer></script>
         <script src="js/accountmenu.js" defer></script>
         <script src="js/chatoverlay.js" defer></script>
         <script src="js/mainmenu.js" defer></script>
         <script src="js/leaderboard.js" defer></script>
+        <script src="js/challenges.js" defer></script>
     </head>
     <body>
         <p id="online-count"></p>
@@ -173,5 +174,19 @@
                 </div>
             </div>
         </div>
+
+        <app-dialog id="challenge-accept-dialog">
+            <div slot="buttons" style="display: contents">
+                <button
+                    id="challenge-accept-cancel"
+                    class="app-button app-button-greyed"
+                >
+                    Cancel
+                </button>
+                <button id="challenge-accept-button" class="app-button">
+                    Accept
+                </button>
+            </div>
+        </app-dialog>
     </body>
 </html>

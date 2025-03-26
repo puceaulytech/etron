@@ -41,6 +41,8 @@ class FriendItem extends HTMLElement {
         chatIcon.alt = "Chat icon";
 
         fightButton.appendChild(fightIcon);
+        fightButton.addEventListener("click", this.challenge.bind(this));
+
         chatButton.appendChild(chatIcon);
         chatButton.addEventListener("click", this.chat.bind(this));
 
@@ -127,6 +129,10 @@ class FriendItem extends HTMLElement {
 
     chat() {
         openChat(this.getUsername(), this.getUserId());
+    }
+
+    challenge() {
+        challengeFriend(this.getUserId());
     }
 }
 
