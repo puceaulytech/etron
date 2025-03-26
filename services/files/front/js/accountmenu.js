@@ -329,6 +329,7 @@ async function updateAll() {
         updateAccountInfo(),
         updateFriendList(),
         updateFriendRequests(),
+        updateLeaderboard(),
     ];
     await Promise.all(promises);
 }

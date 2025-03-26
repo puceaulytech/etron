@@ -129,6 +129,11 @@ svg .svg-shit {
     padding-bottom: 60px;
 }
 
+#leaderboard-empty {
+    display: none;
+    margin-bottom: 30px;
+}
+
 .leaderboard-item {
     display: flex;
     background-image: url("/assets/wooden-plank.png");
