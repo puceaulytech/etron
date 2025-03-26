@@ -8,6 +8,8 @@ const {
 } = require("../helpers/gameutils");
 const { ObjectId } = require("mongodb");
 const pool = require("../helpers/db");
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
 
 const TURN_TIME = 500;
 
@@ -24,9 +26,55 @@ function placePlayersInBoard(gameState) {
     return board;
 }
 
+const ROUND_GOAL = 3;
+
+function gameDone(game) {
+    if (game.ai) {
+        return (
+            game.playerRoundWon === ROUND_GOAL || game.aiRoundWon === ROUND_GOAL
+        );
+    } else {
+        return (
+            game.firstPlayerRoundWon === ROUND_GOAL ||
+            game.secondPlayerRoundWon === ROUND_GOAL
+        );
+    }
+}
+
+function updateRounds(game) {
+    const result = game.state.gameResult();
+
+    if (result.type === "PLAYER_WIN") {
+        if (game.ai) {
+            if (result.winner === 1) {
+                game.aiRoundWon++;
+            } else {
+                game.playerRoundWon++;
+            }
+
+            logger.debug(
+                `next round for game ${game.id}, player: ${game.playerRoundWon} vs ai: ${game.aiRoundWon}`,
+            );
+        } else {
+            if (result.winner === 1) {
+                game.firstPlayerRoundWon++;
+            } else {
+                game.secondPlayerRoundWon++;
+            }
+
+            logger.debug(
+                `next round for game ${game.id}, p1: ${game.firstPlayerRoundWon} vs p2: ${game.secondPlayerRoundWon}`,
+            );
+        }
+
+        game.state = GameState.randomPositions();
+    }
+}
+
 function startGameLoop(io) {
     intervalId = setInterval(() => {
         const finishedGames = [];
+
         for (const game of storage.games.values()) {
             if (game.ai) {
                 if (!game.ready) continue;
@@ -48,7 +96,10 @@ function startGameLoop(io) {
 
             /** @type {GameResult} */
             const result = game.state.gameResult();
-            if (!result.isUnfinished()) finishedGames.push(game.id);
+
+            if (!result.isUnfinished()) {
+                finishedGames.push(game.id);
+            }
 
             if (game.ai) {
                 // If it's an AI game, directly send the game state to the player
@@ -63,6 +114,8 @@ function startGameLoop(io) {
                             : null,
                         result,
                         gameId: game.id,
+                        playerRoundWon: game.playerRoundWon,
+                        aiRoundWon: game.aiRoundWon,
                     });
                 }
             } else {
@@ -80,6 +133,10 @@ function startGameLoop(io) {
                         [game.firstPlayer]: game.state.playerPosition,
                         [game.secondPlayer]: game.state.opponentPosition,
                     },
+                    rounds: {
+                        [game.firstPlayer]: game.firstPlayerRoundWon,
+                        [game.secondPlayer]: game.secondPlayerRoundWon,
+                    },
                 });
             }
 
@@ -88,59 +145,64 @@ function startGameLoop(io) {
 
         for (const gameId of finishedGames) {
             const game = storage.games.get(gameId);
-            if (!game.ai) {
-                handleScore(
-                    game.firstPlayer,
-                    game.secondPlayer,
-                    game.state.gameResult(),
-                );
-            }
 
-            storage.games.delete(gameId);
+            updateRounds(game);
+
+            if (gameDone(game)) {
+                if (!game.ai) {
+                    handleScore(
+                        game.firstPlayer,
+                        game.secondPlayer,
+                        game.firstPlayerRoundWon > game.secondPlayerRoundWon,
+                    );
+                }
+
+                storage.games.delete(gameId);
+            }
         }
     }, 20);
 }
 
 const ELO_K = 40;
 
-async function handleScore(rawFirstPlayerId, rawSecondPlayerId, result) {
-    if (result.type === "PLAYER_WIN") {
-        const firstPlayerId = ObjectId.createFromHexString(rawFirstPlayerId);
-        const secondPlayerId = ObjectId.createFromHexString(rawSecondPlayerId);
+async function handleScore(
+    rawFirstPlayerId,
+    rawSecondPlayerId,
+    firstPlayerWon,
+) {
+    const firstPlayerId = ObjectId.createFromHexString(rawFirstPlayerId);
+    const secondPlayerId = ObjectId.createFromHexString(rawSecondPlayerId);
 
-        const userCollection = pool.get().collection("users");
+    const userCollection = pool.get().collection("users");
 
-        const firstPlayer = await userCollection.findOne({
-            _id: firstPlayerId,
-        });
-        const secondPlayer = await userCollection.findOne({
-            _id: secondPlayerId,
-        });
+    const firstPlayer = await userCollection.findOne({
+        _id: firstPlayerId,
+    });
+    const secondPlayer = await userCollection.findOne({
+        _id: secondPlayerId,
+    });
 
-        const firstPlayerExpected =
-            1 / (1 + Math.pow(10, (secondPlayer.elo - firstPlayer.elo) / 400));
-        const secondPlayerExpected =
-            1 / (1 + Math.pow(10, (firstPlayer.elo - secondPlayer.elo) / 400));
+    const firstPlayerExpected =
+        1 / (1 + Math.pow(10, (secondPlayer.elo - firstPlayer.elo) / 400));
+    const secondPlayerExpected =
+        1 / (1 + Math.pow(10, (firstPlayer.elo - secondPlayer.elo) / 400));
 
-        const firstPlayerOutcome = result.winner === 1 ? 1 : 0;
-        const secondPlayerOutcome = result.winner === -1 ? 1 : 0;
+    const firstPlayerOutcome = firstPlayerWon ? 1 : 0;
+    const secondPlayerOutcome = firstPlayerWon ? 0 : 1;
 
-        const firstPlayerNew =
-            firstPlayer.elo +
-            ELO_K * (firstPlayerOutcome - firstPlayerExpected);
-        const secondPlayerNew =
-            secondPlayer.elo +
-            ELO_K * (secondPlayerOutcome - secondPlayerExpected);
+    const firstPlayerNew =
+        firstPlayer.elo + ELO_K * (firstPlayerOutcome - firstPlayerExpected);
+    const secondPlayerNew =
+        secondPlayer.elo + ELO_K * (secondPlayerOutcome - secondPlayerExpected);
 
-        await userCollection.updateOne(
-            { _id: firstPlayerId },
-            { $set: { elo: firstPlayerNew } },
-        );
-        await userCollection.updateOne(
-            { _id: secondPlayerId },
-            { $set: { elo: secondPlayerNew } },
-        );
-    }
+    await userCollection.updateOne(
+        { _id: firstPlayerId },
+        { $set: { elo: firstPlayerNew } },
+    );
+    await userCollection.updateOne(
+        { _id: secondPlayerId },
+        { $set: { elo: secondPlayerNew } },
+    );
 }
 
 function stopGameLoop() {

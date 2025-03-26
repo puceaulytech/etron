@@ -85,6 +85,8 @@ class Storage {
             ai: true,
             player: playerId,
             state: GameState.randomPositions(),
+            playerRoundWon: 0,
+            aiRoundWon: 0,
             lastTurnTime: Date.now(),
             ready: false,
         };
@@ -120,6 +122,8 @@ class Storage {
             lastTurnTime: Date.now(),
             firstPlayer: playerId,
             secondPlayer: null,
+            firstPlayerRoundWon: 0,
+            secondPlayerRoundWon: 0,
             firstReady: false,
             secondReady: false,
         };
