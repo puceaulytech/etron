@@ -238,6 +238,18 @@ function resetSearchInput() {
 
 const friendList = document.querySelector("#friend-list");
 
+function setFriendChallengeFeedback(userId) {
+    for (const friendElem of friendList.children) {
+        if (friendElem.getAttribute("user-id") === userId) {
+            friendElem.setAttribute("challenge-feedback", "yes");
+
+            setTimeout(() => {
+                friendElem.removeAttribute("challenge-feedback");
+            }, 2000);
+        }
+    }
+}
+
 function setFriendOnlineStatus(userId, isOnline) {
     for (const friendElem of friendList.children) {
         if (friendElem.getAttribute("user-id") === userId) {

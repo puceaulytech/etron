@@ -26,6 +26,8 @@ async function challengeFriend(friendId) {
         },
         body: JSON.stringify({ opponent: friendId }),
     });
+
+    setFriendChallengeFeedback(friendId);
 }
 
 async function acceptChallenge() {
