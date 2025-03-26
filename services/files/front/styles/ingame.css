@@ -97,6 +97,11 @@ game-grid {
     animation-fill-mode: forwards;
 }
 
+rounds-bar {
+    position: absolute;
+    bottom: 40px;
+}
+
 @keyframes slide-in {
     0% {
         transform: translateY(500px);

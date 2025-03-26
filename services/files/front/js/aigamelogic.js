@@ -2,6 +2,7 @@ const gameGrid = document.querySelector("game-grid");
 const dialog = document.querySelector("app-dialog");
 const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const roundsBar = document.querySelector("rounds-bar");
 
 dialogReturn.addEventListener("click", () => {
     location.assign("/");
@@ -44,6 +45,9 @@ socket.on("connect", async () => {
 
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
+
+        roundsBar.setAttribute("left-rounds", payload.playerRoundWon);
+        roundsBar.setAttribute("right-rounds", payload.aiRoundWon);
 
         if (payload.playerRoundWon === 3 || payload.aiRoundWon === 3) {
             if (payload.aiRoundWon === 3) {

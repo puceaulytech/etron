@@ -3,6 +3,7 @@ const waitingForOpponent = document.querySelector("#waiting-for-opponent");
 const dialog = document.querySelector("app-dialog");
 const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const roundsBar = document.querySelector("rounds-bar");
 
 const myUserId = localStorage.getItem("userId");
 
@@ -60,6 +61,9 @@ socket.on("connect", async () => {
         const gameResult = payload.result;
         const myRounds = payload.rounds[myUserId];
         const opponentRounds = payload.rounds[opponentId];
+
+        roundsBar.setAttribute("left-rounds", myRounds);
+        roundsBar.setAttribute("right-rounds", opponentRounds);
 
         if (myRounds === 3 || opponentRounds === 3) {
             if (myRounds === 3) {
