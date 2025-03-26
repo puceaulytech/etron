@@ -133,6 +133,11 @@ game-grid {
     animation-fill-mode: forwards;
 }
 
+rounds-bar {
+    position: absolute;
+    bottom: 40px;
+}
+
 @keyframes hud-appear {
     from {
         transform: translateY(-300px);

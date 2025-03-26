@@ -61,9 +61,9 @@ function performNotifAction(notification, accountMenuWorkaround = true) {
         showMenu();
         focusSectionByName("friends");
     } else if (notification.type === "CHALLENGE") {
-        if (accountMenuWorkaround) accountMenuSkipNext = true;
-
         challengeRequestClick();
+    } else if (notification.type === "CHALLENGE_ACCEPTED") {
+        location.assign("/pages/online1v1.html");
     }
 }
 

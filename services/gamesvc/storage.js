@@ -65,9 +65,17 @@ class Storage {
     isClientInGame(clientId) {
         const infos = this.wsClients.get(clientId);
 
-        if (!infos) return;
+        if (!infos) return false;
 
         return infos.ingame;
+    }
+
+    isClientOutOfGame(clientId) {
+        const infos = this.wsClients.get(clientId);
+
+        if (!infos) return false;
+
+        return !infos.ingame;
     }
 
     countClients() {
@@ -85,6 +93,8 @@ class Storage {
             ai: true,
             player: playerId,
             state: GameState.randomPositions(),
+            playerRoundWon: 0,
+            aiRoundWon: 0,
             lastTurnTime: Date.now(),
             ready: false,
         };
@@ -120,6 +130,8 @@ class Storage {
             lastTurnTime: Date.now(),
             firstPlayer: playerId,
             secondPlayer: null,
+            firstPlayerRoundWon: 0,
+            secondPlayerRoundWon: 0,
             firstReady: false,
             secondReady: false,
         };
@@ -140,6 +152,8 @@ class Storage {
             lastTurnTime: Date.now(),
             firstPlayer: firstPlayerId,
             secondPlayer: secondPlayerId,
+            firstPlayerRoundWon: 0,
+            secondPlayerRoundWon: 0,
             firstReady: false,
             secondReady: false,
             challenge: true,
