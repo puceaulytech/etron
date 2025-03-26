@@ -42,7 +42,7 @@ function sendError(res, statusCode, errorCode, message) {
  * Decodes the body of the request to JSON
  *
  * @param {http.ClientRequest} req The HTTP request
- * @returns {Promise<any>} The JSON body
+ * @returns {Promise<any | null>} The JSON body or null if there was an error
  */
 function decodeJsonBody(req) {
     return new Promise((resolve, reject) => {
@@ -57,7 +57,7 @@ function decodeJsonBody(req) {
                 const jsonData = JSON.parse(body);
                 resolve(jsonData);
             } catch (err) {
-                reject(new Error("Invalid JSON"));
+                resolve(null);
             }
         });
 

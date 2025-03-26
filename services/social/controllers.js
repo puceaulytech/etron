@@ -183,7 +183,7 @@ async function addFriend(req, res) {
     }
 
     const payload = await decodeJsonBody(req);
-    if (!payload.newFriendId) {
+    if (!payload || !payload.newFriendId) {
         sendError(
             res,
             422,
@@ -333,7 +333,7 @@ async function acceptFriend(req, res) {
     }
 
     const payload = await decodeJsonBody(req);
-    if (!payload.newFriendId) {
+    if (!payload || !payload.newFriendId) {
         sendError(
             res,
             422,

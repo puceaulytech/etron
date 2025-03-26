@@ -124,15 +124,22 @@
                             placeholder="Username"
                             required
                             autocomplete="on"
+                            pattern="[a-zA-Z0-9._]{3,25}"
+                            title="Must be 3-25 characters long and contain only letters, numbers, '.', and '_'"
+                            minlength="3"
+                            maxlength="25"
                         />
-                        <input
-                            type="password"
-                            name="password"
-                            class="app-text-input"
-                            placeholder="Password"
-                            required
-                            autocomplete="on"
-                        />
+                        <div id="password-container">
+                            <input
+                                type="password"
+                                name="password"
+                                class="app-text-input"
+                                placeholder="Password"
+                                required
+                                autocomplete="on"
+                            />
+                            <span id="password-toggle">👁️</span>
+                        </div>
                         <button type="submit" class="app-button">Login</button>
                     </form>
                     <p>or</p>

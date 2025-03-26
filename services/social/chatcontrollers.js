@@ -39,7 +39,7 @@ async function sendMessage(req, res) {
     }
 
     const payload = await decodeJsonBody(req);
-    if (!payload.content || !payload.receiver) {
+    if (!payload || !payload.content || !payload.receiver) {
         sendError(
             res,
             422,

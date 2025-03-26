@@ -16,6 +16,7 @@ const {
     generateRefreshToken,
     verifyRefreshToken,
 } = require("../helpers/tokens");
+const { isUsernameValid } = require("../helpers/sanitizer");
 
 const endpoints = {
     login: {
@@ -70,7 +71,17 @@ async function getAuthenticatedUser(req, res) {
  */
 async function login(req, res) {
     const payload = await decodeJsonBody(req);
-    // TODO: check user input
+
+    if (!payload || !payload.username || !payload.password) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_CREDENTIALS",
+            "One of username or password field is missing.",
+        );
+        return;
+    }
+
     const username = payload.username;
 
     const db = pool.get();
@@ -101,6 +112,7 @@ async function register(req, res) {
     const payload = await decodeJsonBody(req);
 
     if (
+        !payload ||
         !payload.username ||
         !payload.password ||
         payload.username === "" ||
@@ -116,6 +128,16 @@ async function register(req, res) {
     }
 
     const username = payload.username;
+
+    if (!isUsernameValid(username)) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_USERNAME",
+            "Username contains bad characters / is too long / is too short.",
+        );
+        return;
+    }
 
     const db = pool.get();
     const existingUser = await db.collection("users").findOne({ username });
@@ -145,7 +167,7 @@ async function register(req, res) {
  */
 async function refreshAccess(req, res) {
     const payload = await decodeJsonBody(req);
-    if (!payload.refreshToken) {
+    if (!payload || !payload.refreshToken) {
         sendError(res, 400, "E_MISSING_TOKEN", "No refresh token provided.");
         return;
     }
