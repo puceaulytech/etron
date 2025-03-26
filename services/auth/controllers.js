@@ -16,6 +16,7 @@ const {
     generateRefreshToken,
     verifyRefreshToken,
 } = require("../helpers/tokens");
+const { isUsernameValid } = require("../helpers/sanitizer");
 
 const endpoints = {
     login: {
@@ -116,6 +117,16 @@ async function register(req, res) {
     }
 
     const username = payload.username;
+
+    if (!isUsernameValid(username)) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_USERNAME",
+            "Username contains bad characters / is too long / is too short.",
+        );
+        return;
+    }
 
     const db = pool.get();
     const existingUser = await db.collection("users").findOne({ username });

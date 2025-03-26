@@ -209,7 +209,10 @@ async function registerUser() {
         }),
     }).then(async (response) => {
         if (!response.ok) {
-            displayLoginFormError(emptyFieldErrorMsg);
+            const message = (await response.json()).message;
+            displayLoginFormError(
+                message ?? "Unexpected error while registering",
+            );
             return;
         }
 
