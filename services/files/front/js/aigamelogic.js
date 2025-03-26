@@ -45,19 +45,15 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        const gameResult = payload.result;
-        if (gameResult.type === "PLAYER_WIN") {
-            if (gameResult.winner === 1) {
+        if (payload.playerRoundWon === 3 || payload.aiRoundWon === 3) {
+            if (payload.aiRoundWon === 3) {
                 dialog.setAttribute("content", "You lost!");
             } else {
                 dialog.setAttribute("content", "You won!");
             }
 
             dialog.setAttribute("show", "yes");
-        } else if (gameResult.type === "DRAW") {
-            dialog.setAttribute("content", "It's a draw!");
-            dialog.setAttribute("show", "yes");
-        } else {
+        } else if (payload.result.type === "UNFINISHED") {
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
                 "playerpos",

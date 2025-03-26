@@ -6,6 +6,7 @@ const dialogPlayAgain = document.querySelector("#dialog-play-again");
 
 const myUserId = localStorage.getItem("userId");
 
+let opponentId;
 let opponentInfo;
 
 let inverted = false;
@@ -57,21 +58,18 @@ socket.on("connect", async () => {
         waitingForOpponent.style.visibility = "hidden";
 
         const gameResult = payload.result;
+        const myRounds = payload.rounds[myUserId];
+        const opponentRounds = payload.rounds[opponentId];
 
-        if (gameResult.type === "PLAYER_WIN") {
-            const myNb = side === "left" ? 1 : -1;
-
-            if (gameResult.winner === myNb) {
+        if (myRounds === 3 || opponentRounds === 3) {
+            if (myRounds === 3) {
                 dialog.setAttribute("content", "You won!");
             } else {
                 dialog.setAttribute("content", "You lost!");
             }
 
             dialog.setAttribute("show", "yes");
-        } else if (gameResult.type === "DRAW") {
-            dialog.setAttribute("content", "It's a draw!");
-            dialog.setAttribute("show", "yes");
-        } else {
+        } else if (gameResult.type === "UNFINISHED") {
             if (inverted) {
                 gameGrid.setAttribute("inverted", "yes");
             } else {
@@ -94,7 +92,7 @@ socket.on("connect", async () => {
             updateNextMousePos(newMove);
 
             if (!opponentInfo) {
-                const opponentId = Object.keys(payload.sides).find(
+                opponentId = Object.keys(payload.sides).find(
                     (id) => id !== myUserId,
                 );
 

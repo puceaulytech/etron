@@ -66,9 +66,51 @@ function updateRounds(game) {
                 `next round for game ${game.id}, p1: ${game.firstPlayerRoundWon} vs p2: ${game.secondPlayerRoundWon}`,
             );
         }
-
-        game.state = GameState.randomPositions();
     }
+}
+
+function sendGame(game, result, io) {
+    if (game.ai) {
+        const socketId = storage.getClientSocketId(game.player);
+
+        if (socketId) {
+            const socket = io.sockets.sockets.get(socketId);
+
+            sendAIGame(game, result, socket);
+        }
+    } else {
+        sendOnlineGame(game, result, io);
+    }
+}
+
+function sendAIGame(game, result, socket) {
+    socket.emit("gamestate", {
+        board: result.isUnfinished() ? placePlayersInBoard(game.state) : null,
+        result,
+        gameId: game.id,
+        playerRoundWon: game.playerRoundWon,
+        aiRoundWon: game.aiRoundWon,
+    });
+}
+
+function sendOnlineGame(game, result, io) {
+    io.to(game.id).emit("gamestate", {
+        board: result.isUnfinished() ? placePlayersInBoard(game.state) : null,
+        result,
+        gameId: game.id,
+        sides: {
+            [game.firstPlayer]: "left",
+            [game.secondPlayer]: "right",
+        },
+        positions: {
+            [game.firstPlayer]: game.state.playerPosition,
+            [game.secondPlayer]: game.state.opponentPosition,
+        },
+        rounds: {
+            [game.firstPlayer]: game.firstPlayerRoundWon,
+            [game.secondPlayer]: game.secondPlayerRoundWon,
+        },
+    });
 }
 
 function startGameLoop(io) {
@@ -101,44 +143,7 @@ function startGameLoop(io) {
                 finishedGames.push(game.id);
             }
 
-            if (game.ai) {
-                // If it's an AI game, directly send the game state to the player
-
-                const socketId = storage.getClientSocketId(game.player);
-
-                if (socketId) {
-                    const socket = io.sockets.sockets.get(socketId);
-                    socket.emit("gamestate", {
-                        board: result.isUnfinished()
-                            ? placePlayersInBoard(game.state)
-                            : null,
-                        result,
-                        gameId: game.id,
-                        playerRoundWon: game.playerRoundWon,
-                        aiRoundWon: game.aiRoundWon,
-                    });
-                }
-            } else {
-                io.to(game.id).emit("gamestate", {
-                    board: result.isUnfinished()
-                        ? placePlayersInBoard(game.state)
-                        : null,
-                    result,
-                    gameId: game.id,
-                    sides: {
-                        [game.firstPlayer]: "left",
-                        [game.secondPlayer]: "right",
-                    },
-                    positions: {
-                        [game.firstPlayer]: game.state.playerPosition,
-                        [game.secondPlayer]: game.state.opponentPosition,
-                    },
-                    rounds: {
-                        [game.firstPlayer]: game.firstPlayerRoundWon,
-                        [game.secondPlayer]: game.secondPlayerRoundWon,
-                    },
-                });
-            }
+            sendGame(game, result, io);
 
             game.lastTurnTime = Date.now();
         }
@@ -149,6 +154,9 @@ function startGameLoop(io) {
             updateRounds(game);
 
             if (gameDone(game)) {
+                // Send game with final rounds
+                sendGame(game, game.state.gameResult(), io);
+
                 if (!game.ai) {
                     handleScore(
                         game.firstPlayer,
@@ -158,6 +166,8 @@ function startGameLoop(io) {
                 }
 
                 storage.games.delete(gameId);
+            } else {
+                game.state = GameState.randomPositions();
             }
         }
     }, 20);
