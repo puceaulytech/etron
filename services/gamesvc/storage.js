@@ -25,6 +25,8 @@ class Storage {
     constructor() {
         this.games = new Map();
 
+        this.challenges = new Map();
+
         this.wsClients = new Map();
     }
 
@@ -127,18 +129,37 @@ class Storage {
         return id;
     }
 
+    createChallengeGame(firstPlayerId, secondPlayerId) {
+        logger.debug("creating new challenge game");
+
+        const id = uuidv4();
+        const game = {
+            id,
+            ai: false,
+            state: GameState.randomPositions(),
+            lastTurnTime: Date.now(),
+            firstPlayer: firstPlayerId,
+            secondPlayer: secondPlayerId,
+            firstReady: false,
+            secondReady: false,
+            challenge: true,
+        };
+
+        this.games.set(id, game);
+    }
+
     findGameInMatchmaking() {
         return this.games.values().find((g) => g.secondPlayer === null);
     }
 
     findGameByPlayerId(playerId, gameMode) {
-        for (const [gameId, gameState] of this.games.entries()) {
-            if (gameState.ai && gameMode === "ai") {
-                if (gameState.player === playerId) return gameId;
+        for (const [gameId, game] of this.games.entries()) {
+            if (game.ai && gameMode === "ai") {
+                if (game.player === playerId) return gameId;
             } else if (gameMode === "online") {
                 if (
-                    gameState.firstPlayer === playerId ||
-                    gameState.secondPlayer === playerId
+                    game.firstPlayer === playerId ||
+                    game.secondPlayer === playerId
                 )
                     return gameId;
             }
@@ -157,6 +178,10 @@ class Storage {
                     gamesToRemove.push(game.id);
                 }
             } else {
+                // Don't removing challenge game if it hasn't started yet
+                if (game.challenge && !(game.firstReady && game.secondReady))
+                    continue;
+
                 if (!this.isClientInGame(game.firstPlayer)) {
                     if (
                         game.secondPlayer === undefined ||
@@ -173,6 +198,23 @@ class Storage {
             this.games.delete(gameToRemove);
             logger.debug(`removing game ${gameToRemove} because of inactivity`);
         }
+    }
+
+    createChallenge(challenger, opponent) {
+        const id = uuidv4();
+        const challenge = { id, challenger, opponent, accepted: false };
+
+        this.challenges.set(id, challenge);
+
+        return id;
+    }
+
+    getChallenge(challengeId) {
+        return this.challenges.get(challengeId);
+    }
+
+    removeChallenge(challengeId) {
+        return this.challenges.delete(challengeId);
     }
 }
 

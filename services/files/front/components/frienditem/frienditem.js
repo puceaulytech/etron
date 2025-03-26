@@ -33,15 +33,24 @@ class FriendItem extends HTMLElement {
         fightButton.classList.add("button");
         chatButton.classList.add("button");
 
-        const fightIcon = new Image(imageSize, imageSize);
-        fightIcon.src = "../../assets/fight-icon.svg";
-        fightIcon.alt = "Fight icon";
-        const chatIcon = new Image(imageSize, imageSize);
-        chatIcon.src = "../../assets/chat-icon.svg";
-        chatIcon.alt = "Chat icon";
+        fightButton.title = "Challenge friend";
+        chatButton.title = "Chat with friend";
 
-        fightButton.appendChild(fightIcon);
-        chatButton.appendChild(chatIcon);
+        this.fightIconPath = "/assets/fight-icon.svg";
+        this.feedbackIconPath = "/assets/check.png";
+
+        this.fightIcon = new Image(imageSize, imageSize);
+        this.fightIcon.src = this.fightIconPath;
+        this.fightIcon.alt = "Fight icon";
+
+        this.chatIcon = new Image(imageSize, imageSize);
+        this.chatIcon.src = "/assets/chat-icon.svg";
+        this.chatIcon.alt = "Chat icon";
+
+        fightButton.appendChild(this.fightIcon);
+        fightButton.addEventListener("click", this.challenge.bind(this));
+
+        chatButton.appendChild(this.chatIcon);
         chatButton.addEventListener("click", this.chat.bind(this));
 
         container.appendChild(fightButton);
@@ -87,18 +96,26 @@ class FriendItem extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["online"];
+        return ["online", "challenge-feedback"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "online") {
             this.setOnline(newValue !== null);
+        } else if (name === "challenge-feedback") {
+            this.setChallengeFeedback(newValue !== null);
         }
     }
 
     connectedCallback() {
         this.#usernameText.innerText = this.getUsername();
         this.eloText.innerText = this.displayElo();
+    }
+
+    setChallengeFeedback(active) {
+        this.fightIcon.src = active
+            ? this.feedbackIconPath
+            : this.fightIconPath;
     }
 
     setOnline(val) {
@@ -127,6 +144,10 @@ class FriendItem extends HTMLElement {
 
     chat() {
         openChat(this.getUsername(), this.getUserId());
+    }
+
+    challenge() {
+        challengeFriend(this.getUserId());
     }
 }
 

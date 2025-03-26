@@ -1,9 +1,21 @@
 const leaderboardItems = document.getElementById("leaderboard-items");
+const leaderboardEmpty = document.getElementById("leaderboard-empty");
 
 async function updateLeaderboard() {
     const resp = await fetch("/api/social/leaderboard", { method: "GET" });
 
     const leaderboard = await resp.json();
+
+    if (leaderboard.length === 0) {
+        leaderboardItems.style.display = "none";
+        leaderboardEmpty.style.display = "block";
+        return;
+    }
+
+    leaderboardItems.innerHTML = "";
+
+    leaderboardItems.style.display = "flex";
+    leaderboardEmpty.style.display = "none";
 
     let rank = 0;
 

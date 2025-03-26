@@ -21,6 +21,9 @@ socket.on("notification", (payload) => {
             insertMessage(message.content, true);
             scrollToBottom();
         }
+    } else if (payload.type === "CHALLENGE") {
+        challengeId = payload.challenge.challengeId;
+        challengerUsername = payload.challenge.challengerUsername;
     }
 
     if (payload.shouldDisplay) {
@@ -57,6 +60,10 @@ function performNotifAction(notification, accountMenuWorkaround = true) {
 
         showMenu();
         focusSectionByName("friends");
+    } else if (notification.type === "CHALLENGE") {
+        if (accountMenuWorkaround) accountMenuSkipNext = true;
+
+        challengeRequestClick();
     }
 }
 
@@ -76,6 +83,19 @@ function showNotification(notification) {
         content = `${targetUsername} accepted your friend request!`;
         updateFriendRequests();
         updateFriendList();
+    } else if (notification.type === "CHALLENGE") {
+        const challengerUsername = notification.challenge.challengerUsername;
+
+        content = `${challengerUsername} is challenging you to a 1v1!`;
+    } else if (notification.type === "CHALLENGE_ACCEPTED") {
+        const opponentUsername =
+            notification.challengeAccepted.opponentUsername;
+
+        content = `${opponentUsername} accepted your challenge!`;
+
+        setTimeout(() => {
+            location.assign("/pages/online1v1.html");
+        }, 3000);
     }
 
     let systemNotif = null;

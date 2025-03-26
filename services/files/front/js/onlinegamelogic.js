@@ -43,6 +43,10 @@ socket.on("connect", async () => {
         gameId = body.gameId;
     }
 
+    if (ongoingGamesResp.notReady) {
+        socket.emit("ready", { gameId });
+    }
+
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
