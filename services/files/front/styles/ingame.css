@@ -86,6 +86,46 @@ game-grid {
     margin-bottom: 0;
 }
 
+#loading-screen {
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+#loading-screen.visible {
+    display: flex;
+}
+
+#loading-screen span {
+    text-shadow:
+        2px 0 #000,
+        -2px 0 #000,
+        0 2px #000,
+        0 -2px #000,
+        1px 1px #000,
+        -1px -1px #000,
+        1px -1px #000,
+        -1px 1px #000;
+    color: white;
+    font-size: 25px;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid green;
+    border-bottom: 16px solid green;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    width: auto;
+    height: 80px;
+    animation: spin 2s linear infinite;
+}
+
 .animated-emote {
     animation-name: slide-in;
     animation-timing-function: ease-in-out;
@@ -114,5 +154,14 @@ game-grid {
     }
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(0deg);
+    }
+    from {
+        transform: rotate(360deg);
     }
 }

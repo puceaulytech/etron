@@ -2,6 +2,7 @@ const gameGrid = document.querySelector("game-grid");
 const dialog = document.querySelector("app-dialog");
 const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const loadingScreen = document.querySelector("#loading-screen");
 
 dialogReturn.addEventListener("click", () => {
     location.assign("/");
@@ -58,6 +59,8 @@ socket.on("connect", async () => {
             dialog.setAttribute("content", "It's a draw!");
             dialog.setAttribute("show", "yes");
         } else {
+            loadingScreen.classList.remove("visible");
+
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
                 "playerpos",
