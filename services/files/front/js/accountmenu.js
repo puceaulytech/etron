@@ -215,7 +215,11 @@ const searchResultsContainer = document.querySelector("#search-results");
 
 function userSearchInput() {
     const input = usernameInput.value;
-    if (input.length < 3) return;
+
+    if (input.length < 3) {
+        searchResultsContainer.innerHTML = "";
+        return;
+    }
 
     // Harmful injection possible?
     authenticatedFetch(`/api/social/searchuser?username=${input}`, {
