@@ -2,8 +2,8 @@ class RoundsBar extends HTMLElement {
     constructor() {
         super();
 
-        this.leftColor = "#00ff00";
-        this.rightColor = "#ff0000";
+        this.leftColor = "#2eb82e";
+        this.rightColor = "#cc0000";
 
         this.template = document.createElement("template");
         this.template.innerHTML = `
@@ -19,7 +19,6 @@ class RoundsBar extends HTMLElement {
          }
          
          .rounds-indicator {
-           border: 2px solid black;
            width: 40px;
            height: 40px;
            border-radius: 50%;
@@ -28,6 +27,10 @@ class RoundsBar extends HTMLElement {
          .not-won {
             border: 2px dashed black;
          }
+         
+         .won {
+            border: 2px solid black;
+          }
          </style>
 
         <div class="rounds-container">
@@ -69,8 +72,8 @@ class RoundsBar extends HTMLElement {
 
     fillIndicator(indic, color) {
         indic.classList.remove("not-won");
+        indic.classList.add("won");
         indic.style.backgroundColor = color;
-        indic.style.borderColor = color;
     }
 
     setLeftRounds(rounds) {
