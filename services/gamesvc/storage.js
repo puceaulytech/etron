@@ -65,9 +65,17 @@ class Storage {
     isClientInGame(clientId) {
         const infos = this.wsClients.get(clientId);
 
-        if (!infos) return;
+        if (!infos) return false;
 
         return infos.ingame;
+    }
+
+    isClientOutOfGame(clientId) {
+        const infos = this.wsClients.get(clientId);
+
+        if (!infos) return false;
+
+        return !infos.ingame;
     }
 
     countClients() {

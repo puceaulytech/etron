@@ -40,6 +40,18 @@ async function authenticatedFetch(endpoint, options = {}) {
         }
     }
 
-    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-    return response.json();
+    let responseBody;
+
+    try {
+        responseBody = await response.json();
+    } catch (e) {
+        responseBody = null;
+    }
+
+    if (!response.ok) {
+        const error = new Error(`Request failed: ${response.status}`);
+        error.code = responseBody.code;
+        throw error;
+    }
+    return responseBody;
 }
