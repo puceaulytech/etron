@@ -74,6 +74,7 @@ class GameGrid extends HTMLElement {
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
 
         if (this.hasAttribute("grid")) this.redrawGrid();
+        this.trueOffsetTop = this.canvas.offsetTop;
     }
 
     connectedCallback() {

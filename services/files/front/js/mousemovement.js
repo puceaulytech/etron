@@ -1,7 +1,7 @@
 function computeMove(mouseX, mouseY, inverted = false) {
     const vector = {
         x: -mouseX + gameGrid.somePlayerPos.x + gameGrid.offsetLeft,
-        y: -mouseY + gameGrid.somePlayerPos.y + gameGrid.offsetTop,
+        y: -mouseY + gameGrid.somePlayerPos.y + gameGrid.trueOffsetTop,
     };
     if (inverted) vector.x *= -1;
 

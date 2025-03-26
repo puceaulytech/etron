@@ -30,11 +30,28 @@
     </head>
     <body>
         <div class="container">
-            <div></div>
+            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
 
             <game-grid inverted crosshair></game-grid>
 
-            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+            <div></div>
+
+            <div class="game-hud visible">
+                <span>Opponent:</span>
+                <div>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
+                    <span class="opponent-name">AI</span>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
+                </div>
+            </div>
 
             <app-dialog>
                 <div slot="buttons" style="display: contents">
