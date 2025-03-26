@@ -216,6 +216,7 @@ async function registerUser() {
         }
 
         await submitLogin(null);
+        updateLeaderboard();
     });
 }
 
@@ -345,7 +346,6 @@ async function updateAll() {
         updateAccountInfo(),
         updateFriendList(),
         updateFriendRequests(),
-        updateLeaderboard(),
     ];
     await Promise.all(promises);
 }
