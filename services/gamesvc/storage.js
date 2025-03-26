@@ -192,7 +192,7 @@ class Storage {
                     gamesToRemove.push(game.id);
                 }
             } else {
-                // Don't removing challenge game if it hasn't started yet
+                // Don't remove challenge game if it hasn't started yet
                 if (game.challenge && !(game.firstReady && game.secondReady))
                     continue;
 
