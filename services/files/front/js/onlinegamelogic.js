@@ -105,6 +105,12 @@ socket.on("connect", async () => {
                         if (!userInfo) return;
 
                         document.title = `eTron - Playing against ${userInfo.username}`;
+                        document.querySelector(
+                            ".game-hud .opponent-name",
+                        ).textContent = userInfo.username;
+                        document
+                            .querySelector(".game-hud")
+                            .classList.add("visible");
 
                         opponentInfo = userInfo;
                     },
