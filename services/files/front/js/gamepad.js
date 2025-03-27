@@ -10,6 +10,7 @@ window.addEventListener("gamepadconnected", (event) => {
         disableMouseMovement = true;
         if (location.pathname === "/pages/online1v1.html")
             switchToGamepadEmotes();
+        switchToGamepadControls();
         requestAnimationFrame(updateGamepad);
     }
 });
@@ -26,6 +27,7 @@ window.addEventListener("gamepaddisconnected", (event) => {
         disableMouseMovement = false;
         if (location.pathname === "/pages/online1v1.html")
             switchToKeyboardEmotes();
+        switchToKeyboardControls();
         cancelAnimationFrame(gamepadRequest);
     }
 });
@@ -99,4 +101,14 @@ function updateGamepad() {
         if (emotePressed) sendEmote(emoteIndex);
     }
     gamepadRequest = requestAnimationFrame(updateGamepad);
+}
+
+const controlsImg = document.querySelector(".mouse-controls img");
+
+function switchToGamepadControls() {
+    controlsImg.src = "/assets/joystick.svg";
+}
+
+function switchToKeyboardControls() {
+    controlsImg.src = "/assets/mouse.svg";
 }
