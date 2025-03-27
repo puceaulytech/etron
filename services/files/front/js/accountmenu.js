@@ -118,7 +118,7 @@ async function updateAccountInfo() {
         const playerGamesPlayedElement = document.querySelector(
             "#account-section #player-games-played",
         );
-        playerGamesPlayedElement.textContent = `Games played: ${gamesPlayed}`;
+        playerGamesPlayedElement.textContent = `${gamesPlayed}`;
 
         const gamesWon =
             gamesPlayed === 0
@@ -129,7 +129,7 @@ async function updateAccountInfo() {
         const playerGamesWonElement = document.querySelector(
             "#account-section #player-games-won",
         );
-        playerGamesWonElement.textContent = `Games won: ${gamesWon}`;
+        playerGamesWonElement.textContent = `${gamesWon}`;
 
         const playerWinRateElement = document.querySelector(
             "#account-section #player-win-rate",
@@ -138,7 +138,7 @@ async function updateAccountInfo() {
             gamesPlayed === 0
                 ? "N/A"
                 : `${Math.round((100 * gamesWon) / gamesPlayed)} %`;
-        playerWinRateElement.textContent = `Win rate: ${winRateString}`;
+        playerWinRateElement.textContent = `${winRateString}`;
     });
 }
 
