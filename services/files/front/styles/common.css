@@ -73,3 +73,7 @@
     outline: 1px solid white;
     box-shadow: 0 2px 8px rgba(0, 128, 0, 0.6);
 }
+
+.bold {
+    font-weight: bold;
+}

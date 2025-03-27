@@ -226,30 +226,49 @@
 
         <app-dialog-custom id="tutorial-dialog" content="How to play">
             <div slot="body" id="tutorial-body">
-                <div class="tutorial-part">
-                    <img
-                        src="/assets/tuto.GIF"
-                        alt="video explaining how to play"
-                        loading="lazy"
-                        fetchpriority="low"
-                        class="gif"
-                    />
-                    <span>Move by pointing your mouse!</span>
-                </div>
+                <h3>Game</h3>
 
-                <span>or</span>
+                <span class="game-description">
+                    <span class="bold">eTron</span> is a fast-paced, 1v1 battle
+                    of strategy and reflexes on a hexagonal grid. Control your
+                    light trail and outmaneuver your opponent, forcing them to
+                    crash into the arena’s edge, their own trail, or yours. The
+                    last player standing wins—think fast, plan ahead, and don’t
+                    get trapped!
+                </span>
 
-                <div class="tutorial-part">
-                    <img
-                        src="/assets/xbox-left-joystick.webp"
-                        alt="left joystick"
-                        loading="lazy"
-                        fetchpriority="low"
-                    />
+                <h3>Controls</h3>
 
-                    <span>Plug in a controller and use the left joystick</span>
+                <div class="tutorial-controls">
+                    <div class="tutorial-part">
+                        <img
+                            src="/assets/tuto.GIF"
+                            alt="video explaining how to play"
+                            loading="lazy"
+                            fetchpriority="low"
+                            class="gif"
+                        />
+                        <span>Move by pointing your mouse</span>
+                    </div>
+
+                    <span>or</span>
+
+                    <div class="tutorial-part">
+                        <img
+                            src="/assets/xbox-left-joystick.webp"
+                            alt="left joystick"
+                            loading="lazy"
+                            fetchpriority="low"
+                        />
+
+                        <span
+                            >Plug in a controller and use the left
+                            joystick</span
+                        >
+                    </div>
                 </div>
             </div>
+
             <div slot="buttons" style="display: contents">
                 <button class="app-button" id="tutorial-close">Close</button>
             </div>

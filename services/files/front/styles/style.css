@@ -146,6 +146,14 @@ svg .svg-shit {
 }
 
 #tutorial-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tutorial-controls {
     display: grid;
     align-items: center;
     justify-items: center;
@@ -153,8 +161,12 @@ svg .svg-shit {
     grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr);
 }
 
-#tutorial-body > span {
-    font-style: italic;
+#tutorial-body span {
+    text-align: center;
+}
+
+#tutorial-body h3 {
+    margin: 0;
 }
 
 .tutorial-part img {
@@ -169,6 +181,10 @@ svg .svg-shit {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+}
+
+.game-description {
+    max-width: 700px;
 }
 
 .user-stats-container {

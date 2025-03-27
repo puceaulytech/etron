@@ -583,10 +583,10 @@ function heuristic(gameState, currentPlayer) {
         for (let col = 0; col < BOARD_WIDTH; col++) {
             if (row % 2 === 1 && col === BOARD_WIDTH - 1) continue;
 
-            if (distancesPlayer[row][col] > distancesOpponent[row][col]) {
+            if (distancesPlayer[row][col] < distancesOpponent[row][col]) {
                 reachableByPlayer++;
             } else if (
-                distancesPlayer[row][col] < distancesOpponent[row][col]
+                distancesPlayer[row][col] > distancesOpponent[row][col]
             ) {
                 reachableByOpponent++;
             }

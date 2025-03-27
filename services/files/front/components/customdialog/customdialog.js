@@ -20,7 +20,7 @@ class AppDialogCustom extends HTMLElement {
                 }
                 .dialog {
                     background: white;
-                    padding: 20px;
+                    padding: 15px;
                     border-radius: 10px;
                     border: 4px solid green;
                     min-width: 400px;
@@ -41,6 +41,9 @@ class AppDialogCustom extends HTMLElement {
                     display: flex;
                     justify-content: flex-end;
                     gap: 10px;
+                }
+                #content {
+                    margin-top: 0;
                 }
             </style>
             <div class="dialog">
