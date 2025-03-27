@@ -98,10 +98,47 @@ async function updateAccountInfo() {
         );
         playerNameElement.textContent = userInfo.username;
 
+        const accountDateElement = document.querySelector(
+            "#account-section #account-creation-date",
+        );
+        const accountCreationDate = new Date(parseInt(userInfo.createdAt));
+        const formattedDate = accountCreationDate.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+        accountDateElement.textContent = `Member since: ${formattedDate}`;
+
         const playerEloElement = document.querySelector(
             "#account-section #player-elo",
         );
         playerEloElement.textContent = `ELO: ${Math.floor(userInfo.elo)}`;
+
+        const gamesPlayed = userInfo.gameHistory.length;
+        const playerGamesPlayedElement = document.querySelector(
+            "#account-section #player-games-played",
+        );
+        playerGamesPlayedElement.textContent = `Games played: ${gamesPlayed}`;
+
+        const gamesWon =
+            gamesPlayed === 0
+                ? 0
+                : userInfo.gameHistory.filter(
+                      (game) => game.winner === userInfo._id,
+                  ).length;
+        const playerGamesWonElement = document.querySelector(
+            "#account-section #player-games-won",
+        );
+        playerGamesWonElement.textContent = `Games won: ${gamesWon}`;
+
+        const playerWinRateElement = document.querySelector(
+            "#account-section #player-win-rate",
+        );
+        const winRateString =
+            gamesPlayed === 0
+                ? "N/A"
+                : `${Math.round((100 * gamesWon) / gamesPlayed)} %`;
+        playerWinRateElement.textContent = `Win rate: ${winRateString}`;
     });
 }
 
