@@ -67,7 +67,7 @@ function performNotifAction(notification, accountMenuWorkaround = true) {
     }
 }
 
-function showNotification(notification) {
+function showNotification(notification, noSystem = false) {
     const body = document.querySelector("body");
 
     let content;
@@ -101,11 +101,19 @@ function showNotification(notification) {
         setTimeout(() => {
             location.assign("/pages/online1v1.html");
         }, 3000);
+    } else if (notification.type === "GAMEPAD") {
+        if (notification.gamepad.connected) {
+            icon = "/assets/controller-icon.svg";
+            content = "Controller connected";
+        } else {
+            icon = "/assets/controller-off-icon.svg";
+            content = "Controller disconnected";
+        }
     }
 
     let systemNotif = null;
 
-    if (localStorage.getItem("systemNotifications")) {
+    if (localStorage.getItem("systemNotifications") && !noSystem) {
         systemNotif = new Notification("ETRON", {
             body: content,
             icon: "/favicon.png",

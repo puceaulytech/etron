@@ -1,13 +1,31 @@
 window.addEventListener("gamepadconnected", (event) => {
-    console.log("Gamepad connected:", event.gamepad);
-    disableMouseMovement = true;
-    requestAnimationFrame(updateGamepad);
+    console.log("here");
+    if (location.pathname === "/") {
+        showNotification({
+            type: "GAMEPAD",
+            gamepad: {
+                connected: true,
+            },
+        });
+    } else {
+        disableMouseMovement = true;
+        requestAnimationFrame(updateGamepad);
+    }
 });
 
 window.addEventListener("gamepaddisconnected", (event) => {
-    console.log("Gamepad disconnected:", event.gamepad);
-    disableMouseMovement = false;
-    cancelAnimationFrame(gamepadRequest);
+    console.log("here 2");
+    if (location.pathname === "/") {
+        showNotification({
+            type: "GAMEPAD",
+            gamepad: {
+                connected: false,
+            },
+        });
+    } else {
+        disableMouseMovement = false;
+        cancelAnimationFrame(gamepadRequest);
+    }
 });
 
 let gamepadRequest;
