@@ -135,46 +135,4 @@ socket.on("connect", async () => {
             lastMove = newMove;
         }
     });
-
-    document.addEventListener("keydown", (event) => {
-        switch (event.key.toLowerCase()) {
-            /* Player 1 keys */
-            case "q":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "RIGHT" : "LEFT",
-                });
-                break;
-            case "d":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "LEFT" : "RIGHT",
-                });
-                break;
-            case "w":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "BOTTOM_RIGHT" : "BOTTOM_LEFT",
-                });
-                break;
-            case "x":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "BOTTOM_LEFT" : "BOTTOM_RIGHT",
-                });
-                break;
-            case "z":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "TOP_RIGHT" : "TOP_LEFT",
-                });
-                break;
-            case "e":
-                socket.emit("move", {
-                    gameId,
-                    direction: inverted ? "TOP_LEFT" : "TOP_RIGHT",
-                });
-                break;
-        }
-    });
 });
