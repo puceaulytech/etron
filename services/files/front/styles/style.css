@@ -110,9 +110,7 @@ svg .svg-shit {
     align-items: center;
 }
 
-#leaderboard 
-Game mode :
-h3 {
+#leaderboard h3 {
     margin-top: 0;
 }
 
