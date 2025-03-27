@@ -6,6 +6,9 @@ const challengeAcceptCancelBtn = document.getElementById(
 );
 const challengeAcceptBtn = document.getElementById("challenge-accept-button");
 
+const challengeErrorDialog = document.getElementById("challenge-error-dialog");
+const challengeErrorCloseBtn = document.getElementById("challenge-error-close");
+
 let challengeId;
 let challengerUsername;
 
@@ -16,6 +19,10 @@ challengeAcceptCancelBtn.addEventListener("click", () => {
 challengeAcceptBtn.addEventListener("click", () => {
     challengeAcceptDialog.removeAttribute("show");
     acceptChallenge();
+});
+
+challengeErrorCloseBtn.addEventListener("click", () => {
+    challengeErrorDialog.removeAttribute("show");
 });
 
 async function challengeFriend(friendId) {
@@ -31,15 +38,25 @@ async function challengeFriend(friendId) {
 }
 
 async function acceptChallenge() {
-    const resp = await authenticatedFetch(
-        `/api/gamesvc/acceptchallenge/${challengeId}`,
-        {
-            method: "POST",
-        },
-    );
+    try {
+        const resp = await authenticatedFetch(
+            `/api/gamesvc/acceptchallenge/${challengeId}`,
+            {
+                method: "POST",
+            },
+        );
 
-    if (resp.ok) {
         location.assign("/pages/online1v1.html");
+    } catch (err) {
+        if (err.code === "E_EXPIRED_CHALLENGE") {
+            challengeErrorDialog.setAttribute(
+                "content",
+                "The challenge has expired",
+            );
+            challengeErrorDialog.setAttribute("show", "yes");
+        } else {
+            throw err;
+        }
     }
 }
 

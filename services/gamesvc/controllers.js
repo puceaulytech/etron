@@ -141,7 +141,12 @@ async function acceptChallenge(req, res) {
     }
 
     if (challenge.accepted) {
-        sendError(res, 400, "E_INVALID_CHALLENGE", "The challenge has expired");
+        sendError(res, 400, "E_EXPIRED_CHALLENGE", "The challenge has expired");
+        return;
+    }
+
+    if (!storage.isClientOutOfGame(challenge.challenger)) {
+        sendError(res, 400, "E_EXPIRED_CHALLENGE", "The challenge has expired");
         return;
     }
 

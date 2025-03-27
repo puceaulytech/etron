@@ -6,15 +6,18 @@ class AppDialog extends HTMLElement {
         this.template.innerHTML = `
             <style>
                 :host {
-                    display: none;
+                    display: flex;
+                    visibility: hidden;
                     position: fixed;
                     top: 0;
                     left: 0;
+                    z-index: 1000;
                     width: 100%;
                     height: 100%;
-                    background: rgba(0, 0, 0, 0.5);
                     justify-content: center;
                     align-items: center;
+                    background: rgba(0, 0, 0, 0.5);
+                    transition: background 200ms;
                 }
 
                 .dialog {
@@ -25,6 +28,8 @@ class AppDialog extends HTMLElement {
                     min-width: 400px;
                     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                     font-size: 20px;
+                    transform: scale(0);
+                    transition: transform 200ms;
                 }
 
                 .dialog-buttons {
@@ -43,6 +48,8 @@ class AppDialog extends HTMLElement {
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.appendChild(this.template.content.cloneNode(true));
+
+        this.dialogDiv = shadow.querySelector(".dialog");
 
         this.contentElement = shadow.querySelector("#content");
     }
@@ -64,9 +71,19 @@ class AppDialog extends HTMLElement {
     }
 
     toggleShow(show) {
-        const displayVal = show ? "flex" : "none";
+        if (show) {
+            this.style.visibility = "visible";
+            this.style.background = "rgba(0, 0, 0, 0.5)";
+            this.dialogDiv.style.transform = "scale(1)";
+        } else {
+            this.style.background = "rgba(0, 0, 0, 0)";
+            this.dialogDiv.style.transform = "scale(0)";
 
-        this.style.display = displayVal;
+            // Avoid hiding the dialog too fast, it messes up the animation
+            setTimeout(() => {
+                this.style.visibility = "hidden";
+            }, 500);
+        }
     }
 
     updateContent(text) {

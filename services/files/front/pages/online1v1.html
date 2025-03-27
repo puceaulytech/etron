@@ -21,6 +21,7 @@
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
         <script src="../components/dialog/dialog.js"></script>
+        <script src="../components/roundsbar/roundsbar.js"></script>
 
         <script src="../js/authutils.js" defer></script>
         <script src="../js/socket.io.js" defer></script>
@@ -42,6 +43,25 @@
                         <span class="emote"></span>
                     </div>
                     <div class="emote-number"></div>
+                </div>
+            </div>
+
+            <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
+          
+            <div class="game-hud">
+                <span>Opponent:</span>
+                <div>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
+                    <span class="opponent-name"></span>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
                 </div>
             </div>
         </div>

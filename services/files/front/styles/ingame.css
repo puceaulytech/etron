@@ -67,11 +67,47 @@ game-grid {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.game-hud {
+    --this-width: 700px;
+    width: var(--this-width);
+    height: 110px;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: calc(50% - (var(--this-width) / 2));
+    border-radius: 0 0 30px 30px;
+    border: 6px solid green;
+    border-top-width: 0;
+    background-color: #a8d139;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+.opponent-name {
+    font-size: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.game-hud .opponent-icon {
+    aspect-ratio: 1;
+    width: auto;
+    height: 4ex;
+}
+
+.game-hud.visible {
+    display: flex;
+    animation-name: hud-appear;
+    animation-duration: 500ms;
+}
+
 .blur-overlay {
     visibility: hidden;
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 100;
     width: 100%;
     height: 100%;
     backdrop-filter: blur(6px);
@@ -135,6 +171,20 @@ game-grid {
     animation-name: fade-out;
     animation-duration: 350ms;
     animation-fill-mode: forwards;
+}
+
+rounds-bar {
+    position: absolute;
+    bottom: 40px;
+}
+
+@keyframes hud-appear {
+    from {
+        transform: translateY(-300px);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 @keyframes slide-in {
