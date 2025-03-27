@@ -50,6 +50,8 @@ let lastEmoteTime = 0;
 const EMOTE_COOLDOWN = 1000;
 
 function sendEmote(index) {
+    if (location.pathname === "/pages/ai1v1.html") return;
+
     const now = Date.now();
 
     if (now - lastEmoteTime < EMOTE_COOLDOWN) return;
