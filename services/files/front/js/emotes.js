@@ -46,34 +46,82 @@ socket.on("emote", (payload) => {
     displayEmote(payload.emote, true);
 });
 
+let lastEmoteTime = 0;
+const EMOTE_COOLDOWN = 1000;
+
+function sendEmote(index) {
+    const now = Date.now();
+
+    if (now - lastEmoteTime < EMOTE_COOLDOWN) return;
+
+    lastEmoteTime = now;
+
+    displayEmote(emotes[index], false);
+    socket.emit("emote", {
+        gameId,
+        emote: emotes[index],
+    });
+}
+
 document.addEventListener("keydown", (event) => {
     if (!gameId) return;
 
-    let emoteToSend;
+    let emoteIndex;
     switch (event.code) {
         case "Digit1":
-            emoteToSend = emotes[0];
+            emoteIndex = 0;
             break;
         case "Digit2":
-            emoteToSend = emotes[1];
+            emoteIndex = 1;
             break;
         case "Digit3":
-            emoteToSend = emotes[2];
+            emoteIndex = 2;
             break;
         case "Digit4":
-            emoteToSend = emotes[3];
+            emoteIndex = 3;
             break;
         case "Digit5":
-            emoteToSend = emotes[4];
+            emoteIndex = 4;
             break;
         default:
             return;
     }
     event.preventDefault();
 
-    displayEmote(emoteToSend, false);
-    socket.emit("emote", {
-        gameId,
-        emote: emoteToSend,
-    });
+    sendEmote(emoteIndex);
 });
+
+const gamepadIndicators = [
+    "xbox-y.svg",
+    "xbox-x.svg",
+    "xbox-b.svg",
+    "xbox-a.svg",
+    "xbox-rb.svg",
+].map((n) => "/assets/" + n);
+
+function switchToGamepadEmotes() {
+    const indicators = Array.from(container.querySelectorAll(".emote-number"));
+
+    for (let i = 0; i < indicators.length; i++) {
+        if (i == 0) continue;
+
+        const indicator = indicators[i];
+        indicator.textContent = "";
+
+        const icon = new Image(20, 20);
+        icon.src = gamepadIndicators[i - 1];
+
+        indicator.appendChild(icon);
+    }
+}
+
+function switchToKeyboardEmotes() {
+    const indicators = Array.from(container.querySelectorAll(".emote-number"));
+
+    for (let i = 0; i < indicators.length; i++) {
+        if (i == 0) continue;
+
+        const indicator = indicators[i];
+        indicator.textContent = i;
+    }
+}

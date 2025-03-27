@@ -1,5 +1,4 @@
 window.addEventListener("gamepadconnected", (event) => {
-    console.log("here");
     if (location.pathname === "/") {
         showNotification({
             type: "GAMEPAD",
@@ -9,12 +8,13 @@ window.addEventListener("gamepadconnected", (event) => {
         });
     } else {
         disableMouseMovement = true;
+        if (location.pathname === "/pages/online1v1.html")
+            switchToGamepadEmotes();
         requestAnimationFrame(updateGamepad);
     }
 });
 
 window.addEventListener("gamepaddisconnected", (event) => {
-    console.log("here 2");
     if (location.pathname === "/") {
         showNotification({
             type: "GAMEPAD",
@@ -24,6 +24,8 @@ window.addEventListener("gamepaddisconnected", (event) => {
         });
     } else {
         disableMouseMovement = false;
+        if (location.pathname === "/pages/online1v1.html")
+            switchToKeyboardEmotes();
         cancelAnimationFrame(gamepadRequest);
     }
 });
@@ -71,6 +73,30 @@ function updateGamepad() {
                 lastExecutionTime = currentTime;
             }
         }
+
+        let emoteIndex;
+        let emotePressed = true;
+
+        if (gp.buttons[0].pressed) {
+            // A
+            emoteIndex = 3;
+        } else if (gp.buttons[1].pressed) {
+            // B
+            emoteIndex = 2;
+        } else if (gp.buttons[3].pressed) {
+            // X
+            emoteIndex = 1;
+        } else if (gp.buttons[2].pressed) {
+            // Y
+            emoteIndex = 0;
+        } else if (gp.buttons[5].pressed) {
+            // RB
+            emoteIndex = 4;
+        } else {
+            emotePressed = false;
+        }
+
+        if (emotePressed) sendEmote(emoteIndex);
     }
     gamepadRequest = requestAnimationFrame(updateGamepad);
 }
