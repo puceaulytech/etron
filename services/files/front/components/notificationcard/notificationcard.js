@@ -10,7 +10,7 @@ class NotificationCard extends HTMLElement {
                     margin-bottom: 20px;
                     bottom: 0;
                     left: calc(50% - 150px);
-                    min-width: 300px;
+                    min-width: 380px;
                     border: 2px solid green;
                     border-radius: 10px;
                     background-color: white;
@@ -62,20 +62,25 @@ class NotificationCard extends HTMLElement {
             </style>
 
             <div class="container">
-                <img id="notif-icon" src="../../assets/notification-icon.svg" />
+                <img id="notif-icon" />
 
                 <span id="content"></span>
 
-                <img id="close-icon" src="../../assets/close-icon.svg" />
+                <img id="close-icon" src="/assets/close-icon.svg" />
             </div>
         `;
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.appendChild(this.template.content.cloneNode(true));
 
+        this.defaultIconSrc = "/assets/notification-icon.svg";
+
         this.container = shadow.querySelector(".container");
         this.contentElem = shadow.querySelector("#content");
         this.closeBtn = shadow.querySelector("#close-icon");
+        this.notifIcon = shadow.querySelector("#notif-icon");
+
+        this.updateIcon();
 
         this.closeEvent = new CustomEvent("close", {
             bubbles: true,
@@ -99,7 +104,7 @@ class NotificationCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["content", "closing"];
+        return ["content", "icon-src", "closing"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -107,11 +112,19 @@ class NotificationCard extends HTMLElement {
             this.updateContent(newValue);
         } else if (name === "closing") {
             this.classList.add("🌬️");
+        } else if (name === "icon-src") {
+            this.updateIcon();
         }
     }
 
     updateContent(content) {
         this.contentElem.innerText = content;
+    }
+
+    updateIcon() {
+        this.notifIcon.src = this.hasAttribute("icon-src")
+            ? this.getAttribute("icon-src")
+            : this.defaultIconSrc;
     }
 }
 

@@ -71,26 +71,31 @@ function showNotification(notification) {
     const body = document.querySelector("body");
 
     let content;
+    let icon;
     if (notification.type === "FRIEND_REQUEST") {
         const targetUsername = notification.friendRequest.targetUsername;
 
+        icon = "/assets/account-plus-icon.svg";
         content = `${targetUsername} wants to be your friend!`;
         updateFriendRequests();
     } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
         const targetUsername =
             notification.friendRequestAccepted.targetUsername;
 
+        icon = "/assets/account-check-icon.svg";
         content = `${targetUsername} accepted your friend request!`;
         updateFriendRequests();
         updateFriendList();
     } else if (notification.type === "CHALLENGE") {
         const challengerUsername = notification.challenge.challengerUsername;
 
+        icon = "/assets/fight-icon.svg";
         content = `${challengerUsername} is challenging you to a 1v1!`;
     } else if (notification.type === "CHALLENGE_ACCEPTED") {
         const opponentUsername =
             notification.challengeAccepted.opponentUsername;
 
+        icon = "/assets/fight-icon.svg";
         content = `${opponentUsername} accepted your challenge!`;
 
         setTimeout(() => {
@@ -118,6 +123,9 @@ function showNotification(notification) {
 
     const notifElem = document.createElement("notification-card");
     notifElem.setAttribute("content", content);
+    if (icon) {
+        notifElem.setAttribute("icon-src", icon);
+    }
 
     setTimeout(() => {
         hideNotification(notifElem);
