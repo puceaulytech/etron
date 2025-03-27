@@ -146,17 +146,29 @@ svg .svg-shit {
 }
 
 #tutorial-body {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     align-items: center;
+    justify-items: center;
     gap: 20px;
+    grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr);
 }
 
-#tutorial-body img {
+#tutorial-body > span {
+    font-style: italic;
+}
+
+.tutorial-part img {
     width: 15vw;
     height: 15vw;
     min-height: 150px;
     min-width: 150px;
+}
+
+.tutorial-part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .user-stats-container {

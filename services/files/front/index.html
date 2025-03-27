@@ -226,13 +226,29 @@
 
         <app-dialog-custom id="tutorial-dialog" content="How to play">
             <div slot="body" id="tutorial-body">
-                <img
-                    src="/assets/tuto.GIF"
-                    alt="video explaining how to play"
-                    loading="lazy"
-                    fetchpriority="low"
-                />
-                <span>Move by pointing your mouse!</span>
+                <div class="tutorial-part">
+                    <img
+                        src="/assets/tuto.GIF"
+                        alt="video explaining how to play"
+                        loading="lazy"
+                        fetchpriority="low"
+                        class="gif"
+                    />
+                    <span>Move by pointing your mouse!</span>
+                </div>
+
+                <span>or</span>
+
+                <div class="tutorial-part">
+                    <img
+                        src="/assets/xbox-left-joystick.webp"
+                        alt="left joystick"
+                        loading="lazy"
+                        fetchpriority="low"
+                    />
+
+                    <span>Plug in a controller and use the left joystick</span>
+                </div>
             </div>
             <div slot="buttons" style="display: contents">
                 <button class="app-button" id="tutorial-close">Close</button>
