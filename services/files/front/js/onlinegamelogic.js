@@ -49,6 +49,14 @@ socket.on("connect", async () => {
         socket.emit("ready", { gameId });
     }
 
+    socket.on("countdown_start", (payload) => {
+        if (gameId !== payload.gameId) return;
+
+        waitingForOpponent.style.visibility = "visible";
+        waitingForOpponent.querySelector("p").textContent =
+            payload.delay.toString();
+    });
+
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
