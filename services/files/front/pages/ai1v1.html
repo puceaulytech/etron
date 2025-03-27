@@ -26,19 +26,27 @@
         <script src="../js/authutils.js" defer></script>
         <script src="../js/socket.io.js" defer></script>
         <script src="../js/ws.js" defer></script>
+        <script src="../js/emotes.js" defer></script>
         <script src="../js/gameutils.js" defer></script>
         <script src="../js/aigamelogic.js" defer></script>
     </head>
     <body>
         <div class="container">
-            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+            <div style="text-align: center" class="controls-container">
+                <h1>Controls</h1>
+                <div class="mouse-controls">
+                    <div>
+                        <img src="/assets/mouse.svg" alt="mouse icon" />
+                    </div>
+                </div>
+            </div>
 
             <game-grid inverted crosshair></game-grid>
 
             <div></div>
 
-            <div class="game-hud visible">
-                <span>Opponent:</span>
+            <div class="game-hud">
+                <span>Opponent</span>
                 <div>
                     <img
                         src="../assets/fight-icon.svg"
@@ -56,20 +64,41 @@
 
             <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
 
-            <app-dialog>
-                <div slot="buttons" style="display: contents">
-                    <button id="dialog-return" class="app-button">
-                        Return to home
-                    </button>
-                    <button id="dialog-play-again" class="app-button">
-                        Play again
-                    </button>
-                </div>
-            </app-dialog>
-
             <div id="loading-screen" class="visible">
                 <div class="loader"></div>
                 <span>Loading AI game...</span>
+            </div>
+
+            <div id="countdown" class="blur-overlay" style="visibility: hidden">
+                <p class="subtitle">Prepare for battle!</p>
+                <p class="title">3</p>
+
+                <div class="blur-overlay-buttons" style="visibility: hidden">
+                    <button
+                        id="end-return"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/home-icon.svg" />
+
+                        <span>Home</span>
+                    </button>
+
+                    <button
+                        id="end-play-again"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/controller-icon.svg" />
+
+                        <span>Play again</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="emote-item" id="emote-template">
+                <div class="dialogue-container">
+                    <span class="emote"></span>
+                </div>
+                <div class="emote-number"></div>
             </div>
         </div>
     </body>

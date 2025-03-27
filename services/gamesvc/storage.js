@@ -97,6 +97,7 @@ class Storage {
             aiRoundWon: 0,
             lastTurnTime: Date.now(),
             ready: false,
+            countdownStatus: "NOT_STARTED",
         };
 
         this.games.set(id, game);
@@ -134,6 +135,7 @@ class Storage {
             secondPlayerRoundWon: 0,
             firstReady: false,
             secondReady: false,
+            countdownStatus: "NOT_STARTED",
         };
 
         this.games.set(id, game);
@@ -157,6 +159,7 @@ class Storage {
             firstReady: false,
             secondReady: false,
             challenge: true,
+            countdownStatus: "NOT_STARTED",
         };
 
         this.games.set(id, game);

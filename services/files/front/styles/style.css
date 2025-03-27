@@ -27,7 +27,7 @@ body {
 }
 
 .big-button {
-    width: 200px;
+    width: 250px;
     height: 100px;
     font-size: 35px;
 }
@@ -110,7 +110,9 @@ svg .svg-shit {
     align-items: center;
 }
 
-#leaderboard h3 {
+#leaderboard 
+Game mode :
+h3 {
     margin-top: 0;
 }
 
@@ -143,6 +145,20 @@ svg .svg-shit {
     padding: 3px 20px;
     justify-content: space-between;
     gap: 10px;
+}
+
+#tutorial-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#tutorial-body img {
+    width: 15vw;
+    height: 15vw;
+    min-height: 150px;
+    min-width: 150px;
 }
 
 @keyframes emphasize {

@@ -1,3 +1,7 @@
+:root {
+    --slides-duration: 500ms;
+}
+
 body {
     margin: 0;
 
@@ -19,6 +23,42 @@ body {
     height: 100vh;
 }
 
+.controls-container {
+    visibility: hidden;
+}
+.controls-container.visible {
+    visibility: visible;
+
+    animation-name: controls-appear;
+    animation-duration: var(--slides-duration);
+}
+
+.mouse-controls {
+    background-color: green;
+    border-radius: 10px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls div {
+    background-color: white;
+    border-radius: 40%;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls img {
+    width: 90%;
+    height: 90%;
+}
+
 game-grid {
     width: 60vw;
     height: 100%;
@@ -26,9 +66,16 @@ game-grid {
 
 #emote-container {
     display: flex;
+    visibility: hidden;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+}
+#emote-container.visible {
+    visibility: visible;
+
+    animation-name: emotes-appear;
+    animation-duration: var(--slides-duration);
 }
 #emote-container h1 {
     margin-bottom: 20px;
@@ -99,7 +146,17 @@ game-grid {
 .game-hud.visible {
     display: flex;
     animation-name: hud-appear;
-    animation-duration: 500ms;
+    animation-duration: var(--slides-duration);
+}
+
+rounds-bar {
+    display: none;
+}
+
+rounds-bar.visible {
+    display: flex;
+    animation-name: rounds-bar-appear;
+    animation-duration: var(--slides-duration);
 }
 
 .blur-overlay {
@@ -112,14 +169,34 @@ game-grid {
     height: 100%;
     backdrop-filter: blur(6px);
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.blur-overlay > p.title {
+    font-size: 40px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.blur-overlay > p.subtitle {
+    font-size: 30px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.blur-overlay-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
     justify-content: center;
     align-items: center;
 }
 
-.blur-overlay > p {
-    font-size: 40px;
-    margin-top: 0;
-    margin-bottom: 0;
+.blur-overlay-buttons > button {
+    font-size: 25px;
 }
 
 #loading-screen {
@@ -181,6 +258,33 @@ rounds-bar {
 @keyframes hud-appear {
     from {
         transform: translateY(-300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes rounds-bar-appear {
+    from {
+        transform: translateY(300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes controls-appear {
+    from {
+        transform: translateX(-300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes emotes-appear {
+    from {
+        transform: translateX(300px);
     }
     to {
         transform: translateY(0);
