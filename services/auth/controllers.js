@@ -154,7 +154,13 @@ async function register(req, res) {
     const password = await argon2.hash(payload.password);
     const result = await db
         .collection("users")
-        .insertOne({ username, password, online: false, elo: 1500 });
+        .insertOne({
+            username,
+            password,
+            online: false,
+            elo: 1500,
+            createdAt: Date.now(),
+        });
 
     return { _id: result.insertedId, username };
 }

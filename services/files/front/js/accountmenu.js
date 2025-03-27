@@ -98,6 +98,17 @@ async function updateAccountInfo() {
         );
         playerNameElement.textContent = userInfo.username;
 
+        const accountDateElement = document.querySelector(
+            "#account-section #account-creation-date",
+        );
+        const accountCreationDate = new Date(parseInt(userInfo.createdAt));
+        const formattedDate = accountCreationDate.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+        accountDateElement.textContent = `Member since: ${formattedDate}`;
+
         const playerEloElement = document.querySelector(
             "#account-section #player-elo",
         );
