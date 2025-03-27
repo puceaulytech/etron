@@ -32,6 +32,18 @@ playButton.addEventListener("click", () => {
     location.assign(url);
 });
 
+const tutorialDialog = document.querySelector("#tutorial-dialog");
+const tutorialButton = document.querySelector("#tutorial-btn");
+const tutorialCloseButton = document.querySelector("#tutorial-close");
+
+tutorialButton.addEventListener("click", () =>
+    tutorialDialog.setAttribute("show", "YEAH"),
+);
+
+tutorialCloseButton.addEventListener("click", () =>
+    tutorialDialog.removeAttribute("show"),
+);
+
 quitButton.addEventListener("click", () => {
     location.replace("/assets/bob.png");
 });

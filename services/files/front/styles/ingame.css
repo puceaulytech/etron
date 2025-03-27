@@ -19,6 +19,32 @@ body {
     height: 100vh;
 }
 
+.mouse-controls {
+    background-color: green;
+    border-radius: 10px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls div {
+    background-color: white;
+    border-radius: 40%;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls img {
+    width: 90%;
+    height: 90%;
+}
+
 game-grid {
     width: 60vw;
     height: 100%;
