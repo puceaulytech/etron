@@ -217,6 +217,13 @@ async function handleScore(
         { _id: secondPlayerId },
         { $set: { elo: secondPlayerNew } },
     );
+
+    const gameResultsCollection = pool.get().collection("gameResults");
+    await gameResultsCollection.insertOne({
+        winner: firstPlayerWon ? firstPlayerId : secondPlayerId,
+        loser: firstPlayerWon ? secondPlayerId : firstPlayerId,
+        createdAt: Date.now(), // just in case we need it someday
+    });
 }
 
 function stopGameLoop() {

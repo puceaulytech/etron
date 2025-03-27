@@ -57,9 +57,16 @@ async function getAuthenticatedUser(req, res) {
         return;
     }
 
+    const gameResultsCollection = pool.get().collection("gameResults");
+    const gameHistory = await gameResultsCollection
+        .find({
+            $or: [{ winner: user._id }, { loser: user._id }],
+        })
+        .toArray();
+
     const { password, ...userInfo } = user;
 
-    return userInfo;
+    return { ...userInfo, gameHistory };
 }
 
 /**
@@ -152,15 +159,13 @@ async function register(req, res) {
     }
 
     const password = await argon2.hash(payload.password);
-    const result = await db
-        .collection("users")
-        .insertOne({
-            username,
-            password,
-            online: false,
-            elo: 1500,
-            createdAt: Date.now(),
-        });
+    const result = await db.collection("users").insertOne({
+        username,
+        password,
+        online: false,
+        elo: 1500,
+        createdAt: Date.now(),
+    });
 
     return { _id: result.insertedId, username };
 }
