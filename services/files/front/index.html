@@ -23,6 +23,7 @@
         <script src="components/friendrequest/friendrequest.js"></script>
         <script src="components/notification-card/notification-card.js"></script>
         <script src="components/dialog/dialog.js"></script>
+        <script src="components/customdialog/customdialog.js"></script>
 
         <script src="js/socket.io.js" defer></script>
         <script src="js/ws.js" defer></script>
@@ -58,7 +59,9 @@
             </div>
 
             <button id="play-btn" class="app-button big-button">Play</button>
-            <button class="app-button big-button">Settings</button>
+            <button id="tutorial-btn" class="app-button big-button">
+                How to play
+            </button>
             <button id="quit-btn" class="app-button big-button">Quit</button>
         </div>
 
@@ -89,8 +92,13 @@
                 <div class="content-section" id="account-section">
                     <h1>Welcome to your account</h1>
                     <p id="player-name">PLAYER</p>
+                    <p id="account-creation-date">
+                        Member since: 29 February 2012
+                    </p>
                     <p id="player-elo">ELO: 1500</p>
-                    <p>Here you can manage your account details.</p>
+                    <p id="player-games-played">Games played: 69</p>
+                    <p id="player-games-won">Games won: 69</p>
+                    <p id="player-win-rate">Win rate: 69%</p>
                     <p class="app-button" onclick="logOut()">Log out</p>
                 </div>
                 <div class="content-section" id="friends-section">
@@ -204,5 +212,18 @@
                 </button>
             </div>
         </app-dialog>
+
+        <app-dialog-custom id="tutorial-dialog" content="How to play">
+            <div slot="body" id="tutorial-body">
+                <img
+                    src="/assets/tuto.GIF"
+                    alt="video explaining how to play"
+                />
+                <span>Move by pointing your mouse!</span>
+            </div>
+            <div slot="buttons" style="display: contents">
+                <button class="app-button" id="tutorial-close">Close</button>
+            </div>
+        </app-dialog-custom>
     </body>
 </html>

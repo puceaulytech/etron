@@ -83,6 +83,20 @@ function sendGame(game, result, io) {
     }
 }
 
+function sendCountdown(game, delay, io) {
+    if (game.ai) {
+        const socketId = storage.getClientSocketId(game.player);
+
+        if (socketId) {
+            const socket = io.sockets.sockets.get(socketId);
+
+            socket.emit("countdown", { gameId: game.id, delay });
+        }
+    } else {
+        io.to(game.id).emit("countdown", { gameId: game.id, delay });
+    }
+}
+
 function sendAIGame(game, result, socket) {
     socket.emit("gamestate", {
         board: result.isUnfinished() ? placePlayersInBoard(game.state) : null,
@@ -124,6 +138,28 @@ function startGameLoop(io) {
                 if (!game.firstReady || !game.secondReady) continue;
             }
 
+            if (game.countdownStatus === "IN_PROGRESS") continue;
+
+            if (game.countdownStatus === "NOT_STARTED") {
+                game.countdownStatus = "IN_PROGRESS";
+
+                sendCountdown(game, 3, io);
+
+                setTimeout(() => {
+                    sendCountdown(game, 2, io);
+
+                    setTimeout(() => {
+                        sendCountdown(game, 1, io);
+
+                        setTimeout(() => {
+                            game.countdownStatus = "DONE";
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+
+                continue;
+            }
+
             if (Date.now() - game.lastTurnTime <= TURN_TIME) continue;
 
             if (game.ai) {
@@ -157,10 +193,9 @@ function startGameLoop(io) {
 
             updateRounds(game);
 
-            if (gameDone(game)) {
-                // Send game with final rounds
-                sendGame(game, game.state.gameResult(), io);
+            sendGame(game, game.state.gameResult(), io);
 
+            if (gameDone(game)) {
                 if (!game.ai) {
                     handleScore(
                         game.firstPlayer,
@@ -172,6 +207,7 @@ function startGameLoop(io) {
                 storage.games.delete(gameId);
             } else {
                 game.state = GameState.randomPositions();
+                game.countdownStatus = "NOT_STARTED";
             }
         }
     }, 20);
@@ -217,6 +253,13 @@ async function handleScore(
         { _id: secondPlayerId },
         { $set: { elo: secondPlayerNew } },
     );
+
+    const gameResultsCollection = pool.get().collection("gameResults");
+    await gameResultsCollection.insertOne({
+        winner: firstPlayerWon ? firstPlayerId : secondPlayerId,
+        loser: firstPlayerWon ? secondPlayerId : firstPlayerId,
+        createdAt: Date.now(), // just in case we need it someday
+    });
 }
 
 function stopGameLoop() {

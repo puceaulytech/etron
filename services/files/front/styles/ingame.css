@@ -1,3 +1,7 @@
+:root {
+    --slides-duration: 500ms;
+}
+
 body {
     margin: 0;
 
@@ -19,6 +23,42 @@ body {
     height: 100vh;
 }
 
+.controls-container {
+    visibility: hidden;
+}
+.controls-container.visible {
+    visibility: visible;
+
+    animation-name: controls-appear;
+    animation-duration: var(--slides-duration);
+}
+
+.mouse-controls {
+    background-color: green;
+    border-radius: 10px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls div {
+    background-color: white;
+    border-radius: 40%;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mouse-controls img {
+    width: 90%;
+    height: 90%;
+}
+
 game-grid {
     width: 60vw;
     height: 100%;
@@ -26,9 +66,16 @@ game-grid {
 
 #emote-container {
     display: flex;
+    visibility: hidden;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+}
+#emote-container.visible {
+    visibility: visible;
+
+    animation-name: emotes-appear;
+    animation-duration: var(--slides-duration);
 }
 #emote-container h1 {
     margin-bottom: 20px;
@@ -99,7 +146,17 @@ game-grid {
 .game-hud.visible {
     display: flex;
     animation-name: hud-appear;
-    animation-duration: 500ms;
+    animation-duration: var(--slides-duration);
+}
+
+rounds-bar {
+    display: none;
+}
+
+rounds-bar.visible {
+    display: flex;
+    animation-name: rounds-bar-appear;
+    animation-duration: var(--slides-duration);
 }
 
 .blur-overlay {
@@ -112,14 +169,74 @@ game-grid {
     height: 100%;
     backdrop-filter: blur(6px);
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.blur-overlay > p.title {
+    font-size: 40px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.blur-overlay > p.subtitle {
+    font-size: 30px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.blur-overlay-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
     justify-content: center;
     align-items: center;
 }
 
-.blur-overlay > p {
-    font-size: 40px;
-    margin-top: 0;
-    margin-bottom: 0;
+.blur-overlay-buttons > button {
+    font-size: 25px;
+}
+
+#loading-screen {
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+#loading-screen.visible {
+    display: flex;
+}
+
+#loading-screen span {
+    text-shadow:
+        2px 0 #000,
+        -2px 0 #000,
+        0 2px #000,
+        0 -2px #000,
+        1px 1px #000,
+        -1px -1px #000,
+        1px -1px #000,
+        -1px 1px #000;
+    color: white;
+    font-size: 25px;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid green;
+    border-bottom: 16px solid green;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    width: auto;
+    height: 80px;
+    animation: spin 2s linear infinite;
 }
 
 .animated-emote {
@@ -147,6 +264,33 @@ rounds-bar {
     }
 }
 
+@keyframes rounds-bar-appear {
+    from {
+        transform: translateY(300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes controls-appear {
+    from {
+        transform: translateX(-300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes emotes-appear {
+    from {
+        transform: translateX(300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
 @keyframes slide-in {
     0% {
         transform: translateY(500px);
@@ -164,5 +308,14 @@ rounds-bar {
     }
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(0deg);
+    }
+    from {
+        transform: rotate(360deg);
     }
 }

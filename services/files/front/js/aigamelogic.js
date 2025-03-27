@@ -1,16 +1,17 @@
 const gameGrid = document.querySelector("game-grid");
-const dialog = document.querySelector("app-dialog");
-const dialogReturn = document.querySelector("#dialog-return");
-const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const endReturn = document.querySelector("#end-return");
+const endPlayAgain = document.querySelector("#end-play-again");
+const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
+const countdownDiv = document.querySelector("#countdown");
 
 let disableMouseMovement = false;
 
-dialogReturn.addEventListener("click", () => {
+endReturn.addEventListener("click", () => {
     location.assign("/");
 });
 
-dialogPlayAgain.addEventListener("click", () => {
+endPlayAgain.addEventListener("click", () => {
     location.reload();
 });
 
@@ -47,20 +48,51 @@ socket.on("connect", async () => {
         gameId = body.gameId;
     }
 
+    socket.on("countdown", (payload) => {
+        if (gameId !== payload.gameId) return;
+
+        loadingScreen.classList.remove("visible");
+
+        countdownDiv.style.visibility = "visible";
+        countdownDiv.querySelector("p.title").textContent =
+            payload.delay.toString();
+    });
+
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
+
+        document.querySelector(".controls-container").classList.add("visible");
+        document.querySelector(".game-hud").classList.add("visible");
+        document.querySelector("rounds-bar").classList.add("visible");
+
+        countdownDiv.style.visibility = "hidden";
+
+        loadingScreen.classList.remove("visible");
 
         roundsBar.setAttribute("left-rounds", payload.playerRoundWon);
         roundsBar.setAttribute("right-rounds", payload.aiRoundWon);
 
         if (payload.playerRoundWon === 3 || payload.aiRoundWon === 3) {
+            countdownDiv.querySelector("p.subtitle").textContent = "";
+
             if (payload.aiRoundWon === 3) {
-                dialog.setAttribute("content", "You lost!");
+                countdownDiv.querySelector("p.title").textContent = "You lost!";
             } else {
-                dialog.setAttribute("content", "You won!");
+                countdownDiv.querySelector("p.title").textContent = "You won!";
             }
 
-            dialog.setAttribute("show", "yes");
+            countdownDiv.style.visibility = "visible";
+            countdownDiv.querySelector(
+                ".blur-overlay-buttons",
+            ).style.visibility = "visible";
+        } else if (payload.result.type === "DRAW") {
+            countdownDiv.querySelector("p.subtitle").textContent =
+                "- It's a draw! -";
+        } else if (payload.result.type === "PLAYER_WIN") {
+            countdownDiv.querySelector("p.subtitle").textContent =
+                payload.result.winner === 1
+                    ? "- Round lost -"
+                    : "- Round won -";
         } else if (payload.result.type === "UNFINISHED") {
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
@@ -82,6 +114,12 @@ socket.on("connect", async () => {
             lastMove = newMove;
 
             updateNextMousePos(newMove);
+
+            // Randomly taunt player
+            if (Math.random() < 0.1) {
+                const index = Math.floor(Math.random() * emotes.length);
+                displayEmote(emotes[index], true);
+            }
         }
     });
 
@@ -100,48 +138,6 @@ socket.on("connect", async () => {
                 direction: newMove,
             });
             lastMove = newMove;
-        }
-    });
-
-    document.addEventListener("keydown", (event) => {
-        switch (event.key.toLowerCase()) {
-            /* Player 1 keys */
-            case "q":
-                socket.emit("move", {
-                    gameId,
-                    direction: "LEFT",
-                });
-                break;
-            case "d":
-                socket.emit("move", {
-                    gameId,
-                    direction: "RIGHT",
-                });
-                break;
-            case "w":
-                socket.emit("move", {
-                    gameId,
-                    direction: "BOTTOM_LEFT",
-                });
-                break;
-            case "x":
-                socket.emit("move", {
-                    gameId,
-                    direction: "BOTTOM_RIGHT",
-                });
-                break;
-            case "z":
-                socket.emit("move", {
-                    gameId,
-                    direction: "TOP_LEFT",
-                });
-                break;
-            case "e":
-                socket.emit("move", {
-                    gameId,
-                    direction: "TOP_RIGHT",
-                });
-                break;
         }
     });
 });

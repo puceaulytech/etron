@@ -33,7 +33,14 @@
     </head>
     <body>
         <div class="container">
-            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+            <div style="text-align: center" class="controls-container">
+                <h1>Controls</h1>
+                <div class="mouse-controls">
+                    <div>
+                        <img src="/assets/mouse.svg" alt="mouse icon" />
+                    </div>
+                </div>
+            </div>
 
             <game-grid crosshair></game-grid>
 
@@ -50,7 +57,7 @@
             <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
 
             <div class="game-hud">
-                <span>Opponent:</span>
+                <span>Opponent</span>
                 <div>
                     <img
                         src="../assets/fight-icon.svg"
@@ -67,19 +74,30 @@
             </div>
         </div>
 
-        <app-dialog>
-            <div slot="buttons" style="display: contents">
-                <button id="dialog-return" class="app-button">
-                    Return to home
+        <div id="waiting-for-opponent" class="blur-overlay">
+            <p class="subtitle"></p>
+            <p class="title">Waiting for opponent...</p>
+        </div>
+
+        <div id="countdown" class="blur-overlay" style="visibility: hidden">
+            <p class="subtitle">Prepare for battle!</p>
+            <p class="title">3</p>
+
+            <div class="blur-overlay-buttons" style="visibility: hidden">
+                <button id="end-return" class="app-button app-button-with-icon">
+                    <img src="/assets/home-icon.svg" />
+
+                    <span>Home</span>
                 </button>
-                <button id="dialog-play-again" class="app-button">
-                    Play again
+                <button
+                    id="end-play-again"
+                    class="app-button app-button-with-icon"
+                >
+                    <img src="/assets/controller-icon.svg" />
+
+                    <span>Play again</span>
                 </button>
             </div>
-        </app-dialog>
-
-        <div id="waiting-for-opponent" class="blur-overlay">
-            <p>Waiting for opponent...</p>
         </div>
     </body>
 </html>

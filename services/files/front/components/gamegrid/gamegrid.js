@@ -11,6 +11,9 @@ class GameGrid extends HTMLElement {
         this.footprintImg = new Image();
         this.footprintImg.src = "../assets/footprint.png";
 
+        this.footprintImgRed = new Image();
+        this.footprintImgRed.src = "../assets/footprint-red.png";
+
         this.wrappingDiv = document.createElement("div");
         this.wrappingDiv.id = "game";
 
@@ -119,7 +122,11 @@ class GameGrid extends HTMLElement {
                     nextMousePos.y == i &&
                     nextMousePos.x == j
                 ) {
-                    overImage = this.footprintImg;
+                    if (image === this.merdeImg) {
+                        overImage = this.footprintImgRed;
+                    } else {
+                        overImage = this.footprintImg;
+                    }
                 }
 
                 this.drawHexagon(j, i, filling, image, overImage);
