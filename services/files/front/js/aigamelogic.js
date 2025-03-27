@@ -51,7 +51,8 @@ socket.on("connect", async () => {
         loadingScreen.classList.remove("visible");
 
         countdownDiv.style.visibility = "visible";
-        countdownDiv.querySelector("p").textContent = payload.delay.toString();
+        countdownDiv.querySelector("p.title").textContent =
+            payload.delay.toString();
     });
 
     socket.on("gamestate", (payload) => {
@@ -72,6 +73,14 @@ socket.on("connect", async () => {
             }
 
             dialog.setAttribute("show", "yes");
+        } else if (payload.result.type === "DRAW") {
+            countdownDiv.querySelector("p.subtitle").textContent =
+                "- It's a draw! -";
+        } else if (payload.result.type === "PLAYER_WIN") {
+            countdownDiv.querySelector("p.subtitle").textContent =
+                payload.result.winner === 1
+                    ? "- Round lost -"
+                    : "- Round won -";
         } else if (payload.result.type === "UNFINISHED") {
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(

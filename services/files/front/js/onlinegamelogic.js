@@ -1,5 +1,6 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+const countdownDiv = document.querySelector("#countdown");
 const dialog = document.querySelector("app-dialog");
 const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
@@ -52,8 +53,10 @@ socket.on("connect", async () => {
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        waitingForOpponent.style.visibility = "visible";
-        waitingForOpponent.querySelector("p").textContent =
+        waitingForOpponent.style.visibility = "hidden";
+
+        countdownDiv.style.visibility = "visible";
+        countdownDiv.querySelector("p.title").textContent =
             payload.delay.toString();
     });
 
@@ -65,6 +68,7 @@ socket.on("connect", async () => {
         inverted = side === "right";
 
         waitingForOpponent.style.visibility = "hidden";
+        countdownDiv.style.visibility = "hidden";
 
         const gameResult = payload.result;
         const myRounds = payload.rounds[myUserId];
@@ -81,6 +85,16 @@ socket.on("connect", async () => {
             }
 
             dialog.setAttribute("show", "yes");
+        } else if (gameResult.type === "DRAW") {
+            countdownDiv.querySelector("p.subtitle").textContent =
+                "- It's a draw! -";
+        } else if (gameResult.type === "PLAYER_WIN") {
+            const own = inverted ? 1 : -1;
+
+            countdownDiv.querySelector("p.subtitle").textContent =
+                payload.result.winner === own
+                    ? "- Round lost -"
+                    : "- Round won -";
         } else if (gameResult.type === "UNFINISHED") {
             if (inverted) {
                 gameGrid.setAttribute("inverted", "yes");
