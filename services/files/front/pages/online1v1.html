@@ -49,7 +49,7 @@
             <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
 
             <div class="game-hud">
-                <span>Opponent:</span>
+                <span>Opponent</span>
                 <div>
                     <img
                         src="../assets/fight-icon.svg"
@@ -66,17 +66,6 @@
             </div>
         </div>
 
-        <app-dialog>
-            <div slot="buttons" style="display: contents">
-                <button id="dialog-return" class="app-button">
-                    Return to home
-                </button>
-                <button id="dialog-play-again" class="app-button">
-                    Play again
-                </button>
-            </div>
-        </app-dialog>
-
         <div id="waiting-for-opponent" class="blur-overlay">
             <p class="subtitle"></p>
             <p class="title">Waiting for opponent...</p>
@@ -85,6 +74,13 @@
         <div id="countdown" class="blur-overlay" style="visibility: hidden">
             <p class="subtitle">Prepare for battle!</p>
             <p class="title">3</p>
+
+            <div class="blur-overlay-buttons" style="visibility: hidden">
+                <button id="end-return" class="app-button">Home</button>
+                <button id="end-play-again" class="app-button">
+                    Play again
+                </button>
+            </div>
         </div>
     </body>
 </html>

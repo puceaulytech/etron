@@ -1,9 +1,8 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
 const countdownDiv = document.querySelector("#countdown");
-const dialog = document.querySelector("app-dialog");
-const dialogReturn = document.querySelector("#dialog-return");
-const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const endReturn = document.querySelector("#end-return");
+const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
 
 const myUserId = localStorage.getItem("userId");
@@ -19,11 +18,11 @@ let gameId;
 
 waitingForOpponent.style.visibility = "visible";
 
-dialogReturn.addEventListener("click", () => {
+endReturn.addEventListener("click", () => {
     location.assign("/");
 });
 
-dialogPlayAgain.addEventListener("click", () => {
+endPlayAgain.addEventListener("click", () => {
     location.reload();
 });
 
@@ -78,13 +77,18 @@ socket.on("connect", async () => {
         roundsBar.setAttribute("right-rounds", opponentRounds);
 
         if (myRounds === 3 || opponentRounds === 3) {
+            countdownDiv.querySelector("p.subtitle").textContent = "";
+
             if (myRounds === 3) {
-                dialog.setAttribute("content", "You won!");
+                countdownDiv.querySelector("p.title").textContent = "You won!";
             } else {
-                dialog.setAttribute("content", "You lost!");
+                countdownDiv.querySelector("p.title").textContent = "You lost!";
             }
 
-            dialog.setAttribute("show", "yes");
+            countdownDiv.style.visibility = "visible";
+            countdownDiv.querySelector(
+                ".blur-overlay-buttons",
+            ).style.visibility = "visible";
         } else if (gameResult.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";

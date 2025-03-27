@@ -130,6 +130,18 @@ game-grid {
     margin-bottom: 0;
 }
 
+.blur-overlay-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.blur-overlay-buttons > button {
+    font-size: 25px;
+}
+
 #loading-screen {
     position: fixed;
     z-index: 100;

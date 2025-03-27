@@ -38,7 +38,7 @@
             <div></div>
 
             <div class="game-hud visible">
-                <span>Opponent:</span>
+                <span>Opponent</span>
                 <div>
                     <img
                         src="../assets/fight-icon.svg"
@@ -56,17 +56,6 @@
 
             <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
 
-            <app-dialog>
-                <div slot="buttons" style="display: contents">
-                    <button id="dialog-return" class="app-button">
-                        Return to home
-                    </button>
-                    <button id="dialog-play-again" class="app-button">
-                        Play again
-                    </button>
-                </div>
-            </app-dialog>
-
             <div id="loading-screen" class="visible">
                 <div class="loader"></div>
                 <span>Loading AI game...</span>
@@ -75,6 +64,13 @@
             <div id="countdown" class="blur-overlay" style="visibility: hidden">
                 <p class="subtitle">Prepare for battle!</p>
                 <p class="title">3</p>
+
+                <div class="blur-overlay-buttons" style="visibility: hidden">
+                    <button id="end-return" class="app-button">Home</button>
+                    <button id="end-play-again" class="app-button">
+                        Play again
+                    </button>
+                </div>
             </div>
         </div>
     </body>

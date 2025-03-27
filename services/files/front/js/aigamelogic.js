@@ -1,16 +1,15 @@
 const gameGrid = document.querySelector("game-grid");
-const dialog = document.querySelector("app-dialog");
-const dialogReturn = document.querySelector("#dialog-return");
-const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const endReturn = document.querySelector("#end-return");
+const endPlayAgain = document.querySelector("#end-play-again");
 const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
 const countdownDiv = document.querySelector("#countdown");
 
-dialogReturn.addEventListener("click", () => {
+endReturn.addEventListener("click", () => {
     location.assign("/");
 });
 
-dialogPlayAgain.addEventListener("click", () => {
+endPlayAgain.addEventListener("click", () => {
     location.reload();
 });
 
@@ -66,13 +65,18 @@ socket.on("connect", async () => {
         roundsBar.setAttribute("right-rounds", payload.aiRoundWon);
 
         if (payload.playerRoundWon === 3 || payload.aiRoundWon === 3) {
+            countdownDiv.querySelector("p.subtitle").textContent = "";
+
             if (payload.aiRoundWon === 3) {
-                dialog.setAttribute("content", "You lost!");
+                countdownDiv.querySelector("p.title").textContent = "You lost!";
             } else {
-                dialog.setAttribute("content", "You won!");
+                countdownDiv.querySelector("p.title").textContent = "You won!";
             }
 
-            dialog.setAttribute("show", "yes");
+            countdownDiv.style.visibility = "visible";
+            countdownDiv.querySelector(
+                ".blur-overlay-buttons",
+            ).style.visibility = "visible";
         } else if (payload.result.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";
