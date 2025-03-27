@@ -90,10 +90,10 @@ function sendCountdown(game, delay, io) {
         if (socketId) {
             const socket = io.sockets.sockets.get(socketId);
 
-            socket.emit("countdown_start", { gameId: game.id, delay });
+            socket.emit("countdown", { gameId: game.id, delay });
         }
     } else {
-        io.to(game.id).emit("countdown_start", { gameId: game.id, delay });
+        io.to(game.id).emit("countdown", { gameId: game.id, delay });
     }
 }
 

@@ -106,6 +106,8 @@ function handleWS(httpServer) {
             // Game doesn't exist, ignore
             if (!game) return;
 
+            if (game.countdownStatus !== "DONE") return;
+
             /** @type {GameState} */
             const gameState = game.state;
 

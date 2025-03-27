@@ -4,6 +4,7 @@ const dialogReturn = document.querySelector("#dialog-return");
 const dialogPlayAgain = document.querySelector("#dialog-play-again");
 const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
+const countdownDiv = document.querySelector("#countdown");
 
 dialogReturn.addEventListener("click", () => {
     location.assign("/");
@@ -44,8 +45,21 @@ socket.on("connect", async () => {
         gameId = body.gameId;
     }
 
+    socket.on("countdown", (payload) => {
+        if (gameId !== payload.gameId) return;
+
+        loadingScreen.classList.remove("visible");
+
+        countdownDiv.style.visibility = "visible";
+        countdownDiv.querySelector("p").textContent = payload.delay.toString();
+    });
+
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
+
+        countdownDiv.style.visibility = "hidden";
+
+        loadingScreen.classList.remove("visible");
 
         roundsBar.setAttribute("left-rounds", payload.playerRoundWon);
         roundsBar.setAttribute("right-rounds", payload.aiRoundWon);
@@ -59,8 +73,6 @@ socket.on("connect", async () => {
 
             dialog.setAttribute("show", "yes");
         } else if (payload.result.type === "UNFINISHED") {
-            loadingScreen.classList.remove("visible");
-
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
                 "playerpos",
