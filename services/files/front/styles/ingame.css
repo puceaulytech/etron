@@ -223,7 +223,7 @@ rounds-bar.visible {
 }
 
 .loader {
-    border: 16px solid #f3f3f3;
+    border: 16px solid rgba(0, 0, 0, 0);
     border-top: 16px solid green;
     border-bottom: 16px solid green;
     border-radius: 50%;
