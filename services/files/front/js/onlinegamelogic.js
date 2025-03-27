@@ -7,6 +7,8 @@ const roundsBar = document.querySelector("rounds-bar");
 
 const myUserId = localStorage.getItem("userId");
 
+let disableMouseMovement = false;
+
 let opponentId;
 let opponentInfo;
 
@@ -110,16 +112,18 @@ socket.on("connect", async () => {
             gameGrid.setAttribute("playerpos", JSON.stringify(myPos));
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
-            if (!mousePos || !gameGrid.somePlayerPos) return; // I don't know if this is necessary
+            if (!disableMouseMovement) {
+                if (!mousePos || !gameGrid.somePlayerPos) return; // I don't know if this is necessary
 
-            const newMove = computeMove(mousePos.x, mousePos.y, inverted);
-            socket.emit("move", {
-                gameId,
-                direction: newMove,
-            });
-            lastMove = newMove;
+                const newMove = computeMove(mousePos.x, mousePos.y, inverted);
+                socket.emit("move", {
+                    gameId,
+                    direction: newMove,
+                });
+                lastMove = newMove;
 
-            updateNextMousePos(newMove);
+                updateNextMousePos(newMove);
+            }
 
             if (!opponentInfo) {
                 opponentId = Object.keys(payload.sides).find(
@@ -155,6 +159,8 @@ socket.on("connect", async () => {
     });
 
     document.addEventListener("mousemove", (event) => {
+        if (disableMouseMovement) return;
+
         mousePos = { x: event.clientX, y: event.clientY };
         if (!gameGrid.somePlayerPos) return;
 

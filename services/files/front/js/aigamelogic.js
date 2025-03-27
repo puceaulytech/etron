@@ -5,6 +5,8 @@ const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
 const countdownDiv = document.querySelector("#countdown");
 
+let disableMouseMovement = false;
+
 endReturn.addEventListener("click", () => {
     location.assign("/");
 });
@@ -25,12 +27,14 @@ const directions = [
 let lastMove;
 let mousePos;
 
+let gameId;
+
 socket.on("connect", async () => {
     const ongoingGamesResp = await authenticatedFetch(
         "/api/gamesvc/ongoinggames?gameMode=ai",
     );
 
-    let gameId = ongoingGamesResp.ongoingGameId;
+    gameId = ongoingGamesResp.ongoingGameId;
 
     if (!ongoingGamesResp.ongoingGameId) {
         const body = await authenticatedFetch("/api/gamesvc/playagainstai", {
@@ -100,6 +104,7 @@ socket.on("connect", async () => {
             );
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
+            if (disableMouseMovement) return;
             if (!mousePos) return;
             const newMove = computeMove(mousePos.x, mousePos.y, true);
             socket.emit("move", {
@@ -119,6 +124,7 @@ socket.on("connect", async () => {
     });
 
     document.addEventListener("mousemove", (event) => {
+        if (disableMouseMovement) return;
         if (!gameGrid.somePlayerPos) return;
 
         mousePos = { x: event.clientX, y: event.clientY };
