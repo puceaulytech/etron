@@ -1,3 +1,7 @@
+:root {
+    --slides-duration: 500ms;
+}
+
 body {
     margin: 0;
 
@@ -17,6 +21,16 @@ body {
 
     width: 100vw;
     height: 100vh;
+}
+
+.controls-container {
+    visibility: hidden;
+}
+.controls-container.visible {
+    visibility: visible;
+
+    animation-name: controls-appear;
+    animation-duration: var(--slides-duration);
 }
 
 .mouse-controls {
@@ -61,7 +75,7 @@ game-grid {
     visibility: visible;
 
     animation-name: emotes-appear;
-    animation-duration: 500ms;
+    animation-duration: var(--slides-duration);
 }
 #emote-container h1 {
     margin-bottom: 20px;
@@ -132,7 +146,7 @@ game-grid {
 .game-hud.visible {
     display: flex;
     animation-name: hud-appear;
-    animation-duration: 500ms;
+    animation-duration: var(--slides-duration);
 }
 
 rounds-bar {
@@ -142,7 +156,7 @@ rounds-bar {
 rounds-bar.visible {
     display: flex;
     animation-name: rounds-bar-appear;
-    animation-duration: 500ms;
+    animation-duration: var(--slides-duration);
 }
 
 .blur-overlay {
@@ -253,6 +267,15 @@ rounds-bar {
 @keyframes rounds-bar-appear {
     from {
         transform: translateY(300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes controls-appear {
+    from {
+        transform: translateX(-300px);
     }
     to {
         transform: translateY(0);

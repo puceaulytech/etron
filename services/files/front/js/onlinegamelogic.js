@@ -135,6 +135,9 @@ socket.on("connect", async () => {
                             ".game-hud .opponent-name",
                         ).textContent = userInfo.username;
                         document
+                            .querySelector(".controls-container")
+                            .classList.add("visible");
+                        document
                             .querySelector(".game-hud")
                             .classList.add("visible");
                         document
