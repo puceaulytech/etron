@@ -109,6 +109,12 @@ socket.on("connect", async () => {
             lastMove = newMove;
 
             updateNextMousePos(newMove);
+
+            // Randomly taunt player
+            if (Math.random() < 0.1) {
+                const index = Math.floor(Math.random() * emotes.length);
+                displayEmote(emotes[index], true);
+            }
         }
     });
 
