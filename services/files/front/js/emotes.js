@@ -26,19 +26,21 @@ const emotes = ["😂", "😎", "😡", "😭", "💩"];
 
 const container = document.getElementById("emote-container");
 
-emotes.forEach((emoteChar, index) => {
-    const emoteItem = template.cloneNode(true);
+if (container) {
+    emotes.forEach((emoteChar, index) => {
+        const emoteItem = template.cloneNode(true);
 
-    emoteItem.removeAttribute("id");
+        emoteItem.removeAttribute("id");
 
-    emoteItem.querySelector(".emote").textContent = emoteChar;
+        emoteItem.querySelector(".emote").textContent = emoteChar;
 
-    emoteItem.querySelector(".emote-number").textContent = index + 1;
+        emoteItem.querySelector(".emote-number").textContent = index + 1;
 
-    emoteItem.style.display = "flex";
+        emoteItem.style.display = "flex";
 
-    container.appendChild(emoteItem);
-});
+        container.appendChild(emoteItem);
+    });
+}
 
 socket.on("emote", (payload) => {
     displayEmote(payload.emote, true);
