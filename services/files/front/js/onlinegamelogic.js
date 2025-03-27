@@ -137,6 +137,12 @@ socket.on("connect", async () => {
                         document
                             .querySelector(".game-hud")
                             .classList.add("visible");
+                        document
+                            .querySelector("rounds-bar")
+                            .classList.add("visible");
+                        document
+                            .querySelector("#emote-container")
+                            .classList.add("visible");
 
                         opponentInfo = userInfo;
                     },

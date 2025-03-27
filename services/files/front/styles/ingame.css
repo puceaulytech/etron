@@ -26,9 +26,16 @@ game-grid {
 
 #emote-container {
     display: flex;
+    visibility: hidden;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+}
+#emote-container.visible {
+    visibility: visible;
+
+    animation-name: emotes-appear;
+    animation-duration: 500ms;
 }
 #emote-container h1 {
     margin-bottom: 20px;
@@ -99,6 +106,16 @@ game-grid {
 .game-hud.visible {
     display: flex;
     animation-name: hud-appear;
+    animation-duration: 500ms;
+}
+
+rounds-bar {
+    display: none;
+}
+
+rounds-bar.visible {
+    display: flex;
+    animation-name: rounds-bar-appear;
     animation-duration: 500ms;
 }
 
@@ -201,6 +218,24 @@ rounds-bar {
 @keyframes hud-appear {
     from {
         transform: translateY(-300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes rounds-bar-appear {
+    from {
+        transform: translateY(300px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes emotes-appear {
+    from {
+        transform: translateX(300px);
     }
     to {
         transform: translateY(0);

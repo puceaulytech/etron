@@ -57,6 +57,9 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
+        document.querySelector(".game-hud").classList.add("visible");
+        document.querySelector("rounds-bar").classList.add("visible");
+
         countdownDiv.style.visibility = "hidden";
 
         loadingScreen.classList.remove("visible");
