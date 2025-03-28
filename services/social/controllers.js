@@ -35,6 +35,7 @@ const endpoints = {
     chat: {
         GET: chatEndpoints.getConversationWith,
         POST: chatEndpoints.sendMessage,
+        PUT: chatEndpoints.readConversation,
     },
     leaderboard: {
         GET: getLeaderboard,
@@ -279,6 +280,7 @@ async function getFriends(req, res) {
     if (!userId) return;
 
     const userCollection = pool.get().collection("users");
+    const messageCollection = pool.get().collection("messages");
 
     const user = await userCollection.findOne({
         _id: ObjectId.createFromHexString(userId),
@@ -300,6 +302,16 @@ async function getFriends(req, res) {
     const result = await userCollection
         .find({ _id: { $in: friends } })
         .toArray();
+
+    for (const friend of result) {
+        const unreadMsgCount = await messageCollection.countDocuments({
+            receiver: user._id,
+            sender: friend._id,
+            isRead: false,
+        });
+
+        friend.unreadMsgCount = unreadMsgCount;
+    }
 
     return result.map((friend) => sanitizeUserInfo(friend));
 }

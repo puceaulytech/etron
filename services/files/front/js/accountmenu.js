@@ -348,6 +348,10 @@ async function updateFriendList() {
                         elem.setAttribute("online", "yes");
                     }
 
+                    if (user.unreadMsgCount > 0) {
+                        elem.setAttribute("unread-msg", "yes");
+                    }
+
                     return elem;
                 }),
             );
