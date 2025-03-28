@@ -47,13 +47,13 @@ body {
 #play-ai-btn {
     grid-column: 2; /* Place in the second column, first row */
     grid-row: 1; /* First row */
-    font-size: 17px;
+    font-size: 19px;
 }
 
 #play-local-btn {
     grid-column: 2; /* Place in the second column, second row */
     grid-row: 2; /* Second row */
-    font-size: 17px;
+    font-size: 19px;
 }
 
 .select:hover {
