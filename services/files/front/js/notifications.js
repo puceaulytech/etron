@@ -159,6 +159,8 @@ async function updateOnlineCount() {
     });
     const payload = await resp.json();
 
+    if (payload.count <= 0) payload.count = 1;
+
     onlineCountTxt.innerText = `${payload.count} player(s) online`;
 }
 
