@@ -27,14 +27,13 @@ body {
 }
 
 .big-button {
-    width: 250px;
     height: 100px;
     font-size: 35px;
 }
 
 .play-btn-group {
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-template-columns: 60% 40%;
     grid-template-rows: auto auto;
     gap: 5px;
 }
@@ -48,22 +47,13 @@ body {
 #play-ai-btn {
     grid-column: 2; /* Place in the second column, first row */
     grid-row: 1; /* First row */
+    font-size: 17px;
 }
 
 #play-local-btn {
     grid-column: 2; /* Place in the second column, second row */
     grid-row: 2; /* Second row */
-}
-
-#game-mode-layout {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#game-mode-layout > label {
-    margin: 0 4px;
+    font-size: 17px;
 }
 
 .select:hover {

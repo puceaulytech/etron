@@ -25,6 +25,11 @@
     height: 30px;
 }
 
+.app-button-with-icon.small-icon > img {
+    width: 20px !important;
+    height: 20px !important;
+}
+
 .app-button-greyed {
     border: 4px solid grey !important;
     background-color: lightgrey !important;
