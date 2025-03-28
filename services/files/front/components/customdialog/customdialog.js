@@ -62,6 +62,12 @@ class AppDialogCustom extends HTMLElement {
         shadow.appendChild(this.template.content.cloneNode(true));
         this.dialogDiv = shadow.querySelector(".dialog");
         this.contentElement = shadow.querySelector("#content");
+
+        this.addEventListener("click", (e) => {
+            const path = e.composedPath();
+
+            if (path[0] === this) this.removeAttribute("show");
+        });
     }
     connectedCallback() {
         this.toggleShow(this.hasAttribute("show"));
