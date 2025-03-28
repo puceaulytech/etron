@@ -2,6 +2,12 @@
     --slides-duration: 500ms;
 }
 
+html,
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 body {
     margin: 0;
 
@@ -112,6 +118,9 @@ game-grid {
     height: 3ex;
     line-height: 3ex;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .game-hud {
@@ -220,7 +229,7 @@ rounds-bar.visible {
 }
 
 .loader {
-    border: 16px solid #f3f3f3;
+    border: 16px solid rgba(0, 0, 0, 0);
     border-top: 16px solid green;
     border-bottom: 16px solid green;
     border-radius: 50%;

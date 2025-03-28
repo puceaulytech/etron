@@ -1,13 +1,35 @@
 window.addEventListener("gamepadconnected", (event) => {
-    console.log("Gamepad connected:", event.gamepad);
-    disableMouseMovement = true;
-    requestAnimationFrame(updateGamepad);
+    if (location.pathname === "/") {
+        showNotification({
+            type: "GAMEPAD",
+            gamepad: {
+                connected: true,
+            },
+        });
+    } else {
+        disableMouseMovement = true;
+        if (location.pathname === "/pages/online1v1.html")
+            switchToGamepadEmotes();
+        switchToGamepadControls();
+        requestAnimationFrame(updateGamepad);
+    }
 });
 
 window.addEventListener("gamepaddisconnected", (event) => {
-    console.log("Gamepad disconnected:", event.gamepad);
-    disableMouseMovement = false;
-    cancelAnimationFrame(gamepadRequest);
+    if (location.pathname === "/") {
+        showNotification({
+            type: "GAMEPAD",
+            gamepad: {
+                connected: false,
+            },
+        });
+    } else {
+        disableMouseMovement = false;
+        if (location.pathname === "/pages/online1v1.html")
+            switchToKeyboardEmotes();
+        switchToKeyboardControls();
+        cancelAnimationFrame(gamepadRequest);
+    }
 });
 
 let gamepadRequest;
@@ -53,6 +75,40 @@ function updateGamepad() {
                 lastExecutionTime = currentTime;
             }
         }
+
+        let emoteIndex;
+        let emotePressed = true;
+
+        if (gp.buttons[0].pressed) {
+            // A
+            emoteIndex = 3;
+        } else if (gp.buttons[1].pressed) {
+            // B
+            emoteIndex = 2;
+        } else if (gp.buttons[3].pressed) {
+            // X
+            emoteIndex = 1;
+        } else if (gp.buttons[2].pressed) {
+            // Y
+            emoteIndex = 0;
+        } else if (gp.buttons[5].pressed) {
+            // RB
+            emoteIndex = 4;
+        } else {
+            emotePressed = false;
+        }
+
+        if (emotePressed) sendEmote(emoteIndex);
     }
     gamepadRequest = requestAnimationFrame(updateGamepad);
+}
+
+const controlsImg = document.querySelector(".mouse-controls img");
+
+function switchToGamepadControls() {
+    controlsImg.src = "/assets/joystick.svg";
+}
+
+function switchToKeyboardControls() {
+    controlsImg.src = "/assets/mouse.svg";
 }

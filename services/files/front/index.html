@@ -21,7 +21,7 @@
         <script src="components/frienditem/frienditem.js"></script>
         <script src="components/searchresult/searchresult.js"></script>
         <script src="components/friendrequest/friendrequest.js"></script>
-        <script src="components/notification-card/notification-card.js"></script>
+        <script src="components/notificationcard/notificationcard.js"></script>
         <script src="components/dialog/dialog.js"></script>
         <script src="components/customdialog/customdialog.js"></script>
 
@@ -34,6 +34,7 @@
         <script src="js/mainmenu.js" defer></script>
         <script src="js/leaderboard.js" defer></script>
         <script src="js/challenges.js" defer></script>
+        <script src="js/gamepad.js" defer></script>
     </head>
     <body>
         <p id="online-count"></p>
@@ -47,22 +48,44 @@
 
         <h2 id="main-title">eTron</h2>
 
-        <div class="app-button-group">
-            <div id="game-mode-layout">
-                <label for="game-mode">Game mode :</label>
-
-                <select id="game-mode" name="game-mode" class="app-select">
-                    <option value="online">Online</option>
-                    <option value="ai">AI</option>
-                    <option value="local">Local</option>
-                </select>
+        <div id="all-buttons" class="app-button-group">
+            <div class="play-btn-group">
+                <button
+                    id="play-online-btn"
+                    class="app-button app-button-with-icon"
+                >
+                    <img src="/assets/web-icon.svg" />
+                    Play online
+                </button>
+                <button
+                    id="play-ai-btn"
+                    class="app-button app-button-with-icon small-icon"
+                >
+                    <img src="/assets/robot-icon.svg" />
+                    AI
+                </button>
+                <button
+                    id="play-local-btn"
+                    class="app-button app-button-with-icon small-icon"
+                >
+                    <img src="/assets/lan-disconnect-icon.svg" />
+                    Local
+                </button>
             </div>
-
-            <button id="play-btn" class="app-button big-button">Play</button>
-            <button id="tutorial-btn" class="app-button big-button">
+            <button
+                id="tutorial-btn"
+                class="app-button app-button-with-icon big-button"
+            >
+                <img src="/assets/school-icon.svg" />
                 How to play
             </button>
-            <button id="quit-btn" class="app-button big-button">Quit</button>
+            <button
+                id="quit-btn"
+                class="app-button app-button-with-icon big-button"
+            >
+                <img src="/assets/exit-run-icon.svg" />
+                Quit
+            </button>
         </div>
 
         <!-- The divs bellow aren't part of the layout -->
@@ -225,14 +248,47 @@
 
         <app-dialog-custom id="tutorial-dialog" content="How to play">
             <div slot="body" id="tutorial-body">
-                <img
-                    src="/assets/tuto.GIF"
-                    alt="video explaining how to play"
-                    loading="lazy"
-                    fetchpriority="low"
-                />
-                <span>Move by pointing your mouse!</span>
+                <span class="game-description">
+                    <span class="bold">eTron</span> is a fast-paced, 1v1 battle
+                    of strategy and reflexes on a hexagonal grid. Control your
+                    light trail and outmaneuver your opponent, forcing them to
+                    crash into the arena’s edge, their own trail, or yours. The
+                    last player standing wins—think fast, plan ahead, and don’t
+                    get trapped!
+                </span>
+
+                <h3>Controls</h3>
+
+                <div class="tutorial-controls">
+                    <div class="tutorial-part">
+                        <img
+                            src="/assets/tuto.GIF"
+                            alt="video explaining how to play"
+                            loading="lazy"
+                            fetchpriority="low"
+                            class="gif"
+                        />
+                        <span>Move by pointing your mouse</span>
+                    </div>
+
+                    <span>or</span>
+
+                    <div class="tutorial-part">
+                        <img
+                            src="/assets/xbox-left-joystick.webp"
+                            alt="left joystick"
+                            loading="lazy"
+                            fetchpriority="low"
+                        />
+
+                        <span
+                            >Plug in a controller and use the left
+                            joystick</span
+                        >
+                    </div>
+                </div>
             </div>
+
             <div slot="buttons" style="display: contents">
                 <button class="app-button" id="tutorial-close">Close</button>
             </div>
