@@ -181,9 +181,8 @@ svg .svg-shit {
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    padding: 0 20px;
     box-sizing: border-box;
-    padding: 30px;
+    padding: 0 30px;
 }
 
 .tutorial-navigation {
@@ -197,7 +196,6 @@ svg .svg-shit {
 }
 
 .nav-button {
-    background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
     border-radius: 50%;
@@ -209,15 +207,17 @@ svg .svg-shit {
     cursor: pointer;
     pointer-events: auto;
     transition: background 0.3s;
+    background: rgba(0, 0, 0, 0);
 }
 
 .nav-button:hover {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .nav-button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+    background: rgba(0, 0, 0, 0) !important;
 }
 
 .tutorial-controls {
