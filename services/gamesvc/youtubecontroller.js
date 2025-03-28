@@ -36,7 +36,15 @@ async function getRandomYoutubeVideo(req, res) {
     }
 
     const randomQuery = queries[Math.floor(Math.random() * queries.length)];
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResults}&q=${randomQuery}&type=video&key=${ytAPIKey}`;
+    const params = new URLSearchParams({
+        part: "snippet",
+        maxResults,
+        q: randomQuery,
+        type: "video",
+        relevanceLanguage: "en",
+        key: ytAPIKey,
+    });
+    const url = `https://www.googleapis.com/youtube/v3/search?${params}`;
     const response = await fetch(url);
     const data = await response.json();
 
