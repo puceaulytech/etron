@@ -53,6 +53,7 @@ class AppDialogCustom extends HTMLElement {
                 <div class="dialog-body">
                     <slot name="body"></slot>
                 </div>
+                <slot name="outer"></slot>
                 <div class="dialog-buttons">
                     <slot name="buttons"></slot>
                 </div>

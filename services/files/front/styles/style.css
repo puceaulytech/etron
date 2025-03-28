@@ -186,6 +186,12 @@ svg .svg-shit {
     padding: 0 30px;
 }
 
+.tutorial-navigation-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .tutorial-navigation {
     position: absolute;
     top: 50%;
