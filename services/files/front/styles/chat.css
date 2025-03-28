@@ -14,7 +14,7 @@
     bottom: 0;
     flex-direction: column;
     box-shadow: -1px 0 5px black;
-    animation-duration: 300ms;
+    animation-duration: 200ms;
     animation-timing-function: ease-in-out;
 }
 

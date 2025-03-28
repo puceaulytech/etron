@@ -101,7 +101,7 @@ function closeChat() {
     chatOverlay.classList.add("invisible");
     setTimeout(() => {
         chatOverlay.style.display = "none";
-    }, 310);
+    }, 210);
 }
 
 chatBackButton.addEventListener("click", closeChat);
