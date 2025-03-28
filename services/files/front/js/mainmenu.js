@@ -60,3 +60,27 @@ tutorialCloseButton.addEventListener("click", () =>
 quitButton.addEventListener("click", () => {
     location.replace("/assets/bob.png");
 });
+
+const tutorialBody = document.getElementById("tutorial-body");
+const tutorialPages = document.querySelector(".tutorial-pages");
+const prevButton = document.getElementById("prev-page");
+const nextButton = document.getElementById("next-page");
+let currentPage = 0;
+
+nextButton.addEventListener("click", () => {
+    if (currentPage < 1) {
+        currentPage++;
+        tutorialPages.style.transform = "translateX(-50%)";
+        prevButton.disabled = false;
+        nextButton.disabled = true;
+    }
+});
+
+prevButton.addEventListener("click", () => {
+    if (currentPage > 0) {
+        currentPage--;
+        tutorialPages.style.transform = "translateX(0)";
+        prevButton.disabled = true;
+        nextButton.disabled = false;
+    }
+});

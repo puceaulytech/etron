@@ -250,44 +250,55 @@
 
         <app-dialog-custom id="tutorial-dialog" content="How to play">
             <div slot="body" id="tutorial-body">
-                <span class="game-description">
-                    <span class="bold">eTron</span> is a fast-paced, 1v1 battle
-                    of strategy and reflexes on a hexagonal grid. Control your
-                    light trail and outmaneuver your opponent, forcing them to
-                    crash into the arena’s edge, their own trail, or yours. The
-                    last player standing wins—think fast, plan ahead, and don’t
-                    get trapped!
-                </span>
-
-                <h3>Controls</h3>
-
-                <div class="tutorial-controls">
-                    <div class="tutorial-part">
-                        <img
-                            src="/assets/tuto.GIF"
-                            alt="video explaining how to play"
-                            loading="lazy"
-                            fetchpriority="low"
-                            class="gif"
-                        />
-                        <span>Move by pointing your mouse</span>
+                <div class="tutorial-pages">
+                    <div class="tutorial-page">
+                        <span class="game-description">
+                            <span class="bold">eTron</span> is a fast-paced, 1v1
+                            battle of strategy and reflexes on a hexagonal grid.
+                            Control your light trail and outmaneuver your
+                            opponent, forcing them to crash into the arena's
+                            edge, their own trail, or yours. The last player
+                            standing wins—think fast, plan ahead, and don't get
+                            trapped!
+                        </span>
                     </div>
+                    <div class="tutorial-page">
+                        <h3>Controls</h3>
+                        <div class="tutorial-controls">
+                            <div class="tutorial-part">
+                                <img
+                                    src="/assets/tuto.GIF"
+                                    alt="video explaining how to play"
+                                    loading="lazy"
+                                    fetchpriority="low"
+                                    class="gif"
+                                />
+                                <span>Move by pointing your mouse</span>
+                            </div>
 
-                    <span>or</span>
+                            <span>or</span>
 
-                    <div class="tutorial-part">
-                        <img
-                            src="/assets/xbox-left-joystick.webp"
-                            alt="left joystick"
-                            loading="lazy"
-                            fetchpriority="low"
-                        />
+                            <div class="tutorial-part">
+                                <img
+                                    src="/assets/xbox-left-joystick.webp"
+                                    alt="left joystick"
+                                    loading="lazy"
+                                    fetchpriority="low"
+                                />
 
-                        <span
-                            >Plug in a controller and use the left
-                            joystick</span
-                        >
+                                <span
+                                    >Plug in a controller and use the left
+                                    joystick</span
+                                >
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="tutorial-navigation">
+                    <button id="prev-page" class="nav-button" disabled>
+                        ◀
+                    </button>
+                    <button id="next-page" class="nav-button">▶</button>
                 </div>
             </div>
 
