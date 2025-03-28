@@ -140,11 +140,14 @@ svg .svg-shit {
     background-position: center center;
     background-size: contain;
     padding-bottom: 60px;
+
+    font-size: 20px;
 }
 
 #leaderboard-empty {
     display: none;
     margin-bottom: 30px;
+    font-size: 20px;
 }
 
 .leaderboard-item {
@@ -161,9 +164,63 @@ svg .svg-shit {
 #tutorial-body {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: center;
     gap: 20px;
+    position: relative;
+    overflow: hidden;
+    width: 700px;
+}
+
+.tutorial-pages {
+    display: flex;
+    width: 200%;
+    transition: transform 0.3s ease;
+}
+
+.tutorial-page {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+    padding: 0 30px;
+}
+
+.tutorial-navigation {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.nav-button {
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.3s;
+    background: rgba(0, 0, 0, 0);
+}
+
+.nav-button:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.nav-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, 0) !important;
 }
 
 .tutorial-controls {
@@ -172,6 +229,14 @@ svg .svg-shit {
     justify-items: center;
     gap: 20px;
     grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr);
+}
+
+.tutorial-basics {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 #tutorial-body span {
@@ -183,10 +248,11 @@ svg .svg-shit {
 }
 
 .tutorial-part img {
-    width: 15vw;
-    height: 15vw;
+    width: 12vw;
+    height: 12vw;
     min-height: 150px;
     min-width: 150px;
+    border-radius: 10px;
 }
 
 .tutorial-part {

@@ -30,18 +30,22 @@ function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function createMessageDiv(content, received) {
+function createMessageDiv(content, received, animated) {
     const div = document.createElement("div");
     div.innerText = content;
     div.classList.add(
         "chat-message",
         received ? "received-message" : "sent-message",
     );
+    if (animated) {
+        div.classList.add("animated");
+        setTimeout(() => div.classList.remove("animated"), 160);
+    }
     return div;
 }
 
 function insertMessage(content, received) {
-    messagesContainer.appendChild(createMessageDiv(content, received));
+    messagesContainer.appendChild(createMessageDiv(content, received, true));
 }
 
 async function openChat(friendName, friendId) {
@@ -76,6 +80,7 @@ async function openChat(friendName, friendId) {
                     createMessageDiv(
                         message.content,
                         friendId === message.sender,
+                        false,
                     ),
                 ),
             )
@@ -85,6 +90,7 @@ async function openChat(friendName, friendId) {
     }
 
     chatOverlay.classList.remove("invisible");
+    chatOverlay.style.display = "flex";
     chatOverlay.classList.add("visible");
 
     scrollToBottom();
@@ -93,6 +99,9 @@ async function openChat(friendName, friendId) {
 function closeChat() {
     chatOverlay.classList.remove("visible");
     chatOverlay.classList.add("invisible");
+    setTimeout(() => {
+        chatOverlay.style.display = "none";
+    }, 210);
 }
 
 chatBackButton.addEventListener("click", closeChat);

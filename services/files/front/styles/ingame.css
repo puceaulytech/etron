@@ -196,6 +196,12 @@ rounds-bar.visible {
     margin-bottom: 0;
 }
 
+.blur-overlay #matchmaking-hint {
+    margin-top: 50px;
+    width: 55%;
+    text-align: center;
+}
+
 .blur-overlay-buttons {
     display: flex;
     flex-direction: row;

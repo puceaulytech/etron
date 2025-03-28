@@ -191,7 +191,7 @@
                     </button>
                 </div>
                 <!-- Chat overlay -->
-                <div id="chat-section" class="invisible">
+                <div id="chat-section" class="invisible" style="display: none">
                     <div id="chat-header">
                         <div id="backbutton-container">
                             <div id="chat-back-button" title="Go back">
@@ -250,44 +250,80 @@
 
         <app-dialog-custom id="tutorial-dialog" content="How to play">
             <div slot="body" id="tutorial-body">
-                <span class="game-description">
-                    <span class="bold">eTron</span> is a fast-paced, 1v1 battle
-                    of strategy and reflexes on a hexagonal grid. Control your
-                    light trail and outmaneuver your opponent, forcing them to
-                    crash into the arena’s edge, their own trail, or yours. The
-                    last player standing wins—think fast, plan ahead, and don’t
-                    get trapped!
-                </span>
+                <div class="tutorial-pages">
+                    <div class="tutorial-page">
+                        <span class="game-description">
+                            <span class="bold">eTron</span> is a fast-paced, 1v1
+                            battle of strategy and reflexes on a hexagonal grid.
+                            Control your trail and outmaneuver your opponent,
+                            forcing them to crash into the arena's edge, their
+                            own trail, or yours. The last player standing
+                            wins—think fast, plan ahead, and don't get trapped!
+                        </span>
 
-                <h3>Controls</h3>
+                        <h3>Basics</h3>
 
-                <div class="tutorial-controls">
-                    <div class="tutorial-part">
-                        <img
-                            src="/assets/tuto.GIF"
-                            alt="video explaining how to play"
-                            loading="lazy"
-                            fetchpriority="low"
-                            class="gif"
-                        />
-                        <span>Move by pointing your mouse</span>
+                        <div class="tutorial-basics">
+                            <div class="tutorial-part">
+                                <span>Block your opponent</span>
+
+                                <img
+                                    src="/assets/block-opponent-tutorial-you.png"
+                                />
+                            </div>
+
+                            <div class="tutorial-part">
+                                <span>Stay in the arena</span>
+
+                                <img src="/assets/stay-arena-tutorial.png" />
+                            </div>
+
+                            <div class="tutorial-part">
+                                <span>Don't hit trails!</span>
+
+                                <img src="/assets/trail-hit-tutorial.png" />
+                            </div>
+                        </div>
                     </div>
+                    <div class="tutorial-page">
+                        <h3>Controls</h3>
+                        <div class="tutorial-controls">
+                            <div class="tutorial-part">
+                                <img
+                                    src="/assets/tuto.GIF"
+                                    alt="video explaining how to play"
+                                    fetchpriority="low"
+                                    class="gif"
+                                />
+                                <span>Move by pointing your mouse</span>
+                            </div>
 
-                    <span>or</span>
+                            <span>or</span>
 
-                    <div class="tutorial-part">
-                        <img
-                            src="/assets/xbox-left-joystick.webp"
-                            alt="left joystick"
-                            loading="lazy"
-                            fetchpriority="low"
-                        />
+                            <div class="tutorial-part">
+                                <img
+                                    src="/assets/xbox-left-joystick.webp"
+                                    alt="left joystick"
+                                    fetchpriority="low"
+                                />
 
-                        <span
-                            >Plug in a controller and use the left
-                            joystick</span
-                        >
+                                <span
+                                    >Plug in a controller and use the left
+                                    joystick</span
+                                >
+                            </div>
+                        </div>
+
+                        <h4>Good luck!</h4>
                     </div>
+                </div>
+                <div class="tutorial-navigation">
+                    <button id="prev-page" class="nav-button" disabled>
+                        <img src="/assets/chevron-left-icon.svg" />
+                    </button>
+                    <button id="next-page" class="nav-button">
+                        <img src="/assets/chevron-right-icon.svg" />
+                    </button>
                 </div>
             </div>
 

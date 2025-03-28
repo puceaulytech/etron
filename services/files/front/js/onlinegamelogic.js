@@ -5,6 +5,9 @@ const endReturn = document.querySelector("#end-return");
 const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
 
+const onlinePlayerCountElement = document.querySelector("#player-count");
+const videoAnchorElement = document.querySelector("#matchmaking-hint a");
+
 const myUserId = localStorage.getItem("userId");
 
 let disableMouseMovement = false;
@@ -20,6 +23,29 @@ let gameId;
 let firstRound = true;
 
 waitingForOpponent.style.visibility = "visible";
+
+async function updatePlayerCountMatchmaking() {
+    await fetch("/api/gamesvc/onlinecount", {
+        method: "GET",
+    }).then(async (res) => {
+        const payload = await res.json();
+        onlinePlayerCountElement.textContent =
+            payload.count <= 0 ? 0 : payload.count - 1;
+    });
+}
+updatePlayerCountMatchmaking();
+const onlinePlayerCountInterval = setInterval(
+    async () => await updatePlayerCountMatchmaking(),
+    2000,
+);
+
+authenticatedFetch("/api/gamesvc/randomvideo", {
+    method: "GET",
+})
+    .then((payload) => {
+        videoAnchorElement.setAttribute("href", payload.video);
+    })
+    .catch(() => {});
 
 endReturn.addEventListener("click", () => {
     location.assign("/");
@@ -49,6 +75,8 @@ socket.on("connect", async () => {
     }
 
     if (ongoingGamesResp.notReady) {
+        clearInterval(onlinePlayerCountInterval);
+        document.querySelector("#matchmaking-hint").remove();
         socket.emit("ready", { gameId });
     }
 
@@ -69,6 +97,7 @@ socket.on("connect", async () => {
         if (firstRound) firstRound = false;
 
         waitingForOpponent.style.visibility = "hidden";
+        clearInterval(onlinePlayerCountInterval);
 
         countdownDiv.style.visibility = "visible";
         countdownDiv.querySelector("p.title").textContent =

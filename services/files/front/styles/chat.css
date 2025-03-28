@@ -1,12 +1,8 @@
-:root {
-    --chat-header-height: 100px;
-}
-
 #chat-section.visible {
-    display: flex;
+    animation-name: chat-slide-in;
 }
 #chat-section.invisible {
-    display: none;
+    animation-name: chat-slide-out;
 }
 
 #menu-content #chat-section {
@@ -17,10 +13,13 @@
     right: 0;
     bottom: 0;
     flex-direction: column;
+    box-shadow: -1px 0 5px black;
+    animation-duration: 200ms;
+    animation-timing-function: ease-in-out;
 }
 
 #chat-section #chat-header {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: 100%;
     border-bottom: 2px solid black;
     display: grid;
@@ -39,7 +38,7 @@
     user-select: none;
 }
 #chat-header #backbutton-container {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -73,6 +72,11 @@
     line-height: 1.4;
     word-wrap: break-word;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    animation-duration: 150ms;
+    animation-timing-function: ease-in-out;
+}
+.chat-message.animated {
+    animation-name: message-appear;
 }
 .received-message {
     align-self: flex-start;
@@ -80,6 +84,7 @@
     color: #333;
     border-bottom-left-radius: 4px;
     margin-right: auto;
+    transform-origin: bottom left;
 }
 .sent-message {
     align-self: flex-end;
@@ -87,10 +92,11 @@
     color: white;
     border-bottom-right-radius: 4px;
     margin-left: auto;
+    transform-origin: bottom right;
 }
 
 #chat-section #chat-input-container {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: calc(100% - 60px); /* 60px = padding left + padding right */
     padding: 0 20px 0 40px;
     display: grid;
@@ -131,4 +137,34 @@
 #send-msg-icon img {
     width: 70%;
     height: 70%;
+}
+
+@keyframes message-appear {
+    0% {
+        transform: scale(0);
+    }
+    80% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes chat-slide-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes chat-slide-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
 }
