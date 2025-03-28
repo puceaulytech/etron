@@ -72,6 +72,10 @@ body {
     animation-timing-function: ease-in-out;
 }
 
+#play-online-btn span {
+    max-width: 100px;
+}
+
 #account-button {
     position: absolute;
     max-width: 120px;
