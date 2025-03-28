@@ -48,6 +48,24 @@ function insertMessage(content, received) {
     messagesContainer.appendChild(createMessageDiv(content, received, true));
 }
 
+async function updateMessages(friendId) {
+    await authenticatedFetch(`/api/social/chat/${friendId}`, {
+        method: "GET",
+    })
+        .then((messages) =>
+            messages.map((message) =>
+                createMessageDiv(
+                    message.content,
+                    friendId === message.sender,
+                    false,
+                ),
+            ),
+        )
+        .then((divs) => {
+            messagesContainer.replaceChildren(...divs);
+        });
+}
+
 async function openChat(friendName, friendId) {
     if (friendId !== lastChatFriendId) {
         chatFriendNameContainer.innerText = friendName;
@@ -72,21 +90,7 @@ async function openChat(friendName, friendId) {
         lastChatSubmitHandler = submitHandler;
         lastChatFriendId = friendId;
 
-        await authenticatedFetch(`/api/social/chat/${friendId}`, {
-            method: "GET",
-        })
-            .then((messages) =>
-                messages.map((message) =>
-                    createMessageDiv(
-                        message.content,
-                        friendId === message.sender,
-                        false,
-                    ),
-                ),
-            )
-            .then((divs) => {
-                messagesContainer.replaceChildren(...divs);
-            });
+        await updateMessages(friendId);
     }
 
     chatOverlay.classList.remove("invisible");

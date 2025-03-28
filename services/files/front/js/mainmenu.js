@@ -106,3 +106,20 @@ prevButton.addEventListener("click", () => {
 socket.on("connect", () => {
     updateOnlineCount();
 });
+
+window.addEventListener(
+    "pageshow",
+    async (event) => {
+        if (
+            event.persisted ||
+            performance.getEntriesByType("navigation")[0].type ===
+                "back_forward"
+        ) {
+            // Reload some stuff because the page was loaded from cache
+            await updateAll();
+            await updateOnlineCount();
+            if (lastChatFriendId) await updateMessages(lastChatFriendId);
+        }
+    },
+    false,
+);
