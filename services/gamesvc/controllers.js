@@ -1,5 +1,9 @@
 const storage = require("./storage");
 const jwt = require("jsonwebtoken");
+const { ObjectId } = require("mongodb");
+
+const ytController = require("./youtubecontroller");
+
 const {
     createHandler,
     getQueryParams,
@@ -8,7 +12,6 @@ const {
     getLastSegment,
 } = require("../helpers/http");
 const { authenticate } = require("../helpers/tokens");
-const { ObjectId } = require("mongodb");
 const pool = require("../helpers/db");
 const { Logger } = require("../helpers/logger");
 const logger = new Logger("debug");
@@ -31,6 +34,9 @@ const endpoints = {
     },
     acceptchallenge: {
         POST: acceptChallenge,
+    },
+    randomvideo: {
+        GET: ytController.getRandomYoutubeVideo,
     },
 };
 

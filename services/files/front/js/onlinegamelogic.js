@@ -6,6 +6,7 @@ const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
 
 const onlinePlayerCountElement = document.querySelector("#player-count");
+const videoAnchorElement = document.querySelector("#matchmaking-hint a");
 
 const myUserId = localStorage.getItem("userId");
 
@@ -36,6 +37,14 @@ const onlinePlayerCountInterval = setInterval(
     async () => await updatePlayerCountMatchmaking(),
     2000,
 );
+
+authenticatedFetch("/api/gamesvc/randomvideo", {
+    method: "GET",
+})
+    .then((payload) => {
+        videoAnchorElement.setAttribute("href", payload.video);
+    })
+    .catch(() => {});
 
 endReturn.addEventListener("click", () => {
     location.assign("/");
