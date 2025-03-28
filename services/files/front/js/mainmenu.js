@@ -102,3 +102,7 @@ nextButton.addEventListener("click", () => {
 prevButton.addEventListener("click", () => {
     tutorialPreviousPage();
 });
+
+socket.on("connect", () => {
+    updateOnlineCount();
+});
