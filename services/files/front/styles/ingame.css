@@ -2,6 +2,12 @@
     --slides-duration: 500ms;
 }
 
+html,
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 body {
     margin: 0;
 
