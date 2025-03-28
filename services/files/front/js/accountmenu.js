@@ -317,6 +317,15 @@ function setFriendOnlineStatus(userId, isOnline) {
     }
 }
 
+function setUnreadStatus(userId, unread) {
+    for (const friendElem of friendList.children) {
+        if (friendElem.getAttribute("user-id") === userId) {
+            if (unread) friendElem.setAttribute("unread-msg", "yes");
+            else friendElem.removeAttribute("unread-msg");
+        }
+    }
+}
+
 async function updateFriendList() {
     authenticatedFetch("/api/social/friends", {
         method: "GET",

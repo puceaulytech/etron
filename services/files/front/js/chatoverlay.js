@@ -101,6 +101,7 @@ async function openChat(friendName, friendId) {
 }
 
 function closeChat() {
+    setUnreadStatus(lastChatFriendId, false);
     chatOverlay.classList.remove("visible");
     chatOverlay.classList.add("invisible");
     setTimeout(() => {

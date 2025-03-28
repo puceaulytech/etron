@@ -21,6 +21,7 @@ socket.on("notification", (payload) => {
             insertMessage(message.content, true);
             scrollToBottom();
         }
+        setUnreadStatus(message.senderId, true);
     } else if (payload.type === "CHALLENGE") {
         challengeId = payload.challenge.challengeId;
         challengerUsername = payload.challenge.challengerUsername;
