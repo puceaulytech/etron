@@ -1,52 +1,27 @@
-# PS8
+# eTron
 
-## Requirements
+<p align="center">
+    <img width="25%" src="./services/files/front/assets/donkey.png" />
+</p>
 
-Node.js is the only requirement.
+__eTron__ is a fast-paced, 1v1 battle of strategy and reflexes on a hexagonal grid. Control your trail and outmaneuver your opponent, forcing them to crash into the arena's edge, their own trail, or yours. The last player standing wins—think fast, plan ahead, and don't get trapped! 
 
-## Install
+## Play now!
 
-- Clone the repository
-- In each project inside `services/` run `npm install` to download all the dependencies.
+Visit [https://etron.ps8.pns.academy](https://etron.ps8.pns.academy) to play now.
 
-Note: this command should be run again every time you install/delete a package (which should not happen a lot)
+## Run locally
 
-## Run
+Run:
+```
+docker compose up -d
+```
+And visit [http://localhost:8000](http://localhost:8000)
 
-In each project, run `node index.js` so the server will start listening to requests.
+## License
 
----
+eTron is distributed under [AGPL-3.0-only](LICENSE).
 
-## Architecture
-
-In the `services/` folder you will find all the projects that makes your website. Each subfolder is a node.js project
-that contains:
-
-- A `package.json` (and potentially some `node_modules`)
-- An `index.js` file which is an HTTP server able to received requests
-- Some logic used for the service to work correctly
-
----
-
-At the start of your project, there are 2 services:
-
-- `gateway` which is the clients' entry point. It receives all the requests and then redirect them to the correct service.
-- `files` which is used to serve files. It is where your front files will go
-
----
-
-To create a new service:
-
-- Create a new folder inside `services/`
-- Run `npm init -y` inside the created folder
-- Create an `index.js` containing an HTTP server (and listening to a new port)
-- Add any logic you want
-
----
-
-To call a service:
-
-2 external packages are allowed to transfer a request:
-
-- `http-proxy` allows you to easily transfer a request "as-is" to another HTTP Server (you have an example in the gateway service)
-- `axios` to perform specific REST requests.
+<p align="center">
+    Made by <a href="https://github.com/romch007">Romain Chardiny</a> and <a href="https://github.com/QwEekYhyo">Logan Lucas</a>
+</p>
