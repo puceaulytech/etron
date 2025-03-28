@@ -140,11 +140,14 @@ svg .svg-shit {
     background-position: center center;
     background-size: contain;
     padding-bottom: 60px;
+
+    font-size: 20px;
 }
 
 #leaderboard-empty {
     display: none;
     margin-bottom: 30px;
+    font-size: 20px;
 }
 
 .leaderboard-item {
