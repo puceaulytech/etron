@@ -228,6 +228,14 @@ svg .svg-shit {
     grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr);
 }
 
+.tutorial-basics {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 #tutorial-body span {
     text-align: center;
 }
@@ -241,6 +249,7 @@ svg .svg-shit {
     height: 12vw;
     min-height: 150px;
     min-width: 150px;
+    border-radius: 10px;
 }
 
 .tutorial-part {
