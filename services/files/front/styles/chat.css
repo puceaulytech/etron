@@ -50,11 +50,8 @@
     aspect-ratio: 1;
     width: auto;
     font-size: 115%;
-    border-radius: 40%;
+    border-radius: 10%;
     cursor: pointer;
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
 }
 #backbutton-container #chat-back-button:hover {
     background-color: rgba(0, 0, 0, 0.2);
