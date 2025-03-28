@@ -5,6 +5,8 @@ const endReturn = document.querySelector("#end-return");
 const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
 
+const onlinePlayerCountElement = document.querySelector("#player-count");
+
 const myUserId = localStorage.getItem("userId");
 
 let disableMouseMovement = false;
@@ -20,6 +22,20 @@ let gameId;
 let firstRound = true;
 
 waitingForOpponent.style.visibility = "visible";
+
+async function updatePlayerCountMatchmaking() {
+    await fetch("/api/gamesvc/onlinecount", {
+        method: "GET",
+    }).then(async (res) => {
+        const payload = await res.json();
+        onlinePlayerCountElement.textContent = payload.count - 1;
+    });
+}
+updatePlayerCountMatchmaking();
+const onlinePlayerCountInterval = setInterval(
+    async () => await updatePlayerCountMatchmaking(),
+    2000,
+);
 
 endReturn.addEventListener("click", () => {
     location.assign("/");
@@ -69,6 +85,7 @@ socket.on("connect", async () => {
         if (firstRound) firstRound = false;
 
         waitingForOpponent.style.visibility = "hidden";
+        clearInterval(onlinePlayerCountInterval);
 
         countdownDiv.style.visibility = "visible";
         countdownDiv.querySelector("p.title").textContent =
