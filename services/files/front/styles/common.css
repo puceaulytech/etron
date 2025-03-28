@@ -17,7 +17,10 @@
     flex-direction: row;
     gap: 10px;
     align-items: center;
-    justify-content: center;
+}
+
+.app-button-with-icon span {
+    flex-grow: 1;
 }
 
 .app-button-with-icon > img {
