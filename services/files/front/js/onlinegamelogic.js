@@ -17,6 +17,7 @@ let inverted = false;
 let lastMove;
 let mousePos;
 let gameId;
+let firstRound = true;
 
 waitingForOpponent.style.visibility = "visible";
 
@@ -53,6 +54,19 @@ socket.on("connect", async () => {
 
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
+
+        if (
+            firstRound &&
+            localStorage.getItem("systemNotifications") &&
+            !document.hasFocus()
+        ) {
+            new Notification("ETRON", {
+                body: "Match found!",
+                icon: "/favicon.png",
+            });
+        }
+
+        if (firstRound) firstRound = false;
 
         waitingForOpponent.style.visibility = "hidden";
 
