@@ -1,35 +1,15 @@
 window.addEventListener("gamepadconnected", (event) => {
-    if (location.pathname === "/") {
-        showNotification({
-            type: "GAMEPAD",
-            gamepad: {
-                connected: true,
-            },
-        });
-    } else {
-        disableMouseMovement = true;
-        if (location.pathname === "/pages/online1v1.html")
-            switchToGamepadEmotes();
-        switchToGamepadControls();
-        requestAnimationFrame(updateGamepad);
-    }
+    disableMouseMovement = true;
+    if (location.pathname === "/pages/online1v1.html") switchToGamepadEmotes();
+    switchToGamepadControls();
+    requestAnimationFrame(updateGamepad);
 });
 
 window.addEventListener("gamepaddisconnected", (event) => {
-    if (location.pathname === "/") {
-        showNotification({
-            type: "GAMEPAD",
-            gamepad: {
-                connected: false,
-            },
-        });
-    } else {
-        disableMouseMovement = false;
-        if (location.pathname === "/pages/online1v1.html")
-            switchToKeyboardEmotes();
-        switchToKeyboardControls();
-        cancelAnimationFrame(gamepadRequest);
-    }
+    disableMouseMovement = false;
+    if (location.pathname === "/pages/online1v1.html") switchToKeyboardEmotes();
+    switchToKeyboardControls();
+    cancelAnimationFrame(gamepadRequest);
 });
 
 let gamepadRequest;
