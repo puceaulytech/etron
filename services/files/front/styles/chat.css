@@ -98,45 +98,48 @@
 #chat-section #chat-input-container {
     height: var(--menu-header-height);
     width: calc(100% - 60px); /* 60px = padding left + padding right */
-    padding: 0 20px 0 40px;
-    display: grid;
-    grid-template-columns: 5fr 1fr;
+    display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100%;
 }
 #chat-input-container input[name="message"] {
     height: calc(100% - 40px);
     font-size: 150%;
     font-family: inherit;
     padding-left: 25px;
-    padding-right: 25px;
+    padding-right: 64px;
+    margin: 0 20px;
     background-color: #a8d139;
-    border-radius: 30px;
+    border-radius: 20px;
     border-width: 0;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
 }
 #chat-input-container input[name="message"]:focus {
     outline: none;
 }
+#chat-input-container input[name="message"]::placeholder {
+    color: black;
+}
+
 #send-msg-icon {
-    height: calc(100% - 40px);
-    width: auto;
+    width: 30px;
+    height: 30px;
     aspect-ratio: 1;
-    margin: auto;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 10%;
+    position: absolute;
+    right: 40px;
 }
 #send-msg-icon:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 #send-msg-icon input {
     display: none;
-}
-#send-msg-icon img {
-    width: 70%;
-    height: 70%;
 }
 
 @keyframes message-appear {
