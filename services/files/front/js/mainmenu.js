@@ -1,13 +1,14 @@
-const gameModeSelect = document.getElementById("game-mode");
-const playButton = document.getElementById("play-btn");
+const playOnlineButton = document.getElementById("play-online-btn");
+const playAIButton = document.getElementById("play-ai-btn");
+const playLocalButton = document.getElementById("play-local-btn");
 const quitButton = document.getElementById("quit-btn");
 
-playButton.addEventListener("click", () => {
+function mainMenuPlay(mode) {
     let url;
 
     const isLoggedIn = localStorage.getItem("accessToken") !== null;
 
-    switch (gameModeSelect.value) {
+    switch (mode) {
         case "online":
             if (!isLoggedIn) {
                 accountMenuSkipNext = true;
@@ -30,6 +31,18 @@ playButton.addEventListener("click", () => {
     }
 
     location.assign(url);
+}
+
+playOnlineButton.addEventListener("click", () => {
+    mainMenuPlay("online");
+});
+
+playAIButton.addEventListener("click", () => {
+    mainMenuPlay("ai");
+});
+
+playLocalButton.addEventListener("click", () => {
+    mainMenuPlay("local");
 });
 
 const tutorialDialog = document.querySelector("#tutorial-dialog");

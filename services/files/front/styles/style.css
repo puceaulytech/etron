@@ -32,6 +32,29 @@ body {
     font-size: 35px;
 }
 
+.play-btn-group {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: auto auto;
+    gap: 5px;
+}
+
+#play-online-btn {
+    font-size: 30px;
+    grid-column: 1; /* Place in the first column */
+    grid-row: span 2; /* Span both rows (covers both rows vertically) */
+}
+
+#play-ai-btn {
+    grid-column: 2; /* Place in the second column, first row */
+    grid-row: 1; /* First row */
+}
+
+#play-local-btn {
+    grid-column: 2; /* Place in the second column, second row */
+    grid-row: 2; /* Second row */
+}
+
 #game-mode-layout {
     display: flex;
     flex-direction: row;
@@ -53,7 +76,7 @@ body {
     box-shadow: 0 0 8px rgba(0, 128, 0, 0.8);
 }
 
-#play-btn {
+#play-online-btn {
     animation-name: emphasize;
     animation-duration: 1s;
     animation-timing-function: ease-in-out;
