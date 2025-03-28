@@ -16,7 +16,7 @@ Run:
 ```
 docker compose up -d
 ```
-And visit [http://localhost:8000]()
+And visit [http://localhost:8000](http://localhost:8000)
 
 ## License
 
