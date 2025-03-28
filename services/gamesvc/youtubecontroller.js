@@ -39,7 +39,6 @@ async function getRandomYoutubeVideo(req, res) {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResults}&q=${randomQuery}&type=video&key=${ytAPIKey}`;
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
 
     if (response.ok && data.items.length > 0) {
         const randomIndex = Math.floor(Math.random() * data.items.length);

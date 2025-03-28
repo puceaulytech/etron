@@ -75,6 +75,8 @@ socket.on("connect", async () => {
     }
 
     if (ongoingGamesResp.notReady) {
+        clearInterval(onlinePlayerCountInterval);
+        document.querySelector("#matchmaking-hint").remove();
         socket.emit("ready", { gameId });
     }
 
