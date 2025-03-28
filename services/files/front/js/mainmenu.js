@@ -106,3 +106,11 @@ prevButton.addEventListener("click", () => {
 socket.on("connect", () => {
     updateOnlineCount();
 });
+
+window.addEventListener("pageshow", async (event) => {
+    if (event.persisted) {
+        await updateAll();
+        await updateOnlineCount();
+        if (lastChatFriendId) await updateMessages(lastChatFriendId);
+    }
+});
