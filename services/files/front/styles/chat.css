@@ -1,12 +1,8 @@
-:root {
-    --chat-header-height: 100px;
-}
-
 #chat-section.visible {
-    display: flex;
+    animation-name: chat-slide-in;
 }
 #chat-section.invisible {
-    display: none;
+    animation-name: chat-slide-out;
 }
 
 #menu-content #chat-section {
@@ -17,10 +13,13 @@
     right: 0;
     bottom: 0;
     flex-direction: column;
+    box-shadow: -1px 0 5px black;
+    animation-duration: 300ms;
+    animation-timing-function: ease-in-out;
 }
 
 #chat-section #chat-header {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: 100%;
     border-bottom: 2px solid black;
     display: grid;
@@ -39,7 +38,7 @@
     user-select: none;
 }
 #chat-header #backbutton-container {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -97,7 +96,7 @@
 }
 
 #chat-section #chat-input-container {
-    height: var(--chat-header-height);
+    height: var(--menu-header-height);
     width: calc(100% - 60px); /* 60px = padding left + padding right */
     padding: 0 20px 0 40px;
     display: grid;
@@ -149,5 +148,23 @@
     }
     100% {
         transform: scale(1);
+    }
+}
+
+@keyframes chat-slide-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes chat-slide-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
     }
 }

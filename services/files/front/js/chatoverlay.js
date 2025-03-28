@@ -90,6 +90,7 @@ async function openChat(friendName, friendId) {
     }
 
     chatOverlay.classList.remove("invisible");
+    chatOverlay.style.display = "flex";
     chatOverlay.classList.add("visible");
 
     scrollToBottom();
@@ -98,6 +99,9 @@ async function openChat(friendName, friendId) {
 function closeChat() {
     chatOverlay.classList.remove("visible");
     chatOverlay.classList.add("invisible");
+    setTimeout(() => {
+        chatOverlay.style.display = "none";
+    }, 310);
 }
 
 chatBackButton.addEventListener("click", closeChat);
