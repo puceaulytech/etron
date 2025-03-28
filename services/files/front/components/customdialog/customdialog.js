@@ -43,7 +43,7 @@ class AppDialogCustom extends HTMLElement {
                     gap: 10px;
                 }
                 #content {
-                    margin-top: 0;
+                    margin: 0;
                 }
             </style>
             <div class="dialog">
