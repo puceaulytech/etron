@@ -29,7 +29,8 @@ async function updatePlayerCountMatchmaking() {
         method: "GET",
     }).then(async (res) => {
         const payload = await res.json();
-        onlinePlayerCountElement.textContent = payload.count - 1;
+        onlinePlayerCountElement.textContent =
+            payload.count <= 0 ? 0 : payload.count - 1;
     });
 }
 updatePlayerCountMatchmaking();
