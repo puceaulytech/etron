@@ -32,7 +32,9 @@ services:
     build: .
     command: gamesvc
     restart: always
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     environment:
       DB_URL: "database?replicaSet=rs0&directConnection=true"
 
