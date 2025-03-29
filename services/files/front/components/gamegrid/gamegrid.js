@@ -42,7 +42,7 @@ class GameGrid extends HTMLElement {
 
         this.ctx.fillStyle = "#000000";
         this.ctx.strokeStyle = "#000000";
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 5;
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.append(this.wrappingDiv);
