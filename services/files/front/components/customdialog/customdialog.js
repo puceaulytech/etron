@@ -69,6 +69,11 @@ class AppDialogCustom extends HTMLElement {
 
             if (path[0] === this) this.removeAttribute("show");
         });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape")
+                this.removeAttribute("show");
+        })
     }
     connectedCallback() {
         this.toggleShow(this.hasAttribute("show"));
