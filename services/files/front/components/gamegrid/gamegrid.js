@@ -30,6 +30,9 @@ class GameGrid extends HTMLElement {
         }
 
         this.canvas = document.createElement("canvas");
+        this.canvas.style = ` 
+            border-radius: 10px;
+        `;
         this.canvas.id = "hexmap";
 
         this.wrappingDiv.appendChild(this.canvas);
@@ -45,6 +48,7 @@ class GameGrid extends HTMLElement {
         shadow.append(this.wrappingDiv);
 
         this.somePlayerArrayPos = { x: -69, y: -69 };
+        this.tileColor = "#3caf3c";
     }
 
     static get observedAttributes() {
@@ -67,7 +71,7 @@ class GameGrid extends HTMLElement {
         this.canvas.width = this.canvas.parentElement.clientWidth;
 
         this.hexagonAngle = 0.523598776;
-        this.sideLength = (this.canvas.width - 40) / (2 * 0.866 * BOARD_WIDTH);
+        this.sideLength = (this.canvas.width - 20) / (2 * 0.866 * BOARD_WIDTH);
         this.hexHeight = Math.sin(this.hexagonAngle) * this.sideLength;
         this.hexRadius = Math.cos(this.hexagonAngle) * this.sideLength;
         this.hexRectangleHeight = this.sideLength + 2 * this.hexHeight;
@@ -102,9 +106,12 @@ class GameGrid extends HTMLElement {
             ? JSON.parse(this.getAttribute("nextmousepos"))
             : null;
 
+        this.canvas.style.backgroundColor = this.tileColor;
+        this.canvas.style.border = "2px solid white";
+
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                let filling = "#3caf3c";
+                let filling = this.tileColor;
 
                 let image;
                 switch (board[i][j]) {

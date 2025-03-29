@@ -21,10 +21,12 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) auto minmax(100px, 1fr);
+    gap: 10px;
+
     align-items: center;
+    justify-items: center;
 
     width: 100vw;
     height: 100vh;
@@ -151,7 +153,6 @@ game-grid {
     position: absolute;
     z-index: 10;
     top: 0;
-    left: calc(50% - (var(--this-width) / 2));
     border-radius: 0 0 30px 30px;
     border: 6px solid green;
     border-top-width: 0;
