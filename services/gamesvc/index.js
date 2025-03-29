@@ -7,6 +7,7 @@ const logger = new Logger("debug");
 
 const handleRequest = require("./controllers");
 const handleWS = require("./ws");
+const { setEveryoneOffline } = require("./startup");
 
 const PORT = 8002;
 
@@ -24,8 +25,12 @@ const server = http.createServer((req, res) => {
     }
 });
 
-const io = handleWS(server);
+setEveryoneOffline().then(() => {
+    const io = handleWS(server);
 
-startGameLoop(io);
+    startGameLoop(io);
 
-server.listen(PORT, "0.0.0.0", () => logger.info(`listening on port ${PORT}`));
+    server.listen(PORT, "0.0.0.0", () =>
+        logger.info(`listening on port ${PORT}`),
+    );
+});
