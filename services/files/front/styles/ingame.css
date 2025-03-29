@@ -65,6 +65,26 @@ body {
     height: 90%;
 }
 
+.real-donkey-container {
+    visibility: hidden;
+}
+.real-donkey-container.visible {
+    visibility: visible;
+
+    animation-name: emotes-appear;
+    animation-duration: var(--slides-duration);
+}
+
+.real-donkey {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.real-donkey img {
+    max-width: 200px;
+    border-radius: 10px;
+}
+
 game-grid {
     width: 60vw;
     height: 100%;
