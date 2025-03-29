@@ -68,13 +68,15 @@ class GameGrid extends HTMLElement {
 
         this.hexagonAngle = 0.523598776;
         this.sideLength = (this.canvas.width - 40) / (2 * 0.866 * BOARD_WIDTH);
-        this.offset = 5;
         this.hexHeight = Math.sin(this.hexagonAngle) * this.sideLength;
         this.hexRadius = Math.cos(this.hexagonAngle) * this.sideLength;
         this.hexRectangleHeight = this.sideLength + 2 * this.hexHeight;
         this.hexRectangleWidth = 2 * this.hexRadius;
 
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
+
+        this.offsetX = (this.canvas.width - BOARD_WIDTH * this.hexRectangleWidth) / 2;
+        this.offsetY = (this.canvas.height - ((5 * this.hexRectangleHeight) + (4 * this.sideLength))) / 2;
 
         if (this.hasAttribute("grid")) this.redrawGrid();
         this.trueOffsetTop = this.canvas.offsetTop;
@@ -140,8 +142,8 @@ class GameGrid extends HTMLElement {
         if (isInverted) x = rowWidth - 1 - x;
 
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
-        const newX = x * this.hexRectangleWidth + xStart + this.offset;
-        const newY = y * (this.sideLength + this.hexHeight) + this.offset;
+        const newX = x * this.hexRectangleWidth + xStart + this.offsetX;
+        const newY = y * (this.sideLength + this.hexHeight) + this.offsetY;
 
         const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
         this.somePlayerArrayPos = {
