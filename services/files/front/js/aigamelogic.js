@@ -64,6 +64,9 @@ socket.on("connect", async () => {
         document.querySelector(".controls-container").classList.add("visible");
         document.querySelector(".game-hud").classList.add("visible");
         document.querySelector("rounds-bar").classList.add("visible");
+        document
+            .querySelector(".real-donkey-container")
+            .classList.add("visible");
 
         countdownDiv.style.visibility = "hidden";
 
