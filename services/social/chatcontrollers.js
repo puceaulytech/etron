@@ -66,6 +66,7 @@ async function sendMessage(req, res) {
         content: payload.content,
         receiver: receiverId,
         sender: currentUser._id,
+        isRead: false,
     });
 
     await notifCollection.insertOne({
@@ -122,7 +123,53 @@ async function getConversationWith(req, res) {
         })
         .toArray();
 
+    // Mark the messages we have received as read
+    await messageCollection.updateMany(
+        { sender: friendIdObject, receiver: user._id },
+        { $set: { isRead: true } },
+    );
+
     return messages;
 }
 
-module.exports = { sendMessage, getConversationWith };
+/**
+ * Mark a conversion as read without returning any messages
+ *
+ * This is used by clients to acknowledge messages received via socket.io
+ *
+ * @param {http.ClientRequest} req
+ * @param {http.ServerResponse} res
+ */
+async function readConversation(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
+    const userCollection = pool.get().collection("users");
+    const messageCollection = pool.get().collection("messages");
+
+    const user = await userCollection.findOne({
+        _id: ObjectId.createFromHexString(userId),
+    });
+    if (!user) {
+        sendError(
+            res,
+            401,
+            "E_USER_DOES_NOT_EXIST",
+            "User that generated token does not exist anymore.",
+        );
+        return;
+    }
+
+    const friendId = getLastSegment(req);
+    // TODO: handle error from createFromHexString
+    const friendIdObject = ObjectId.createFromHexString(friendId);
+
+    await messageCollection.updateMany(
+        { sender: friendIdObject, receiver: user._id },
+        { $set: { isRead: true } },
+    );
+
+    return { ok: true };
+}
+
+module.exports = { sendMessage, getConversationWith, readConversation };

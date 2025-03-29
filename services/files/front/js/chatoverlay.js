@@ -66,6 +66,10 @@ async function updateMessages(friendId) {
         });
 }
 
+async function acknowledgeConversation(friendId) {
+    await authenticatedFetch(`/api/social/chat/${friendId}`, { method: "PUT" });
+}
+
 async function openChat(friendName, friendId) {
     if (friendId !== lastChatFriendId) {
         chatFriendNameContainer.innerText = friendName;
@@ -91,7 +95,11 @@ async function openChat(friendName, friendId) {
         lastChatFriendId = friendId;
 
         await updateMessages(friendId);
+    } else {
+        acknowledgeConversation(lastChatFriendId);
     }
+
+    setUnreadStatus(friendId, false);
 
     chatOverlay.classList.remove("invisible");
     chatOverlay.style.display = "flex";

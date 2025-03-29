@@ -317,6 +317,15 @@ function setFriendOnlineStatus(userId, isOnline) {
     }
 }
 
+function setUnreadStatus(userId, unread) {
+    for (const friendElem of friendList.children) {
+        if (friendElem.getAttribute("user-id") === userId) {
+            if (unread) friendElem.setAttribute("unread-msg", "yes");
+            else friendElem.removeAttribute("unread-msg");
+        }
+    }
+}
+
 async function updateFriendList() {
     authenticatedFetch("/api/social/friends", {
         method: "GET",
@@ -337,6 +346,10 @@ async function updateFriendList() {
 
                     if (user.online) {
                         elem.setAttribute("online", "yes");
+                    }
+
+                    if (user.unreadMsgCount > 0) {
+                        elem.setAttribute("unread-msg", "yes");
                     }
 
                     return elem;

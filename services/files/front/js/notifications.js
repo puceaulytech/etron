@@ -18,8 +18,16 @@ socket.on("notification", (payload) => {
     } else if (payload.type === "CHAT_MESSAGE") {
         const message = payload.message;
         if (message.senderId === lastChatFriendId) {
+            if (chatOverlay.classList.contains("visible")) {
+                acknowledgeConversation(message.senderId);
+            } else {
+                setUnreadStatus(message.senderId, true);
+            }
+
             insertMessage(message.content, true);
             scrollToBottom();
+        } else {
+            setUnreadStatus(message.senderId, true);
         }
     } else if (payload.type === "CHALLENGE") {
         challengeId = payload.challenge.challengeId;

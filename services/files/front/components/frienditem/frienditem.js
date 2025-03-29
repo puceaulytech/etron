@@ -28,13 +28,15 @@ class FriendItem extends HTMLElement {
         container.appendChild(this.spacer);
 
         const imageSize = 25;
-        const fightButton = document.createElement("div");
-        const chatButton = document.createElement("div");
-        fightButton.classList.add("button");
-        chatButton.classList.add("button");
 
-        fightButton.title = "Challenge friend";
-        chatButton.title = "Chat with friend";
+        this.fightButton = document.createElement("div");
+        this.chatButton = document.createElement("div");
+
+        this.fightButton.classList.add("button");
+        this.chatButton.classList.add("button", "chat-button");
+
+        this.fightButton.title = "Challenge friend";
+        this.chatButton.title = "Chat with friend";
 
         this.fightIconPath = "/assets/fight-icon.svg";
         this.feedbackIconPath = "/assets/check.png";
@@ -47,14 +49,14 @@ class FriendItem extends HTMLElement {
         this.chatIcon.src = "/assets/chat-icon.svg";
         this.chatIcon.alt = "Chat icon";
 
-        fightButton.appendChild(this.fightIcon);
-        fightButton.addEventListener("click", this.challenge.bind(this));
+        this.fightButton.appendChild(this.fightIcon);
+        this.fightButton.addEventListener("click", this.challenge.bind(this));
 
-        chatButton.appendChild(this.chatIcon);
-        chatButton.addEventListener("click", this.chat.bind(this));
+        this.chatButton.appendChild(this.chatIcon);
+        this.chatButton.addEventListener("click", this.chat.bind(this));
 
-        container.appendChild(fightButton);
-        container.appendChild(chatButton);
+        container.appendChild(this.fightButton);
+        container.appendChild(this.chatButton);
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.innerHTML = `
@@ -90,13 +92,26 @@ class FriendItem extends HTMLElement {
                     background-color: rgba(0, 0, 0, 0.2);
                     cursor: pointer;
                 }
+                .chat-button {
+                    position: relative;
+                }
+                .chat-button.unread::after {
+                    content: "";
+                    position: absolute;
+                    top: 5px;
+                    right: 4px;
+                    width: 8px;
+                    height: 8px;
+                    background-color: red;
+                    border-radius: 50%;
+                }
             </style>
         `;
         shadow.append(container);
     }
 
     static get observedAttributes() {
-        return ["online", "challenge-feedback"];
+        return ["online", "challenge-feedback", "unread-msg"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -104,6 +119,8 @@ class FriendItem extends HTMLElement {
             this.setOnline(newValue !== null);
         } else if (name === "challenge-feedback") {
             this.setChallengeFeedback(newValue !== null);
+        } else if (name === "unread-msg") {
+            this.setUnread(newValue !== null);
         }
     }
 
@@ -123,6 +140,14 @@ class FriendItem extends HTMLElement {
             this.onlineMarker.style.backgroundColor = "green";
         } else {
             this.onlineMarker.style.backgroundColor = "gray";
+        }
+    }
+
+    setUnread(val) {
+        if (val) {
+            this.chatButton.classList.add("unread");
+        } else {
+            this.chatButton.classList.remove("unread");
         }
     }
 
