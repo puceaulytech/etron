@@ -80,7 +80,11 @@ class GameGrid extends HTMLElement {
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
 
         this.offsetX = (this.canvas.width - BOARD_WIDTH * this.hexRectangleWidth) / 2;
-        this.offsetY = (this.canvas.height - ((5 * this.hexRectangleHeight) + (4 * this.sideLength))) / 2;
+
+        const hexRectangleHeightCount = Math.floor((BOARD_HEIGHT + 1) / 2);
+        const sideLengthCount = Math.floor(BOARD_HEIGHT / 2);
+
+        this.offsetY = (this.canvas.height - ((hexRectangleHeightCount * this.hexRectangleHeight) + (sideLengthCount * this.sideLength))) / 2;
 
         if (this.hasAttribute("grid")) this.redrawGrid();
         this.trueOffsetTop = this.canvas.offsetTop;
