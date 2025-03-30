@@ -30,6 +30,9 @@ class GameGrid extends HTMLElement {
         }
 
         this.canvas = document.createElement("canvas");
+        this.canvas.style = ` 
+            border-radius: 10px;
+        `;
         this.canvas.id = "hexmap";
 
         this.wrappingDiv.appendChild(this.canvas);
@@ -39,12 +42,13 @@ class GameGrid extends HTMLElement {
 
         this.ctx.fillStyle = "#000000";
         this.ctx.strokeStyle = "#000000";
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 5;
 
         const shadow = this.attachShadow({ mode: "open" });
         shadow.append(this.wrappingDiv);
 
         this.somePlayerArrayPos = { x: -69, y: -69 };
+        this.tileColor = "#3caf3c";
     }
 
     static get observedAttributes() {
@@ -67,14 +71,20 @@ class GameGrid extends HTMLElement {
         this.canvas.width = this.canvas.parentElement.clientWidth;
 
         this.hexagonAngle = 0.523598776;
-        this.sideLength = (this.canvas.width - 40) / (2 * 0.866 * BOARD_WIDTH);
-        this.offset = 5;
+        this.sideLength = (this.canvas.width - 20) / (2 * 0.866 * BOARD_WIDTH);
         this.hexHeight = Math.sin(this.hexagonAngle) * this.sideLength;
         this.hexRadius = Math.cos(this.hexagonAngle) * this.sideLength;
         this.hexRectangleHeight = this.sideLength + 2 * this.hexHeight;
         this.hexRectangleWidth = 2 * this.hexRadius;
 
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
+
+        this.offsetX = (this.canvas.width - BOARD_WIDTH * this.hexRectangleWidth) / 2;
+
+        const hexRectangleHeightCount = Math.floor((BOARD_HEIGHT + 1) / 2);
+        const sideLengthCount = Math.floor(BOARD_HEIGHT / 2);
+
+        this.offsetY = (this.canvas.height - ((hexRectangleHeightCount * this.hexRectangleHeight) + (sideLengthCount * this.sideLength))) / 2;
 
         if (this.hasAttribute("grid")) this.redrawGrid();
         this.trueOffsetTop = this.canvas.offsetTop;
@@ -100,9 +110,12 @@ class GameGrid extends HTMLElement {
             ? JSON.parse(this.getAttribute("nextmousepos"))
             : null;
 
+        this.canvas.style.backgroundColor = this.tileColor;
+        this.canvas.style.border = "2px solid white";
+
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                let filling = "#3caf3c";
+                let filling = this.tileColor;
 
                 let image;
                 switch (board[i][j]) {
@@ -140,8 +153,8 @@ class GameGrid extends HTMLElement {
         if (isInverted) x = rowWidth - 1 - x;
 
         const xStart = y % 2 === 0 ? 0 : this.hexRadius;
-        const newX = x * this.hexRectangleWidth + xStart + this.offset;
-        const newY = y * (this.sideLength + this.hexHeight) + this.offset;
+        const newX = x * this.hexRectangleWidth + xStart + this.offsetX;
+        const newY = y * (this.sideLength + this.hexHeight) + this.offsetY;
 
         const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
         this.somePlayerArrayPos = {
