@@ -173,10 +173,15 @@ function createHandler(endpoints, handleNotFound) {
 
         if (!handler) return handleNotFound(res);
 
-        handler(req, res).then((handlerRet) => {
-            // Check if resp is not undefined nor null (https://stackoverflow.com/a/21273362)
-            if (handlerRet != null) res.end(JSON.stringify(handlerRet));
-        });
+        handler(req, res)
+            .then((handlerRet) => {
+                // Check if resp is not undefined nor null (https://stackoverflow.com/a/21273362)
+                if (handlerRet != null) res.end(JSON.stringify(handlerRet));
+            })
+            .catch((_err) => {
+                res.statusCode = 500;
+                res.end("Internal Server Error");
+            });
     };
 }
 
