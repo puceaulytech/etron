@@ -40,6 +40,10 @@ body {
     font-size: 30px;
     grid-column: 1; /* Place in the first column */
     grid-row: span 2; /* Span both rows (covers both rows vertically) */
+    animation-name: emphasize;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
 }
 
 #play-ai-btn {
@@ -62,12 +66,6 @@ body {
 .select:focus {
     outline: none;
     box-shadow: 0 0 8px rgba(0, 128, 0, 0.8);
-}
-
-#play-online-btn {
-    animation-name: emphasize;
-    animation-duration: 1s;
-    animation-timing-function: ease-in-out;
 }
 
 #account-button {
@@ -292,8 +290,14 @@ svg .svg-shit {
 }
 
 @keyframes emphasize {
-    50% {
+    0% {
+        transform: scale(1);
+    }
+    12.5% {
         transform: scale(1.2);
+    }
+    25% {
+        transform: scale(1);
     }
     100% {
         transform: scale(1);
