@@ -177,7 +177,12 @@ async function register(req, res) {
 
     const qrCode = await QRCode.toDataURL(toptSecret.otpauth_url);
 
-    return { _id: result.insertedId, username, qrCode };
+    return {
+        _id: result.insertedId,
+        username,
+        qrCode,
+        totpSecret: toptSecret.base32,
+    };
 }
 
 async function resetPassword(req, res) {
