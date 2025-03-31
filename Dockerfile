@@ -1,7 +1,7 @@
 FROM node:lts-alpine AS base
 WORKDIR /app
 
-COPY tools/docker-entrypoint.sh .
+COPY docker/docker-entrypoint.sh .
 COPY services/helpers ./services/helpers
 
 FROM base AS files
