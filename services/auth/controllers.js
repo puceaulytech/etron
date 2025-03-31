@@ -189,13 +189,11 @@ async function register(req, res) {
 }
 
 async function resetPassword(req, res) {
-    const userId = authenticate(req, res, jwt);
-    if (!userId) return;
-
     const payload = await decodeJsonBody(req);
 
     if (
         !payload ||
+        !payload.username ||
         !payload.password ||
         !payload.totpCode ||
         payload.password === ""
@@ -204,7 +202,7 @@ async function resetPassword(req, res) {
             res,
             400,
             "E_INVALID_CREDENTIALS",
-            "One of totpCode or password field is missing.",
+            "One of username, password or totpCode field is missing.",
         );
         return;
     }
@@ -212,8 +210,12 @@ async function resetPassword(req, res) {
     const userCollection = pool.get().collection("users");
 
     const currentUser = await userCollection.findOne({
-        _id: ObjectId.createFromHexString(userId),
+        username: payload.username,
     });
+    if (!currentUser) {
+        sendError(res, 400, "E_USER_NOT_FOUND", "User not found");
+        return;
+    }
 
     const verified = speakeasy.totp.verify({
         secret: currentUser.toptSecret,
