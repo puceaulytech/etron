@@ -70,25 +70,18 @@ body {
 
 #account-button {
     position: absolute;
-    border: 3px solid black;
     right: 0;
     bottom: 0;
     margin: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
     gap: 10px;
-    padding: 10px;
+    padding: 15px;
     font-size: 30px;
     transition: 100ms;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0);
     font-family: inherit;
-}
-
-#account-button:hover {
-    box-shadow: 5px 5px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 #account-button > svg {
