@@ -178,7 +178,7 @@ async function register(req, res) {
         createdAt: Date.now(),
     });
 
-    const qrCode = await QRCode.toDataURL(totpSecret.otpauth_url);
+    const qrCode = await QRCode.toDataURL(totpSecret.otpauth_url, { scale: 8 });
 
     return {
         _id: result.insertedId,
