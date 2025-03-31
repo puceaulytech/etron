@@ -29,7 +29,7 @@ class SearchResult extends HTMLElement {
                     flex-grow: 1;
                 }
                 .add-friend-btn {
-                    background-color: #4CAF50;
+                    background-color: #008000;
                     color: white;
                     border: none;
                     width: 25%;
@@ -38,9 +38,11 @@ class SearchResult extends HTMLElement {
                     cursor: pointer;
                     transition: background-color 0.3s ease;
                     font-family: inherit;
+                    font-size: 14px;
+                    font-weight: 500;
                 }
                 .add-friend-btn:hover {
-                    background-color: #45a049;
+                    background-color: #055205;
                 }
             </style>
             <span class="username"></span>

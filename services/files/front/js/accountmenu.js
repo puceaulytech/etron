@@ -161,6 +161,8 @@ function focusSectionByName(sectionName) {
             currentSection = section;
         }
     }
+
+    return true;
 }
 
 const passwordToggle = document.querySelector("#password-toggle");

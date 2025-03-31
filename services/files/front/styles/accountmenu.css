@@ -19,6 +19,7 @@
     z-index: 5;
     transition: transform 0.3s ease-in-out;
     border-radius: 5px 0 0 5px;
+    overflow-y: hidden;
 }
 
 #account-menu.visible {
@@ -80,6 +81,13 @@
     align-items: center;
     overflow-y: auto;
     padding-bottom: 100px;
+}
+
+.content-section a:visited:active {
+    color: red;
+}
+.content-section a:visited {
+    color: blue;
 }
 
 .content-section#account-section #player-name {
