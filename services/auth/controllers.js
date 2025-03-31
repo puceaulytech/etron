@@ -2,6 +2,8 @@ const argon2 = require("argon2");
 const http = require("http");
 const jwt = require("jsonwebtoken");
 const ObjectId = require("mongodb").ObjectId;
+const QRCode = require("qrcode");
+const speakeasy = require("speakeasy");
 
 const {
     decodeJsonBody,
@@ -24,6 +26,9 @@ const endpoints = {
     },
     register: {
         POST: register,
+    },
+    resetpassword: {
+        POST: resetPassword,
     },
     refresh: {
         POST: refreshAccess,
@@ -159,15 +164,69 @@ async function register(req, res) {
     }
 
     const password = await argon2.hash(payload.password);
+    const toptSecret = speakeasy.generateSecret({ name: "eTron" });
+
     const result = await db.collection("users").insertOne({
         username,
         password,
+        toptSecret: toptSecret.base32,
         online: false,
         elo: 1500,
         createdAt: Date.now(),
     });
 
-    return { _id: result.insertedId, username };
+    const qrCode = await QRCode.toDataURL(toptSecret.otpauth_url);
+
+    return { _id: result.insertedId, username, qrCode };
+}
+
+async function resetPassword(req, res) {
+    const userId = authenticate(req, res, jwt);
+    if (!userId) return;
+
+    const payload = await decodeJsonBody(req);
+
+    if (
+        !payload ||
+        !payload.password ||
+        !payload.totpCode ||
+        payload.password === ""
+    ) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_CREDENTIALS",
+            "One of totpCode or password field is missing.",
+        );
+        return;
+    }
+
+    const userCollection = pool.get().collection("users");
+
+    const currentUser = await userCollection.findOne({
+        _id: ObjectId.createFromHexString(userId),
+    });
+
+    const verified = speakeasy.totp.verify({
+        secret: currentUser.toptSecret,
+        encoding: "base32",
+        token: payload.totpCode,
+        window: 1,
+    });
+
+    if (!verified) {
+        sendError(res, 400, "E_INVALID_TOTP_CODE", "Invalid TOTP code");
+        return;
+    }
+
+    const password = await argon2.hash(payload.password);
+
+    await userCollection.updateOne(
+        { _id: currentUser._id },
+        { $set: { password } },
+    );
+
+    return { ok: true };
 }
 
 /**
