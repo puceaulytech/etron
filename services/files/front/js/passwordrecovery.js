@@ -23,7 +23,7 @@ recoveryForm.addEventListener("submit", async (e) => {
     console.log(body);
 
     if (!resp.ok) {
-        success.style.display = "none";
+        successDisplay.style.display = "none";
         errorDisplay.style.display = "flex";
 
         if (body.code === "E_INVALID_TOTP_CODE") {
