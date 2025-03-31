@@ -1,5 +1,6 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+const loadingScreen = document.querySelector("#loading-screen");
 const countdownDiv = document.querySelector("#countdown");
 const endReturn = document.querySelector("#end-return");
 const endPlayAgain = document.querySelector("#end-play-again");
@@ -23,8 +24,6 @@ let mousePos;
 let gameId;
 let firstRound = true;
 let startElo = 0;
-
-waitingForOpponent.style.visibility = "visible";
 
 async function getPlayerElo() {
     const userInfo = await authenticatedFetch("/api/auth/me");
@@ -91,6 +90,9 @@ socket.on("connect", async () => {
         document.querySelector("#matchmaking-hint").remove();
         socket.emit("ready", { gameId });
     }
+
+    loadingScreen.classList.remove("visible");
+    waitingForOpponent.style.visibility = "visible";
 
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;

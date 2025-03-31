@@ -72,48 +72,57 @@
                     />
                 </div>
             </div>
-        </div>
 
-        <div id="waiting-for-opponent" class="blur-overlay">
-            <p class="subtitle"></p>
-            <p class="title">Waiting for opponent...</p>
-            <p class="subtitle" id="matchmaking-hint">
-                There are currently <span id="player-count">X</span> player(s)
-                online, maybe one will be kind enough to play with you! While
-                you wait checkout
-                <a
-                    target="_blank"
-                    href="https://youtube.com/shorts/Qp6l1S1z6Ik?si=1JPZp-6IfRjPB3An"
-                    >this cool video</a
-                >, you will be notified when we find a worthy opponent.
-            </p>
-        </div>
-
-        <div id="countdown" class="blur-overlay" style="visibility: hidden">
-            <p class="subtitle">Prepare for battle!</p>
-            <p class="title">3</p>
-
-            <div id="elo-evolution-container">
-                <span id="base-elo">1500</span>
-                <span>&#8594;</span>
-                <span id="new-elo">1550</span>
-                <span id="elo-diff">+50</span>
+            <div id="waiting-for-opponent" class="blur-overlay">
+                <p class="subtitle"></p>
+                <p class="title">Waiting for opponent...</p>
+                <p class="subtitle" id="matchmaking-hint">
+                    There are currently
+                    <span id="player-count">X</span> player(s) online, maybe one
+                    will be kind enough to play with you! While you wait
+                    checkout
+                    <a
+                        target="_blank"
+                        href="https://youtube.com/shorts/Qp6l1S1z6Ik?si=1JPZp-6IfRjPB3An"
+                        >this cool video</a
+                    >, you will be notified when we find a worthy opponent.
+                </p>
             </div>
 
-            <div class="blur-overlay-buttons" style="visibility: hidden">
-                <button id="end-return" class="app-button app-button-with-icon">
-                    <img src="/assets/home-icon.svg" />
+            <div id="loading-screen" class="visible">
+                <div class="loader"></div>
+                <span>Loading game...</span>
+            </div>
 
-                    <span>Home</span>
-                </button>
-                <button
-                    id="end-play-again"
-                    class="app-button app-button-with-icon"
-                >
-                    <img src="/assets/controller-icon.svg" />
+            <div id="countdown" class="blur-overlay" style="visibility: hidden">
+                <p class="subtitle">Prepare for battle!</p>
+                <p class="title">3</p>
 
-                    <span>Play again</span>
-                </button>
+                <div id="elo-evolution-container">
+                    <span id="base-elo">1500</span>
+                    <span>&#8594;</span>
+                    <span id="new-elo">1550</span>
+                    <span id="elo-diff">+50</span>
+                </div>
+
+                <div class="blur-overlay-buttons" style="visibility: hidden">
+                    <button
+                        id="end-return"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/home-icon.svg" />
+
+                        <span>Home</span>
+                    </button>
+                    <button
+                        id="end-play-again"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/controller-icon.svg" />
+
+                        <span>Play again</span>
+                    </button>
+                </div>
             </div>
         </div>
     </body>
