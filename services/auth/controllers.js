@@ -164,7 +164,7 @@ async function register(req, res) {
     }
 
     const password = await argon2.hash(payload.password);
-    const toptSecret = speakeasy.generateSecret({
+    const totpSecret = speakeasy.generateSecret({
         name: `eTron - ${username}`,
         length: 20,
     });
@@ -172,19 +172,19 @@ async function register(req, res) {
     const result = await db.collection("users").insertOne({
         username,
         password,
-        toptSecret: toptSecret.base32,
+        totpSecret: totpSecret.base32,
         online: false,
         elo: 1500,
         createdAt: Date.now(),
     });
 
-    const qrCode = await QRCode.toDataURL(toptSecret.otpauth_url);
+    const qrCode = await QRCode.toDataURL(totpSecret.otpauth_url);
 
     return {
         _id: result.insertedId,
         username,
         qrCode,
-        totpSecret: toptSecret.base32,
+        totpSecret: totpSecret.base32,
     };
 }
 
@@ -218,7 +218,7 @@ async function resetPassword(req, res) {
     }
 
     const verified = speakeasy.totp.verify({
-        secret: currentUser.toptSecret,
+        secret: currentUser.totpSecret,
         encoding: "base32",
         token: payload.totpCode,
         window: 1,
