@@ -36,6 +36,8 @@ recoveryForm.addEventListener("submit", async (e) => {
         successDisplay.style.display = "flex";
         successDisplay.textContent = "Success!";
 
-        location.assign("/");
+        setTimeout(() => {
+            location.assign("/");
+        }, 500);
     }
 });
