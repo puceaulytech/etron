@@ -40,18 +40,22 @@ body {
     font-size: 30px;
     grid-column: 1; /* Place in the first column */
     grid-row: span 2; /* Span both rows (covers both rows vertically) */
+    width: 160px;
 }
 
 #play-ai-btn {
     grid-column: 2; /* Place in the second column, first row */
     grid-row: 1; /* First row */
-    font-size: 19px;
 }
 
 #play-local-btn {
     grid-column: 2; /* Place in the second column, second row */
     grid-row: 2; /* Second row */
-    font-size: 19px;
+}
+
+#play-ai-btn,
+#play-local-btn {
+    font-size: 23px;
 }
 
 .select:hover {
