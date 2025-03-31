@@ -1,13 +1,15 @@
 const gameGrid = document.querySelector("game-grid");
-const dialog = document.querySelector("app-dialog");
-const dialogReturn = document.querySelector("#dialog-return");
-const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const endReturn = document.querySelector("#end-return");
+const endPlayAgain = document.querySelector("#end-play-again");
+const countdown = document.querySelector("#countdown");
 
-dialogReturn.addEventListener("click", () => {
+countdown.style.visibility = "visible";
+
+endReturn.addEventListener("click", () => {
     location.assign("/");
 });
 
-dialogPlayAgain.addEventListener("click", () => {
+endPlayAgain.addEventListener("click", () => {
     location.reload();
 });
 
@@ -20,6 +22,8 @@ const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
 const playerOne = new Player(-2, 0, startingPosition);
 const playerTwoY = BOARD_HEIGHT - startingPosition - 1;
 const playerTwo = new Player(2, board[playerTwoY].length - 1, playerTwoY);
+
+let intervalId;
 
 playerOne.placeInBoard(board);
 playerTwo.placeInBoard(board);
@@ -72,25 +76,44 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-const intervalId = setInterval(() => {
-    console.log("Playing turn...");
-    if (playerOneMove) playerOne.move(board, playerOneMove);
-    if (playerTwoMove) playerTwo.move(board, playerTwoMove);
-    gameGrid.setAttribute("grid", JSON.stringify(board));
+function startLocalGame() {
+    intervalId = setInterval(() => {
+        if (playerOneMove) playerOne.move(board, playerOneMove);
+        if (playerTwoMove) playerTwo.move(board, playerTwoMove);
+        gameGrid.setAttribute("grid", JSON.stringify(board));
 
-    const winner = getWinner(board);
+        const winner = getWinner(board);
 
-    if (winner) {
-        clearInterval(intervalId);
+        if (winner) {
+            clearInterval(intervalId);
 
-        let playerName;
-        if (winner === -2) {
-            playerName = "1";
-        } else {
-            playerName = "2";
+            let playerName;
+            if (winner === -2) {
+                playerName = "1";
+            } else {
+                playerName = "2";
+            }
         }
+    }, 500);
+}
 
-        dialog.setAttribute("content", `Player ${playerName} won!`);
-        dialog.setAttribute("show", "yes");
-    }
-}, 500);
+setTimeout(() => {
+    countdown.querySelector(".title").textContent = "2";
+
+    setTimeout(() => {
+        countdown.querySelector(".title").textContent = "1";
+
+        setTimeout(() => {
+            countdown.style.visibility = "hidden";
+            document
+                .querySelector("#left-keyboard-controls")
+                .classList.add("visible");
+            document
+                .querySelector("#right-keyboard-controls")
+                .classList.add("visible");
+            document.querySelector(".game-hud").classList.add("visible");
+
+            startLocalGame();
+        }, 1000);
+    }, 1000);
+}, 1000);
