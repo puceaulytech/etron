@@ -1,5 +1,6 @@
 function sanitizeUserInfo(user) {
-    const { password, friendRequests, friends, ...sanitized } = user;
+    const { totpSecret, password, friendRequests, friends, ...sanitized } =
+        user;
     return sanitized;
 }
 
