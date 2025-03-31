@@ -19,9 +19,6 @@ recoveryForm.addEventListener("submit", async (e) => {
 
     const body = await resp.json();
 
-    console.log(resp);
-    console.log(body);
-
     if (!resp.ok) {
         successDisplay.style.display = "none";
         errorDisplay.style.display = "flex";
