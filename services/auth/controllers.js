@@ -18,7 +18,7 @@ const {
     generateRefreshToken,
     verifyRefreshToken,
 } = require("../helpers/tokens");
-const { isUsernameValid } = require("../helpers/sanitizer");
+const { isUsernameValid, sanitizeUserInfo } = require("../helpers/sanitizer");
 
 const endpoints = {
     login: {
@@ -69,7 +69,7 @@ async function getAuthenticatedUser(req, res) {
         })
         .toArray();
 
-    const { password, ...userInfo } = user;
+    const userInfo = sanitizeUserInfo(user);
 
     return { ...userInfo, gameHistory };
 }
