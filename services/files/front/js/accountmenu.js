@@ -217,6 +217,15 @@ async function submitLogin(event) {
     });
 }
 
+const qrcodeDialog = document.getElementById("qrcode-dialog");
+const qrcodeImg = document.getElementById("qrcode-img");
+const qrcodeDialogClose = document.getElementById("qrcode-dialog-close");
+const totpSecretKey = document.getElementById("totp-secret-key");
+
+qrcodeDialogClose.addEventListener("click", () => {
+    qrcodeDialog.removeAttribute("show");
+});
+
 async function registerUser() {
     const emptyFieldErrorMsg = "Missing username or password!";
 
@@ -254,6 +263,12 @@ async function registerUser() {
 
         await submitLogin(null);
         updateLeaderboard();
+
+        response = await response.json();
+
+        qrcodeImg.src = response.qrCode;
+        totpSecretKey.textContent = response.totpSecret;
+        qrcodeDialog.setAttribute("show", "yes");
     });
 }
 

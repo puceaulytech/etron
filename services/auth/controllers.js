@@ -164,7 +164,10 @@ async function register(req, res) {
     }
 
     const password = await argon2.hash(payload.password);
-    const toptSecret = speakeasy.generateSecret({ name: "eTron" });
+    const toptSecret = speakeasy.generateSecret({
+        name: `eTron - ${username}`,
+        length: 20,
+    });
 
     const result = await db.collection("users").insertOne({
         username,
