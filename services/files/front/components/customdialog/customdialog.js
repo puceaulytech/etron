@@ -81,10 +81,7 @@ class AppDialogCustom extends HTMLElement {
         }
 
         if (this.hasAttribute("app-max-width")) {
-            console.log(this.getAttribute("app-max-width"));
             this.dialogDiv.style.maxWidth = this.getAttribute("app-max-width");
-        } else {
-            console.log("no max width");
         }
     }
 
