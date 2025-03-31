@@ -221,7 +221,6 @@ async function resetPassword(req, res) {
         secret: currentUser.totpSecret,
         encoding: "base32",
         token: payload.totpCode,
-        window: 1,
     });
 
     if (!verified) {
