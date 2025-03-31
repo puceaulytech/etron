@@ -291,6 +291,31 @@ svg .svg-shit {
     height: 40px;
 }
 
+#qrcode-dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+
+#qrcode-img {
+    aspect-ratio: 1;
+    width: 250px;
+}
+
+#totp-secret-key {
+    background-color: lightgrey;
+    padding: 3px;
+    border-radius: 4px;
+    font-family: monospace;
+
+    user-select: all;
+    -moz-user-select: all;
+    -webkit-user-select: all;
+}
+
 @keyframes emphasize {
     50% {
         transform: scale(1.2);

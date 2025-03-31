@@ -178,7 +178,8 @@ function createHandler(endpoints, handleNotFound) {
                 // Check if resp is not undefined nor null (https://stackoverflow.com/a/21273362)
                 if (handlerRet != null) res.end(JSON.stringify(handlerRet));
             })
-            .catch((_err) => {
+            .catch((err) => {
+                console.error(err);
                 res.statusCode = 500;
                 res.end("Internal Server Error");
             });

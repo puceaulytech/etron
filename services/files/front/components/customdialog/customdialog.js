@@ -63,24 +63,35 @@ class AppDialogCustom extends HTMLElement {
         shadow.appendChild(this.template.content.cloneNode(true));
         this.dialogDiv = shadow.querySelector(".dialog");
         this.contentElement = shadow.querySelector("#content");
-
-        this.addEventListener("click", (e) => {
-            const path = e.composedPath();
-
-            if (path[0] === this) this.removeAttribute("show");
-        });
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape")
-                this.removeAttribute("show");
-        })
     }
+
     connectedCallback() {
         this.toggleShow(this.hasAttribute("show"));
+
+        if (!this.hasAttribute("modal")) {
+            this.addEventListener("click", (e) => {
+                const path = e.composedPath();
+
+                if (path[0] === this) this.removeAttribute("show");
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") this.removeAttribute("show");
+            });
+        }
+
+        if (this.hasAttribute("app-max-width")) {
+            console.log(this.getAttribute("app-max-width"));
+            this.dialogDiv.style.maxWidth = this.getAttribute("app-max-width");
+        } else {
+            console.log("no max width");
+        }
     }
+
     static get observedAttributes() {
-        return ["show", "content"];
+        return ["show", "content", "modal", "max-width"];
     }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "show") {
             this.toggleShow(this.hasAttribute("show"));
@@ -88,6 +99,7 @@ class AppDialogCustom extends HTMLElement {
             this.updateContent(newValue);
         }
     }
+
     toggleShow(show) {
         if (show) {
             this.style.visibility = "visible";
@@ -102,6 +114,7 @@ class AppDialogCustom extends HTMLElement {
             }, 500);
         }
     }
+
     updateContent(text) {
         this.contentElement.innerText = text;
     }

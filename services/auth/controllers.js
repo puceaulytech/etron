@@ -2,6 +2,8 @@ const argon2 = require("argon2");
 const http = require("http");
 const jwt = require("jsonwebtoken");
 const ObjectId = require("mongodb").ObjectId;
+const QRCode = require("qrcode");
+const speakeasy = require("speakeasy");
 
 const {
     decodeJsonBody,
@@ -24,6 +26,9 @@ const endpoints = {
     },
     register: {
         POST: register,
+    },
+    resetpassword: {
+        POST: resetPassword,
     },
     refresh: {
         POST: refreshAccess,
@@ -159,15 +164,79 @@ async function register(req, res) {
     }
 
     const password = await argon2.hash(payload.password);
+    const toptSecret = speakeasy.generateSecret({
+        name: `eTron - ${username}`,
+        length: 20,
+    });
+
     const result = await db.collection("users").insertOne({
         username,
         password,
+        toptSecret: toptSecret.base32,
         online: false,
         elo: 1500,
         createdAt: Date.now(),
     });
 
-    return { _id: result.insertedId, username };
+    const qrCode = await QRCode.toDataURL(toptSecret.otpauth_url);
+
+    return {
+        _id: result.insertedId,
+        username,
+        qrCode,
+        totpSecret: toptSecret.base32,
+    };
+}
+
+async function resetPassword(req, res) {
+    const payload = await decodeJsonBody(req);
+
+    if (
+        !payload ||
+        !payload.username ||
+        !payload.password ||
+        !payload.totpCode ||
+        payload.password === ""
+    ) {
+        sendError(
+            res,
+            400,
+            "E_INVALID_CREDENTIALS",
+            "One of username, password or totpCode field is missing.",
+        );
+        return;
+    }
+
+    const userCollection = pool.get().collection("users");
+
+    const currentUser = await userCollection.findOne({
+        username: payload.username,
+    });
+    if (!currentUser) {
+        sendError(res, 400, "E_USER_NOT_FOUND", "User not found");
+        return;
+    }
+
+    const verified = speakeasy.totp.verify({
+        secret: currentUser.toptSecret,
+        encoding: "base32",
+        token: payload.totpCode,
+        window: 1,
+    });
+
+    if (!verified) {
+        sendError(res, 400, "E_INVALID_TOTP_CODE", "Invalid TOTP code");
+        return;
+    }
+
+    const password = await argon2.hash(payload.password);
+
+    await userCollection.updateOne(
+        { _id: currentUser._id },
+        { $set: { password } },
+    );
+
+    return { ok: true };
 }
 
 /**

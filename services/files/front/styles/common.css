@@ -85,3 +85,22 @@
 .bold {
     font-weight: bold;
 }
+
+#password-container {
+    position: relative;
+}
+#password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 30%;
+    cursor: pointer;
+    user-select: none;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+#password-toggle:hover {
+    opacity: 1;
+}
+#password-toggle.always-visible {
+    opacity: 1;
+}
