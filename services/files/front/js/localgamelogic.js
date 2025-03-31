@@ -76,26 +76,33 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function startLocalGame() {
-    intervalId = setInterval(() => {
-        if (playerOneMove) playerOne.move(board, playerOneMove);
-        if (playerTwoMove) playerTwo.move(board, playerTwoMove);
-        gameGrid.setAttribute("grid", JSON.stringify(board));
+function runLoop() {
+    if (playerOneMove) playerOne.move(board, playerOneMove);
+    if (playerTwoMove) playerTwo.move(board, playerTwoMove);
+    gameGrid.setAttribute("grid", JSON.stringify(board));
 
-        const winner = getWinner(board);
+    const winner = getWinner(board);
 
-        if (winner) {
-            clearInterval(intervalId);
+    if (winner) {
+        clearInterval(intervalId);
 
-            let playerName;
-            if (winner === -2) {
-                playerName = "1";
-            } else {
-                playerName = "2";
-            }
+        let playerName;
+        if (winner === -2) {
+            playerName = "1";
+        } else {
+            playerName = "2";
         }
-    }, 500);
+
+        countdown.style.visibility = "visible";
+        countdown.querySelector(".title").textContent =
+            `Player ${playerName} won!`;
+        countdown.querySelector(".subtitle").textContent = "";
+        countdown.querySelector(".blur-overlay-buttons").style.visibility =
+            "visible";
+    }
 }
+
+intervalId = setInterval(() => {}, 500);
 
 setTimeout(() => {
     countdown.querySelector(".title").textContent = "2";
@@ -113,7 +120,10 @@ setTimeout(() => {
                 .classList.add("visible");
             document.querySelector(".game-hud").classList.add("visible");
 
-            startLocalGame();
+            runLoop();
+            intervalId = setInterval(() => {
+                runLoop();
+            }, 500);
         }, 1000);
     }, 1000);
 }, 1000);
