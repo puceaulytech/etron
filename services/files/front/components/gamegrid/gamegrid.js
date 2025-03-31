@@ -47,7 +47,6 @@ class GameGrid extends HTMLElement {
         const shadow = this.attachShadow({ mode: "open" });
         shadow.append(this.wrappingDiv);
 
-        this.somePlayerArrayPos = { x: -69, y: -69 };
         this.tileColor = "#3caf3c";
     }
 
@@ -79,12 +78,17 @@ class GameGrid extends HTMLElement {
 
         this.canvas.height = BOARD_HEIGHT * this.hexRadius * 2;
 
-        this.offsetX = (this.canvas.width - BOARD_WIDTH * this.hexRectangleWidth) / 2;
+        this.offsetX =
+            (this.canvas.width - BOARD_WIDTH * this.hexRectangleWidth) / 2;
 
         const hexRectangleHeightCount = Math.floor((BOARD_HEIGHT + 1) / 2);
         const sideLengthCount = Math.floor(BOARD_HEIGHT / 2);
 
-        this.offsetY = (this.canvas.height - ((hexRectangleHeightCount * this.hexRectangleHeight) + (sideLengthCount * this.sideLength))) / 2;
+        this.offsetY =
+            (this.canvas.height -
+                (hexRectangleHeightCount * this.hexRectangleHeight +
+                    sideLengthCount * this.sideLength)) /
+            2;
 
         if (this.hasAttribute("grid")) this.redrawGrid();
         this.trueOffsetTop = this.canvas.offsetTop;
@@ -156,22 +160,26 @@ class GameGrid extends HTMLElement {
         const newX = x * this.hexRectangleWidth + xStart + this.offsetX;
         const newY = y * (this.sideLength + this.hexHeight) + this.offsetY;
 
+        // If playerpos was set then expose player position in pixels (via somePlayerPos)
+        // this is used to compute direction using mouse
         const rowsColumnsThingy = JSON.parse(this.getAttribute("playerpos"));
-        this.somePlayerArrayPos = {
-            x: isInverted
-                ? rowWidth - 1 - rowsColumnsThingy.column
-                : rowsColumnsThingy.column,
-            y: rowsColumnsThingy.row,
-        };
-        if (
-            this.somePlayerArrayPos.x === x &&
-            this.somePlayerArrayPos.y === y &&
-            underImg === this.donkeyImg
-        ) {
-            this.somePlayerPos = {
-                x: newX + this.hexRadius,
-                y: newY + this.hexRadius,
+        if (rowsColumnsThingy) {
+            const somePlayerArrayPos = {
+                x: isInverted
+                    ? rowWidth - 1 - rowsColumnsThingy.column
+                    : rowsColumnsThingy.column,
+                y: rowsColumnsThingy.row,
             };
+            if (
+                somePlayerArrayPos.x === x &&
+                somePlayerArrayPos.y === y &&
+                underImg === this.donkeyImg
+            ) {
+                this.somePlayerPos = {
+                    x: newX + this.hexRadius,
+                    y: newY + this.hexRadius,
+                };
+            }
         }
 
         this.ctx.beginPath();
