@@ -76,6 +76,11 @@
     font-family: inherit;
     border: 3px solid green;
     border-radius: 4px;
+    height: 45px;
+    font-size: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
 }
 .app-text-input:focus {
     outline: 1px solid white;
@@ -103,4 +108,14 @@
 }
 #password-toggle.always-visible {
     opacity: 1;
+}
+
+.app-submit-btn {
+    min-width: 150px;
+    height: auto;
+    font-size: 20px;
+}
+
+.password-input {
+    padding-right: 40px;
 }
