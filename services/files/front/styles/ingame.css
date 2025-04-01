@@ -110,6 +110,26 @@ game-grid {
     margin-bottom: 20px;
 }
 
+#left-keyboard-controls {
+    visibility: hidden;
+}
+#left-keyboard-controls.visible {
+    visibility: visible;
+
+    animation-name: controls-appear;
+    animation-duration: var(--slides-duration);
+}
+
+#right-keyboard-controls {
+    visibility: hidden;
+}
+#right-keyboard-controls.visible {
+    visibility: visible;
+
+    animation-name: emotes-appear;
+    animation-duration: var(--slides-duration);
+}
+
 #emote-template {
     display: none;
 }

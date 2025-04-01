@@ -1,28 +1,31 @@
 const gameGrid = document.querySelector("game-grid");
-const dialog = document.querySelector("app-dialog");
-const dialogReturn = document.querySelector("#dialog-return");
-const dialogPlayAgain = document.querySelector("#dialog-play-again");
+const endReturn = document.querySelector("#end-return");
+const endPlayAgain = document.querySelector("#end-play-again");
+const countdown = document.querySelector("#countdown");
+const roundsBar = document.querySelector("rounds-bar");
 
-dialogReturn.addEventListener("click", () => {
+countdown.style.visibility = "visible";
+
+endReturn.addEventListener("click", () => {
     location.assign("/");
 });
 
-dialogPlayAgain.addEventListener("click", () => {
+endPlayAgain.addEventListener("click", () => {
     location.reload();
 });
 
-const board = new Array(BOARD_HEIGHT);
+let board;
 
-for (let i = 0; i < BOARD_HEIGHT; i++)
-    board[i] = new Array(i % 2 === 0 ? BOARD_WIDTH : BOARD_WIDTH - 1).fill(0);
+let startingPosition;
+let playerOne;
+let playerTwoY;
+let playerTwo;
 
-const startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
-const playerOne = new Player(-2, 0, startingPosition);
-const playerTwoY = BOARD_HEIGHT - startingPosition - 1;
-const playerTwo = new Player(2, board[playerTwoY].length - 1, playerTwoY);
+let playerOneRounds = 0;
+let playerTwoRounds = 0;
 
-playerOne.placeInBoard(board);
-playerTwo.placeInBoard(board);
+let intervalId;
+
 // FIXME: this makes the canvas bug but commenting this will delay showing the game grid
 // gameGrid.setAttribute("grid", JSON.stringify(board));
 
@@ -72,8 +75,27 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-const intervalId = setInterval(() => {
-    console.log("Playing turn...");
+function resetGame() {
+    board = new Array(BOARD_HEIGHT);
+
+    for (let i = 0; i < BOARD_HEIGHT; i++)
+        board[i] = new Array(i % 2 === 0 ? BOARD_WIDTH : BOARD_WIDTH - 1).fill(
+            0,
+        );
+
+    startingPosition = Math.floor(Math.random() * BOARD_HEIGHT);
+    playerOne = new Player(-2, 0, startingPosition);
+    playerTwoY = BOARD_HEIGHT - startingPosition - 1;
+    playerTwo = new Player(2, board[playerTwoY].length - 1, playerTwoY);
+
+    playerOne.placeInBoard(board);
+    playerTwo.placeInBoard(board);
+
+    playerOneMove = "RIGHT";
+    playerTwoMove = "LEFT";
+}
+
+function runLoop() {
     if (playerOneMove) playerOne.move(board, playerOneMove);
     if (playerTwoMove) playerTwo.move(board, playerTwoMove);
     gameGrid.setAttribute("grid", JSON.stringify(board));
@@ -85,12 +107,65 @@ const intervalId = setInterval(() => {
 
         let playerName;
         if (winner === -2) {
+            playerOneRounds++;
+            // First player
             playerName = "1";
         } else {
+            playerTwoRounds++;
+            // Second player
             playerName = "2";
         }
 
-        dialog.setAttribute("content", `Player ${playerName} won!`);
-        dialog.setAttribute("show", "yes");
+        roundsBar.setAttribute("left-rounds", playerOneRounds);
+        roundsBar.setAttribute("right-rounds", playerTwoRounds);
+
+        if (playerOneRounds === 3 || playerTwoRounds === 3) {
+            countdown.style.visibility = "visible";
+            countdown.querySelector(".title").textContent =
+                `Player ${playerName} won!`;
+            countdown.querySelector(".subtitle").textContent = "";
+            countdown.querySelector(".blur-overlay-buttons").style.visibility =
+                "visible";
+        } else {
+            countdown.style.visibility = "visible";
+            countdown.querySelector(".title").textContent = "";
+            countdown.querySelector(".subtitle").textContent =
+                `- Round won by Player ${playerName} -`;
+
+            resetGame();
+            startCountdown();
+        }
     }
-}, 500);
+}
+
+function startCountdown() {
+    countdown.querySelector(".title").textContent = "3";
+
+    setTimeout(() => {
+        countdown.querySelector(".title").textContent = "2";
+
+        setTimeout(() => {
+            countdown.querySelector(".title").textContent = "1";
+
+            setTimeout(() => {
+                countdown.style.visibility = "hidden";
+                document
+                    .querySelector("#left-keyboard-controls")
+                    .classList.add("visible");
+                document
+                    .querySelector("#right-keyboard-controls")
+                    .classList.add("visible");
+                document.querySelector(".game-hud").classList.add("visible");
+                roundsBar.classList.add("visible");
+
+                runLoop();
+                intervalId = setInterval(() => {
+                    runLoop();
+                }, 500);
+            }, 1000);
+        }, 1000);
+    }, 1000);
+}
+
+resetGame();
+startCountdown();

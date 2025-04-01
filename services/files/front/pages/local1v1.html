@@ -20,6 +20,7 @@
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
         <script src="../components/dialog/dialog.js"></script>
+        <script src="../components/roundsbar/roundsbar.js"></script>
 
         <script src="../js/socket.io.js" defer></script>
         <script src="../js/ws.js" defer></script>
@@ -28,22 +29,64 @@
     </head>
     <body>
         <div class="container">
-            <keyboard-controls keys="E,D,X,W,Q,Z"></keyboard-controls>
+            <keyboard-controls
+                id="left-keyboard-controls"
+                keys="E,D,X,W,Q,Z"
+            ></keyboard-controls>
 
             <game-grid></game-grid>
 
-            <keyboard-controls keys="P,M,/,;,K,O"></keyboard-controls>
-        </div>
+            <keyboard-controls
+                id="right-keyboard-controls"
+                keys="P,M,/,;,K,O"
+            ></keyboard-controls>
 
-        <app-dialog>
-            <div slot="buttons" style="display: contents">
-                <button id="dialog-return" class="app-button">
-                    Return to home
-                </button>
-                <button id="dialog-play-again" class="app-button">
-                    Play again
-                </button>
+            <rounds-bar
+                same-color
+                left-rounds="0"
+                right-rounds="0"
+            ></rounds-bar>
+
+            <div class="game-hud">
+                <div>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
+                    <span class="opponent-name">Local</span>
+                    <img
+                        src="../assets/fight-icon.svg"
+                        alt="swords icon"
+                        class="opponent-icon"
+                    />
+                </div>
             </div>
-        </app-dialog>
+
+            <div id="countdown" class="blur-overlay" style="visibility: hidden">
+                <p class="subtitle">Prepare for battle!</p>
+                <p class="title">3</p>
+
+                <div class="blur-overlay-buttons" style="visibility: hidden">
+                    <button
+                        id="end-return"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/home-icon.svg" />
+
+                        <span>Home</span>
+                    </button>
+
+                    <button
+                        id="end-play-again"
+                        class="app-button app-button-with-icon"
+                    >
+                        <img src="/assets/controller-icon.svg" />
+
+                        <span>Play again</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

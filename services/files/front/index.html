@@ -88,14 +88,8 @@
         </div>
 
         <!-- The divs bellow aren't part of the layout -->
-        <button id="account-button">
-            <svg viewBox="0 0 24 24">
-                <circle class="svg-shit" cx="12" cy="7.25" r="5.73" />
-                <path
-                    class="svg-shit"
-                    d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
-                />
-            </svg>
+        <button id="account-button" class="app-button app-button-with-icon">
+            <img src="/assets/account-icon.svg" />
 
             <div>Social</div>
         </button>
@@ -123,7 +117,7 @@
                 <div class="content-section" id="account-section">
                     <h1>Welcome to your account</h1>
                     <p id="player-name">PLAYER</p>
-                    <p id="account-creation-date">
+                    <p id="account-creation-date" class="bigger-text">
                         Member since: 29 February 2012
                     </p>
                     <p id="player-elo">ELO: 1500</p>
@@ -140,11 +134,26 @@
                         <span>Win rate</span>
                         <span id="player-win-rate">69%</span>
                     </div>
-                    <p class="app-button" onclick="logOut()">Log out</p>
+                    <button class="app-button" onclick="logOut()">
+                        Log out
+                    </button>
                 </div>
                 <div class="content-section" id="friends-section">
                     <h1>Friends</h1>
                     <div id="friend-list" style="width: 100%"></div>
+                    <p style="margin-top: 50px" class="bigger-text">
+                        Go to
+                        <a
+                            href="#vellalebg"
+                            onclick="return focusSectionByName('requests');"
+                            >Friend Requests</a
+                        >
+                        section to add new friends.
+                    </p>
+                </div>
+                <div class="content-section" id="requests-section">
+                    <h1>Friend Requests</h1>
+                    <div style="width: 85%"></div>
                     <div id="search-container">
                         <input
                             type="text"
@@ -158,10 +167,6 @@
                         </div>
                     </div>
                     <div id="search-results"></div>
-                </div>
-                <div class="content-section" id="requests-section">
-                    <h1>Friend Requests</h1>
-                    <div style="width: 85%"></div>
                 </div>
                 <!-- It is very important for the login section to be last-->
                 <div class="content-section" id="login-section">
@@ -199,7 +204,7 @@
                             Login
                         </button>
                     </form>
-                    <p>or</p>
+                    <p class="bigger-text">or</p>
                     <button
                         class="app-button app-submit-btn"
                         onclick="registerUser()"

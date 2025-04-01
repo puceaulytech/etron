@@ -40,6 +40,10 @@ body {
     font-size: 30px;
     grid-column: 1; /* Place in the first column */
     grid-row: span 2; /* Span both rows (covers both rows vertically) */
+    animation-name: emphasize;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
     width: 160px;
 }
 
@@ -68,33 +72,20 @@ body {
     box-shadow: 0 0 8px rgba(0, 128, 0, 0.8);
 }
 
-#play-online-btn {
-    animation-name: emphasize;
-    animation-duration: 1s;
-    animation-timing-function: ease-in-out;
-}
-
 #account-button {
     position: absolute;
-    border: 3px solid black;
     right: 0;
     bottom: 0;
     margin: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
     gap: 10px;
-    padding: 10px;
+    padding: 15px;
     font-size: 30px;
     transition: 100ms;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0);
     font-family: inherit;
-}
-
-#account-button:hover {
-    box-shadow: 5px 5px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 #account-button > svg {
@@ -295,6 +286,10 @@ svg .svg-shit {
     height: 40px;
 }
 
+.bigger-text {
+    font-size: 20px;
+}
+
 #qrcode-dialog-body {
     display: flex;
     flex-direction: column;
@@ -321,8 +316,14 @@ svg .svg-shit {
 }
 
 @keyframes emphasize {
-    50% {
+    0% {
+        transform: scale(1);
+    }
+    12.5% {
         transform: scale(1.2);
+    }
+    25% {
+        transform: scale(1);
     }
     100% {
         transform: scale(1);
