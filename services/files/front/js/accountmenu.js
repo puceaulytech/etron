@@ -335,7 +335,7 @@ async function updateFriendList() {
         .then(async (friends) => {
             if (friends.length === 0) {
                 friendList.innerHTML =
-                    "<p>No friends, it happens sometimes</p>";
+                    '<p class="bigger-text">No friends, it happens sometimes</p>';
                 return;
             }
 
@@ -373,7 +373,7 @@ async function updateFriendRequests() {
         .then(async (users) => {
             if (users.length === 0) {
                 friendRequests.innerHTML =
-                    "<p>No friend requests, try having some Curly's</p>";
+                    '<p class="bigger-text">No friend requests, try having some Curly\'s</p>';
                 return;
             }
 

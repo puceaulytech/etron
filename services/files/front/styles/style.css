@@ -282,6 +282,10 @@ svg .svg-shit {
     height: 40px;
 }
 
+.bigger-text {
+    font-size: 20px;
+}
+
 @keyframes emphasize {
     0% {
         transform: scale(1);

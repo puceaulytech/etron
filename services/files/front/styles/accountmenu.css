@@ -81,6 +81,7 @@
     align-items: center;
     overflow-y: auto;
     padding-bottom: 100px;
+    gap: 25px;
 }
 
 .content-section a:visited:active {
@@ -90,15 +91,26 @@
     color: blue;
 }
 
+.content-section .app-button {
+    font-size: 20px;
+}
+
 .content-section#account-section #player-name {
     font-size: 40px;
     font-weight: bolder;
     font-family: arial;
-    margin-bottom: 20px;
 }
 
 .content-section#account-section #player-elo {
     font-size: 30px;
+}
+
+.content-section#account-section h1 {
+    margin-bottom: 0;
+}
+
+.content-section#account-section p {
+    margin: 0;
 }
 
 #search-container {
@@ -138,6 +150,10 @@
 
 .content-section#login-section h1 {
     margin-bottom: 30px;
+}
+
+.content-section#login-section p {
+    margin: 0;
 }
 
 .content-section#login-section #form-error {

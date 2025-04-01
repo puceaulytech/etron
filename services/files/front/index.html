@@ -88,7 +88,7 @@
         </div>
 
         <!-- The divs bellow aren't part of the layout -->
-        <button id="account-button" class="app-button">
+        <button id="account-button" class="app-button app-button-with-icon">
             <img src="/assets/account-icon.svg" />
 
             <div>Social</div>
@@ -117,7 +117,7 @@
                 <div class="content-section" id="account-section">
                     <h1>Welcome to your account</h1>
                     <p id="player-name">PLAYER</p>
-                    <p id="account-creation-date">
+                    <p id="account-creation-date" class="bigger-text">
                         Member since: 29 February 2012
                     </p>
                     <p id="player-elo">ELO: 1500</p>
@@ -134,12 +134,14 @@
                         <span>Win rate</span>
                         <span id="player-win-rate">69%</span>
                     </div>
-                    <p class="app-button" onclick="logOut()">Log out</p>
+                    <button class="app-button" onclick="logOut()">
+                        Log out
+                    </button>
                 </div>
                 <div class="content-section" id="friends-section">
                     <h1>Friends</h1>
                     <div id="friend-list" style="width: 100%"></div>
-                    <p style="margin-top: 50px; font-size: 20px">
+                    <p style="margin-top: 50px" class="bigger-text">
                         Go to
                         <a
                             href="#vellalebg"
@@ -196,7 +198,7 @@
                         </div>
                         <button type="submit" class="app-button">Login</button>
                     </form>
-                    <p>or</p>
+                    <p class="bigger-text">or</p>
                     <button class="app-button" onclick="registerUser()">
                         Create an account
                     </button>
