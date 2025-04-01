@@ -1,9 +1,11 @@
 const gameGrid = document.querySelector("game-grid");
 const waitingForOpponent = document.querySelector("#waiting-for-opponent");
+const loadingScreen = document.querySelector("#loading-screen");
 const countdownDiv = document.querySelector("#countdown");
 const endReturn = document.querySelector("#end-return");
 const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
+const eloContainer = document.querySelector("#elo-evolution-container");
 
 const onlinePlayerCountElement = document.querySelector("#player-count");
 const videoAnchorElement = document.querySelector("#matchmaking-hint a");
@@ -21,8 +23,13 @@ let lastMove;
 let mousePos;
 let gameId;
 let firstRound = true;
+let startElo = 0;
 
-waitingForOpponent.style.visibility = "visible";
+async function getPlayerElo() {
+    const userInfo = await authenticatedFetch("/api/auth/me");
+
+    return Math.floor(userInfo.elo);
+}
 
 async function updatePlayerCountMatchmaking() {
     await fetch("/api/gamesvc/onlinecount", {
@@ -38,6 +45,10 @@ const onlinePlayerCountInterval = setInterval(
     async () => await updatePlayerCountMatchmaking(),
     2000,
 );
+
+getPlayerElo().then((elo) => {
+    startElo = elo;
+});
 
 authenticatedFetch("/api/gamesvc/randomvideo", {
     method: "GET",
@@ -80,6 +91,9 @@ socket.on("connect", async () => {
         socket.emit("ready", { gameId });
     }
 
+    loadingScreen.classList.remove("visible");
+    waitingForOpponent.style.visibility = "visible";
+
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
 
@@ -104,7 +118,7 @@ socket.on("connect", async () => {
             payload.delay.toString();
     });
 
-    socket.on("gamestate", (payload) => {
+    socket.on("gamestate", async (payload) => {
         if (gameId !== payload.gameId) return;
 
         const side = payload.sides[myUserId];
@@ -122,6 +136,26 @@ socket.on("connect", async () => {
         roundsBar.setAttribute("right-rounds", opponentRounds);
 
         if (myRounds === 3 || opponentRounds === 3) {
+            getPlayerElo().then((newElo) => {
+                eloContainer.querySelector("#base-elo").textContent = startElo;
+                eloContainer.querySelector("#new-elo").textContent = newElo;
+
+                const diff = newElo - startElo;
+                const eloDiffElem = eloContainer.querySelector("#elo-diff");
+
+                eloDiffElem.textContent = diff;
+
+                if (diff > 0) {
+                    eloDiffElem.textContent = `+${diff}`;
+                    eloDiffElem.classList.add("win");
+                } else if (diff < 0) {
+                    eloDiffElem.textContent = diff;
+                    eloDiffElem.classList.add("lose");
+                }
+
+                eloContainer.classList.add("visible");
+            });
+
             countdownDiv.querySelector("p.subtitle").textContent = "";
 
             if (myRounds === 3) {

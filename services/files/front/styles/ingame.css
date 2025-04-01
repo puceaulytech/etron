@@ -304,6 +304,26 @@ rounds-bar {
     bottom: 40px;
 }
 
+#elo-evolution-container {
+    display: none;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 25px;
+}
+#elo-evolution-container.visible {
+    display: flex;
+}
+
+#elo-diff {
+    font-weight: bold;
+}
+#elo-diff.win {
+    color: green;
+}
+#elo-diff.lose {
+    color: #bf3434;
+}
+
 @keyframes hud-appear {
     from {
         transform: translateY(-300px);

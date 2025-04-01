@@ -44,18 +44,22 @@ body {
     animation-duration: 4s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
+    width: 160px;
 }
 
 #play-ai-btn {
     grid-column: 2; /* Place in the second column, first row */
     grid-row: 1; /* First row */
-    font-size: 19px;
 }
 
 #play-local-btn {
     grid-column: 2; /* Place in the second column, second row */
     grid-row: 2; /* Second row */
-    font-size: 19px;
+}
+
+#play-ai-btn,
+#play-local-btn {
+    font-size: 23px;
 }
 
 .select:hover {
@@ -284,6 +288,31 @@ svg .svg-shit {
 
 .bigger-text {
     font-size: 20px;
+}
+
+#qrcode-dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+
+#qrcode-img {
+    aspect-ratio: 1;
+    width: 250px;
+}
+
+#totp-secret-key {
+    background-color: lightgrey;
+    padding: 3px;
+    border-radius: 4px;
+    font-family: monospace;
+
+    user-select: all;
+    -moz-user-select: all;
+    -webkit-user-select: all;
 }
 
 @keyframes emphasize {

@@ -177,9 +177,10 @@
                             type="text"
                             name="username"
                             class="app-text-input"
+                            id="username-input"
                             placeholder="Username"
                             required
-                            autocomplete="on"
+                            autocomplete="username"
                             pattern="[a-zA-Z0-9._]{3,25}"
                             title="Must be 3-25 characters long and contain only letters, numbers, '.', and '_'"
                             minlength="3"
@@ -189,17 +190,25 @@
                             <input
                                 type="password"
                                 name="password"
-                                class="app-text-input"
+                                class="app-text-input password-input"
                                 placeholder="Password"
                                 required
-                                autocomplete="on"
+                                autocomplete="current-password"
                             />
                             <span id="password-toggle">👁️</span>
                         </div>
-                        <button type="submit" class="app-button">Login</button>
+                        <a href="/pages/passwordrecovery.html"
+                            >Forgot password?</a
+                        >
+                        <button type="submit" class="app-button app-submit-btn">
+                            Login
+                        </button>
                     </form>
                     <p class="bigger-text">or</p>
-                    <button class="app-button" onclick="registerUser()">
+                    <button
+                        class="app-button app-submit-btn"
+                        onclick="registerUser()"
+                    >
                         Create an account
                     </button>
                 </div>
@@ -345,6 +354,33 @@
 
             <div slot="buttons" style="display: contents">
                 <button class="app-button" id="tutorial-close">Close</button>
+            </div>
+        </app-dialog-custom>
+
+        <app-dialog-custom
+            id="qrcode-dialog"
+            content="Set up 2FA for password recovery (Optional)"
+            app-max-width="800px"
+            modal
+        >
+            <div slot="body" id="qrcode-dialog-body">
+                <span id="twofa-expl">
+                    Scan this QR code and add it to your authenticator app to
+                    enable password recovery. This is not required but you will
+                    need it to reset your password.
+                </span>
+
+                <img id="qrcode-img" alt="QR code" />
+
+                <span>Or enter this key manually</span>
+
+                <span id="totp-secret-key"></span>
+            </div>
+
+            <div slot="buttons" style="display: contents">
+                <button class="app-button" id="qrcode-dialog-close">
+                    Close
+                </button>
             </div>
         </app-dialog-custom>
     </body>
