@@ -172,10 +172,10 @@ passwordToggle.addEventListener("click", () => {
     );
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        passwordToggle.classList.add("always-visible");
+        passwordToggle.src = "/assets/eye-icon.svg";
     } else {
         passwordInput.type = "password";
-        passwordToggle.classList.remove("always-visible");
+        passwordToggle.src = "/assets/eye-off-icon.svg";
     }
 });
 

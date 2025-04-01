@@ -96,18 +96,13 @@
 }
 #password-toggle {
     position: absolute;
-    right: 15px;
-    top: 30%;
+    right: 11px;
+    top: 50%;
     cursor: pointer;
     user-select: none;
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-}
-#password-toggle:hover {
-    opacity: 1;
-}
-#password-toggle.always-visible {
-    opacity: 1;
+    aspect-ratio: 1;
+    width: 20px;
+    transform: translateY(-50%);
 }
 
 .app-submit-btn {
