@@ -20,6 +20,7 @@
         <script src="../components/keyboardcontrols/keyboardcontrols.js"></script>
         <script src="../components/gamegrid/gamegrid.js"></script>
         <script src="../components/dialog/dialog.js"></script>
+        <script src="../components/roundsbar/roundsbar.js"></script>
 
         <script src="../js/socket.io.js" defer></script>
         <script src="../js/ws.js" defer></script>
@@ -40,7 +41,11 @@
                 keys="P,M,/,;,K,O"
             ></keyboard-controls>
 
-            <rounds-bar left-rounds="0" right-rounds="0"></rounds-bar>
+            <rounds-bar
+                same-color
+                left-rounds="0"
+                right-rounds="0"
+            ></rounds-bar>
 
             <div class="game-hud">
                 <div>

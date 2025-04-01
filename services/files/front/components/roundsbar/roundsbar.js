@@ -76,6 +76,10 @@ class RoundsBar extends HTMLElement {
         indic.style.backgroundColor = color;
     }
 
+    isSameColor() {
+        return this.hasAttribute("same-color");
+    }
+
     setLeftRounds(rounds) {
         const toUpdate = this.indicators.slice(3 - rounds, 3);
 
@@ -86,7 +90,10 @@ class RoundsBar extends HTMLElement {
         const toUpdate = this.indicators.slice(3, 3 + rounds);
 
         for (const indic of toUpdate)
-            this.fillIndicator(indic, this.rightColor);
+            this.fillIndicator(
+                indic,
+                this.isSameColor() ? this.leftColor : this.rightColor,
+            );
     }
 }
 
