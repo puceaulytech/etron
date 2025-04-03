@@ -35,6 +35,11 @@ async function challengeFriend(friendId) {
     });
 
     setFriendChallengeFeedback(friendId);
+
+    if (friendId === lastChatFriendId) {
+        insertMessage("Challenge sent", false, true);
+        scrollToBottom();
+    }
 }
 
 async function acceptChallenge() {

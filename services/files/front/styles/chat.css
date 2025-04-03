@@ -78,6 +78,9 @@
 .chat-message.animated {
     animation-name: message-appear;
 }
+.chat-message.italic {
+    font-style: italic;
+}
 .received-message {
     align-self: flex-start;
     background-color: #f0f0f0;

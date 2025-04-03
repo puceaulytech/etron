@@ -30,13 +30,14 @@ function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function createMessageDiv(content, received, animated) {
+function createMessageDiv(content, received, animated, italic = false) {
     const div = document.createElement("div");
     div.innerText = content;
     div.classList.add(
         "chat-message",
         received ? "received-message" : "sent-message",
     );
+    if (italic) div.classList.add("italic");
     if (animated) {
         div.classList.add("animated");
         setTimeout(() => div.classList.remove("animated"), 160);
@@ -44,8 +45,10 @@ function createMessageDiv(content, received, animated) {
     return div;
 }
 
-function insertMessage(content, received) {
-    messagesContainer.appendChild(createMessageDiv(content, received, true));
+function insertMessage(content, received, italic = false) {
+    messagesContainer.appendChild(
+        createMessageDiv(content, received, true, italic),
+    );
 }
 
 async function updateMessages(friendId) {
@@ -58,6 +61,7 @@ async function updateMessages(friendId) {
                     message.content,
                     friendId === message.sender,
                     false,
+                    message.special && message.special === "CHALLENGE",
                 ),
             ),
         )
