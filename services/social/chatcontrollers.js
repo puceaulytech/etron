@@ -119,6 +119,8 @@ async function getConversationWith(req, res) {
             $or: [
                 { sender: user._id, receiver: friendIdObject },
                 { sender: friendIdObject, receiver: user._id },
+                { winnerId: user._id, loserId: friendIdObject },
+                { loserId: user._id, winnerId: friendIdObject },
             ],
         })
         .toArray();

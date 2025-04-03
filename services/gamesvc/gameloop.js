@@ -200,7 +200,8 @@ function startGameLoop(io) {
                     handleScore(
                         game.firstPlayer,
                         game.secondPlayer,
-                        game.firstPlayerRoundWon > game.secondPlayerRoundWon,
+                        game.firstPlayerRoundWon,
+                        game.secondPlayerRoundWon,
                     );
                 }
 
@@ -218,8 +219,11 @@ const ELO_K = 40;
 async function handleScore(
     rawFirstPlayerId,
     rawSecondPlayerId,
-    firstPlayerWon,
+    firstPlayerRounds,
+    secondPlayerRounds,
 ) {
+    const firstPlayerWon = firstPlayerRounds > secondPlayerRounds;
+
     const firstPlayerId = ObjectId.createFromHexString(rawFirstPlayerId);
     const secondPlayerId = ObjectId.createFromHexString(rawSecondPlayerId);
 
@@ -255,10 +259,27 @@ async function handleScore(
     );
 
     const gameResultsCollection = pool.get().collection("gameResults");
+    const messageCollection = pool.get().collection("messages");
+
+    let winnerId = firstPlayerWon ? firstPlayerId : secondPlayerId;
+    let loserId = firstPlayerWon ? secondPlayerId : firstPlayerId;
+
+    let winnerRounds = firstPlayerWon ? firstPlayerRounds : secondPlayerRounds;
+    let loserRounds = firstPlayerWon ? secondPlayerRounds : firstPlayerRounds;
+
     await gameResultsCollection.insertOne({
-        winner: firstPlayerWon ? firstPlayerId : secondPlayerId,
-        loser: firstPlayerWon ? secondPlayerId : firstPlayerId,
+        winner: winnerId,
+        loser: loserId,
         createdAt: Date.now(), // just in case we need it someday
+    });
+
+    await messageCollection.insertOne({
+        gameReport: true,
+        winnerId,
+        loserId,
+        winnerRounds,
+        loserRounds,
+        isRead: true,
     });
 }
 

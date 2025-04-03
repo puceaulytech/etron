@@ -98,6 +98,48 @@
     transform-origin: bottom right;
 }
 
+.game-report {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 25px;
+    margin: 10px 0;
+    padding: 8px 0;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.game-report-title {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-report-title img {
+    width: 25px;
+}
+
+.game-report-rounds {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.game-report-round-green {
+    color: green;
+}
+
+.game-report-round-red {
+    color: red;
+}
+
 #chat-section #chat-input-container {
     height: var(--menu-header-height);
     width: calc(100% - 60px); /* 60px = padding left + padding right */

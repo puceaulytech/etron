@@ -45,6 +45,47 @@ function createMessageDiv(content, received, animated, italic = false) {
     return div;
 }
 
+function createGameReportDiv(report) {
+    const myUserId = localStorage.getItem("userId");
+    const winning = report.winnerId === myUserId;
+    const ourRounds = winning ? report.winnerRounds : report.loserRounds;
+    const theirRounds = winning ? report.loserRounds : report.winnerRounds;
+
+    const reportDiv = document.createElement("div");
+    reportDiv.classList.add("game-report");
+
+    const fightIcon = new Image();
+    fightIcon.src = "/assets/fight-icon.svg";
+
+    const titleDiv = document.createElement("div");
+    titleDiv.classList.add("game-report-title");
+    titleDiv.appendChild(fightIcon.cloneNode(false));
+    titleDiv.appendChild(
+        document.createTextNode(winning ? "Game won" : "Game lost"),
+    );
+    titleDiv.appendChild(fightIcon);
+
+    const roundsDiv = document.createElement("div");
+    roundsDiv.classList.add("game-report-rounds");
+
+    const opponentRoundSpan = document.createElement("span");
+    opponentRoundSpan.classList.add("game-report-round-red");
+    opponentRoundSpan.textContent = theirRounds;
+
+    const selfRoundSpan = document.createElement("span");
+    selfRoundSpan.classList.add("game-report-round-green");
+    selfRoundSpan.textContent = ourRounds;
+
+    roundsDiv.appendChild(opponentRoundSpan);
+    roundsDiv.appendChild(document.createTextNode("-"));
+    roundsDiv.appendChild(selfRoundSpan);
+
+    reportDiv.appendChild(titleDiv);
+    reportDiv.appendChild(roundsDiv);
+
+    return reportDiv;
+}
+
 function insertMessage(content, received, italic = false) {
     messagesContainer.appendChild(
         createMessageDiv(content, received, true, italic),
@@ -57,12 +98,14 @@ async function updateMessages(friendId) {
     })
         .then((messages) =>
             messages.map((message) =>
-                createMessageDiv(
-                    message.content,
-                    friendId === message.sender,
-                    false,
-                    message.special && message.special === "CHALLENGE",
-                ),
+                message.gameReport
+                    ? createGameReportDiv(message)
+                    : createMessageDiv(
+                          message.content,
+                          friendId === message.sender,
+                          false,
+                          message.special && message.special === "CHALLENGE",
+                      ),
             ),
         )
         .then((divs) => {
