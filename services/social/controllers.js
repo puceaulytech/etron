@@ -15,7 +15,8 @@ const { sanitizeUserInfo } = require("../helpers/sanitizer");
 const { objectIdIncludes } = require("../helpers/mongoldb");
 
 const chatEndpoints = require("./chatcontrollers");
-const { BOT_USERNAME } = require("./startup");
+
+const BOT_USERNAME = process.env["BOT_USERNAME"];
 
 const endpoints = {
     friendrequests: {

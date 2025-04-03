@@ -36,6 +36,7 @@ services:
       - path: .env
         required: false
     environment:
+      BOT_USERNAME: "Ane Trotro"
       DB_URL: "database?replicaSet=rs0&directConnection=true"
 
   files:
@@ -58,4 +59,5 @@ services:
       - path: .env
         required: false
     environment:
+      BOT_USERNAME: "Ane Trotro"
       DB_URL: "database?replicaSet=rs0&directConnection=true"

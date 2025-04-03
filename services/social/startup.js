@@ -1,6 +1,6 @@
 const pool = require("../helpers/db");
 
-const BOT_USERNAME = "Âne Trotro";
+const BOT_USERNAME = process.env["BOT_USERNAME"];
 
 async function createAneTrotro() {
     const userCollection = pool.get().collection("users");
@@ -16,4 +16,4 @@ async function createAneTrotro() {
     });
 }
 
-module.exports = { createAneTrotro, BOT_USERNAME };
+module.exports = { createAneTrotro };

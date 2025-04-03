@@ -1,4 +1,4 @@
-const { BOT_USERNAME } = require("./startup");
+const BOT_USERNAME = process.env["BOT_USERNAME"];
 
 const ollamaApi = process.env["OLLAMA_API"];
 

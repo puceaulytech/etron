@@ -12,7 +12,7 @@ const { authenticate } = require("../helpers/tokens");
 const { objectIdIncludes } = require("../helpers/mongoldb");
 
 const { generateMessage } = require("./chatbot");
-const { BOT_USERNAME } = require("./startup");
+const BOT_USERNAME = process.env["BOT_USERNAME"];
 
 /**
  * Send a message to a friend
