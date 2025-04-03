@@ -105,6 +105,11 @@
     font-size: 30px;
 }
 
+.content-section#account-section #player-rank {
+    margin-top: -25px;
+    font-size: 20px;
+}
+
 .content-section#account-section h1 {
     margin-bottom: 0;
 }

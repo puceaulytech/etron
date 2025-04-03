@@ -48,11 +48,25 @@ async function getAuthenticatedUser(req, res) {
     const userId = authenticate(req, res, jwt);
     if (!userId) return;
 
-    const user = await pool
+    const users = await pool
         .get()
         .collection("users")
-        .findOne({ _id: ObjectId.createFromHexString(userId) });
-    if (!user) {
+        .aggregate([
+            {
+                $setWindowFields: {
+                    sortBy: { elo: -1 },
+                    output: {
+                        rank: { $rank: {} },
+                    },
+                },
+            },
+            {
+                $match: { _id: ObjectId.createFromHexString(userId) },
+            },
+        ])
+        .toArray();
+
+    if (users.length === 0) {
         sendError(
             res,
             401,
@@ -61,6 +75,8 @@ async function getAuthenticatedUser(req, res) {
         );
         return;
     }
+
+    const user = users[0];
 
     const gameResultsCollection = pool.get().collection("gameResults");
     const gameHistory = await gameResultsCollection
