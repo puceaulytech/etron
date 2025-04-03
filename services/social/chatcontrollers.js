@@ -76,8 +76,8 @@ async function sendMessage(req, res) {
         _id: receiverId,
     });
     if (friend.username === BOT_USERNAME) {
-        generateMessage(currentUser.username, payload.content).then(
-            async (chatbotMessage) => {
+        generateMessage(currentUser.username, payload.content)
+            .then(async (chatbotMessage) => {
                 await messageCollection.insertOne({
                     content: chatbotMessage,
                     receiver: currentUser._id,
@@ -96,8 +96,8 @@ async function sendMessage(req, res) {
                         content: chatbotMessage,
                     },
                 });
-            },
-        );
+            })
+            .catch(() => console.warn("Ollama request failed"));
     } else {
         await notifCollection.insertOne({
             recipient: receiverId,
