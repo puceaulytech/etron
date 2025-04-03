@@ -51,19 +51,19 @@ function createGameReportDiv(report) {
     const ourRounds = winning ? report.winnerRounds : report.loserRounds;
     const theirRounds = winning ? report.loserRounds : report.winnerRounds;
 
+    const leftFightImg = new Image();
+    leftFightImg.src = "/assets/fight-icon.svg";
+
+    const rightFightImg = leftFightImg.cloneNode(false);
+
+    leftFightImg.classList.add("left-img");
+    rightFightImg.classList.add("right-img");
+
     const reportDiv = document.createElement("div");
     reportDiv.classList.add("game-report");
 
-    const fightIcon = new Image();
-    fightIcon.src = "/assets/fight-icon.svg";
-
-    const titleDiv = document.createElement("div");
-    titleDiv.classList.add("game-report-title");
-    titleDiv.appendChild(fightIcon.cloneNode(false));
-    titleDiv.appendChild(
-        document.createTextNode(winning ? "Game won" : "Game lost"),
-    );
-    titleDiv.appendChild(fightIcon);
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = winning ? "Game won" : "Game lost";
 
     const roundsDiv = document.createElement("div");
     roundsDiv.classList.add("game-report-rounds");
@@ -80,8 +80,10 @@ function createGameReportDiv(report) {
     roundsDiv.appendChild(document.createTextNode("-"));
     roundsDiv.appendChild(selfRoundSpan);
 
-    reportDiv.appendChild(titleDiv);
+    reportDiv.appendChild(titleSpan);
     reportDiv.appendChild(roundsDiv);
+    reportDiv.appendChild(leftFightImg);
+    reportDiv.appendChild(rightFightImg);
 
     return reportDiv;
 }

@@ -99,6 +99,7 @@
 }
 
 .game-report {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -119,8 +120,20 @@
     justify-content: center;
 }
 
-.game-report-title img {
+.game-report .left-img,
+.game-report .right-img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 25px;
+}
+
+.game-report .left-img {
+    left: 20px;
+}
+
+.game-report .right-img {
+    right: 20px;
 }
 
 .game-report-rounds {
