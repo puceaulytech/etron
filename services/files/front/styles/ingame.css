@@ -324,6 +324,13 @@ rounds-bar {
     color: #bf3434;
 }
 
+#cancel-matchmaking {
+    position: fixed;
+    bottom: 50px;
+    z-index: 100;
+    font-size: 25px;
+}
+
 @keyframes hud-appear {
     from {
         transform: translateY(-300px);

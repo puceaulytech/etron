@@ -6,6 +6,7 @@ const endReturn = document.querySelector("#end-return");
 const endPlayAgain = document.querySelector("#end-play-again");
 const roundsBar = document.querySelector("rounds-bar");
 const eloContainer = document.querySelector("#elo-evolution-container");
+const cancelMatchmakingBtn = document.querySelector("#cancel-matchmaking");
 
 const onlinePlayerCountElement = document.querySelector("#player-count");
 const videoAnchorElement = document.querySelector("#matchmaking-hint a");
@@ -24,6 +25,10 @@ let mousePos;
 let gameId;
 let firstRound = true;
 let startElo = 0;
+
+cancelMatchmakingBtn.addEventListener("click", () => {
+    location.assign("/");
+});
 
 async function getPlayerElo() {
     const userInfo = await authenticatedFetch("/api/auth/me");
@@ -93,6 +98,7 @@ socket.on("connect", async () => {
 
     loadingScreen.classList.remove("visible");
     waitingForOpponent.style.visibility = "visible";
+    cancelMatchmakingBtn.style.visibility = "visible";
 
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
@@ -111,6 +117,7 @@ socket.on("connect", async () => {
         if (firstRound) firstRound = false;
 
         waitingForOpponent.style.visibility = "hidden";
+        cancelMatchmakingBtn.style.visibility = "hidden";
         clearInterval(onlinePlayerCountInterval);
 
         countdownDiv.style.visibility = "visible";
