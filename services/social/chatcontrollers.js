@@ -10,6 +10,8 @@ const {
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { objectIdIncludes } = require("../helpers/mongoldb");
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
 
 const { generateMessage } = require("./chatbot");
 const BOT_USERNAME = process.env["BOT_USERNAME"];
@@ -97,7 +99,10 @@ async function sendMessage(req, res) {
                     },
                 });
             })
-            .catch(() => console.warn("Ollama request failed"));
+            .catch((error) => {
+                logger.warn("Ollama request failed: ");
+                logger.warn(error);
+            });
     } else {
         await notifCollection.insertOne({
             recipient: receiverId,
