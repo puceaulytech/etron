@@ -476,7 +476,11 @@ async function getLeaderboard(req, res) {
     const userCollection = pool.get().collection("users");
 
     const leaderboard = await userCollection
-        .aggregate([{ $sort: { elo: -1 } }, { $limit: LEADBORD_LIMIT }])
+        .aggregate([
+            { $match: { username: { $ne: BOT_USERNAME } } },
+            { $sort: { elo: -1 } },
+            { $limit: LEADBORD_LIMIT },
+        ])
         .toArray();
 
     return leaderboard.map((user) => sanitizeUserInfo(user));
