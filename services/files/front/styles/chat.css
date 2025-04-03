@@ -61,7 +61,7 @@
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 10px 10px var(--menu-header-height) 10px;
 }
 .chat-message {
     max-width: 70%;
@@ -160,6 +160,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    position: absolute;
+    bottom: 0;
 }
 #chat-input-container input[name="message"] {
     height: calc(100% - 40px);
