@@ -15,6 +15,7 @@ const { sanitizeUserInfo } = require("../helpers/sanitizer");
 const { objectIdIncludes } = require("../helpers/mongoldb");
 
 const chatEndpoints = require("./chatcontrollers");
+const { BOT_USERNAME } = require("./startup");
 
 const endpoints = {
     friendrequests: {
@@ -220,6 +221,30 @@ async function addFriend(req, res) {
             "Tried to add a non-existing user as friend.",
         );
         return;
+    }
+
+    if (friend.username === BOT_USERNAME) {
+        await userCollection.updateOne(
+            { _id: newFriendId },
+            { $push: { friends: userId } },
+        );
+        await userCollection.updateOne(
+            { _id: userId },
+            {
+                $push: {
+                    friends: newFriendId,
+                },
+            },
+        );
+
+        await notifCollection.insertOne({
+            recipient: userId,
+            type: "FRIEND_REQUEST_ACCEPTED",
+            shouldDisplay: true,
+            friendRequestAccepted: {
+                targetUsername: friend.username,
+            },
+        });
     }
 
     if (

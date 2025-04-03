@@ -5,11 +5,14 @@ const logger = new Logger("debug");
 const pool = require("../helpers/db");
 
 const handleRequest = require("./controllers");
+const { createAneTrotro } = require("./startup");
 
 const PORT = 8004;
 
 const dbUrl = process.env["DB_URL"] ?? "127.0.0.1";
 pool.setup(require("mongodb"), `mongodb://${dbUrl}`, "ps8");
+
+createAneTrotro();
 
 const server = http.createServer((req, res) => {
     try {

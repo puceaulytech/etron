@@ -11,6 +11,9 @@ const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { objectIdIncludes } = require("../helpers/mongoldb");
 
+const { generateMessage } = require("./chatbot");
+const { BOT_USERNAME } = require("./startup");
+
 /**
  * Send a message to a friend
  *
@@ -69,17 +72,45 @@ async function sendMessage(req, res) {
         isRead: false,
     });
 
-    await notifCollection.insertOne({
-        recipient: receiverId,
-        type: "CHAT_MESSAGE",
-        shouldDisplay: false,
-        deferred: false,
-        message: {
-            senderId: currentUser._id,
-            senderUsername: currentUser.username,
-            content: payload.content,
-        },
+    const friend = await userCollection.findOne({
+        _id: receiverId,
     });
+    if (friend.username === BOT_USERNAME) {
+        generateMessage(currentUser.username, payload.content).then(
+            async (chatbotMessage) => {
+                await messageCollection.insertOne({
+                    content: chatbotMessage,
+                    receiver: currentUser._id,
+                    sender: receiverId,
+                    isRead: false,
+                });
+
+                await notifCollection.insertOne({
+                    recipient: currentUser._id,
+                    type: "CHAT_MESSAGE",
+                    shouldDisplay: false,
+                    deferred: false,
+                    message: {
+                        senderId: receiverId,
+                        senderUsername: friend.username,
+                        content: chatbotMessage,
+                    },
+                });
+            },
+        );
+    } else {
+        await notifCollection.insertOne({
+            recipient: receiverId,
+            type: "CHAT_MESSAGE",
+            shouldDisplay: false,
+            deferred: false,
+            message: {
+                senderId: currentUser._id,
+                senderUsername: currentUser.username,
+                content: payload.content,
+            },
+        });
+    }
 
     return { message: "Message has been sent" };
 }
