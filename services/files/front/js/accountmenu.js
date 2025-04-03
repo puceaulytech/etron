@@ -114,6 +114,11 @@ async function updateAccountInfo() {
         );
         playerEloElement.textContent = `ELO: ${Math.floor(userInfo.elo)}`;
 
+        const playerRankElement = document.querySelector(
+            "#account-section #player-rank",
+        );
+        playerRankElement.textContent = `Rank: ${userInfo.rank}`;
+
         const gamesPlayed = userInfo.gameHistory.length;
         const playerGamesPlayedElement = document.querySelector(
             "#account-section #player-games-played",

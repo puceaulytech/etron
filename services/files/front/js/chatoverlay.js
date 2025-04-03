@@ -30,13 +30,14 @@ function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function createMessageDiv(content, received, animated) {
+function createMessageDiv(content, received, animated, italic = false) {
     const div = document.createElement("div");
     div.innerText = content;
     div.classList.add(
         "chat-message",
         received ? "received-message" : "sent-message",
     );
+    if (italic) div.classList.add("italic");
     if (animated) {
         div.classList.add("animated");
         setTimeout(() => div.classList.remove("animated"), 160);
@@ -44,8 +45,53 @@ function createMessageDiv(content, received, animated) {
     return div;
 }
 
-function insertMessage(content, received) {
-    messagesContainer.appendChild(createMessageDiv(content, received, true));
+function createGameReportDiv(report) {
+    const myUserId = localStorage.getItem("userId");
+    const winning = report.winnerId === myUserId;
+    const ourRounds = winning ? report.winnerRounds : report.loserRounds;
+    const theirRounds = winning ? report.loserRounds : report.winnerRounds;
+
+    const leftFightImg = new Image();
+    leftFightImg.src = "/assets/fight-icon.svg";
+
+    const rightFightImg = leftFightImg.cloneNode(false);
+
+    leftFightImg.classList.add("left-img");
+    rightFightImg.classList.add("right-img");
+
+    const reportDiv = document.createElement("div");
+    reportDiv.classList.add("game-report");
+
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = winning ? "Game won" : "Game lost";
+
+    const roundsDiv = document.createElement("div");
+    roundsDiv.classList.add("game-report-rounds");
+
+    const opponentRoundSpan = document.createElement("span");
+    opponentRoundSpan.classList.add("game-report-round-red");
+    opponentRoundSpan.textContent = theirRounds;
+
+    const selfRoundSpan = document.createElement("span");
+    selfRoundSpan.classList.add("game-report-round-green");
+    selfRoundSpan.textContent = ourRounds;
+
+    roundsDiv.appendChild(opponentRoundSpan);
+    roundsDiv.appendChild(document.createTextNode("-"));
+    roundsDiv.appendChild(selfRoundSpan);
+
+    reportDiv.appendChild(titleSpan);
+    reportDiv.appendChild(roundsDiv);
+    reportDiv.appendChild(leftFightImg);
+    reportDiv.appendChild(rightFightImg);
+
+    return reportDiv;
+}
+
+function insertMessage(content, received, italic = false) {
+    messagesContainer.appendChild(
+        createMessageDiv(content, received, true, italic),
+    );
 }
 
 async function updateMessages(friendId) {
@@ -54,11 +100,14 @@ async function updateMessages(friendId) {
     })
         .then((messages) =>
             messages.map((message) =>
-                createMessageDiv(
-                    message.content,
-                    friendId === message.sender,
-                    false,
-                ),
+                message.gameReport
+                    ? createGameReportDiv(message)
+                    : createMessageDiv(
+                          message.content,
+                          friendId === message.sender,
+                          false,
+                          message.special && message.special === "CHALLENGE",
+                      ),
             ),
         )
         .then((divs) => {

@@ -99,6 +99,7 @@ async function createChallenge(req, res) {
 
     const userCollection = pool.get().collection("users");
     const notifCollection = pool.get().collection("notifications");
+    const messageCollection = pool.get().collection("messages");
 
     const challenger = await userCollection.findOne({ _id: userId });
 
@@ -124,6 +125,27 @@ async function createChallenge(req, res) {
         challenge: {
             challengeId,
             challengerUsername: challenger.username,
+        },
+    });
+
+    await messageCollection.insertOne({
+        special: "CHALLENGE",
+        content: "Challenge sent",
+        receiver: opponent._id,
+        sender: challenger._id,
+        isRead: false,
+    });
+
+    await notifCollection.insertOne({
+        recipient: opponent._id,
+        type: "CHAT_MESSAGE",
+        shouldDisplay: false,
+        deferred: false,
+        message: {
+            senderId: challenger._id,
+            senderUsername: challenger.username,
+            content: "Challenge sent",
+            special: "CHALLENGE",
         },
     });
 

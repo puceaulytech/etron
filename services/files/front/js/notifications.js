@@ -24,7 +24,9 @@ socket.on("notification", (payload) => {
                 setUnreadStatus(message.senderId, true);
             }
 
-            insertMessage(message.content, true);
+            let italic = message.special && message.special === "CHALLENGE";
+
+            insertMessage(message.content, true, italic);
             scrollToBottom();
         } else {
             setUnreadStatus(message.senderId, true);
