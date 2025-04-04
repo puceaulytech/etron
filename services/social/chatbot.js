@@ -36,7 +36,7 @@ async function generateMessage(username, conversation) {
         headers.append("Authorization", "Bearer " + ollamaBearer);
     }
 
-    const resp = await fetch(`${ollamaApi}`, {
+    const resp = await fetch(`${ollamaApi}/api/chat`, {
         method: "POST",
         headers,
         signal: AbortSignal.timeout(60000),
