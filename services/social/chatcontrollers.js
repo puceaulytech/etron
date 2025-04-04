@@ -78,31 +78,10 @@ async function sendMessage(req, res) {
         _id: receiverId,
     });
     if (friend.username === BOT_USERNAME) {
-        generateMessage(currentUser.username, payload.content)
-            .then(async (chatbotMessage) => {
-                await messageCollection.insertOne({
-                    content: chatbotMessage,
-                    receiver: currentUser._id,
-                    sender: receiverId,
-                    isRead: false,
-                });
-
-                await notifCollection.insertOne({
-                    recipient: currentUser._id,
-                    type: "CHAT_MESSAGE",
-                    shouldDisplay: false,
-                    deferred: false,
-                    message: {
-                        senderId: receiverId,
-                        senderUsername: friend.username,
-                        content: chatbotMessage,
-                    },
-                });
-            })
-            .catch((error) => {
-                logger.warn("Ollama request failed: ");
-                logger.warn(error);
-            });
+        replyWithChatBot(friend._id, currentUser).catch((err) => {
+            logger.warn("cannot reply with chatbot");
+            logger.warn(err);
+        });
     } else {
         await notifCollection.insertOne({
             recipient: receiverId,
@@ -118,6 +97,58 @@ async function sendMessage(req, res) {
     }
 
     return { message: "Message has been sent" };
+}
+
+async function replyWithChatBot(botUserId, currentUser) {
+    const messageCollection = pool.get().collection("messages");
+    const notifCollection = pool.get().collection("notifications");
+
+    const messages = await messageCollection
+        .find({
+            $or: [
+                { sender: currentUser._id, receiver: botUserId },
+                { sender: botUserId, receiver: currentUser._id },
+            ],
+        })
+        .toArray();
+
+    const conversation = messages.map((m) => {
+        let role =
+            m.sender.toString() === currentUser._id.toString()
+                ? "user"
+                : "assistant";
+
+        return {
+            role,
+            content: m.content,
+        };
+    });
+
+    const chatbotMessage = await generateMessage(
+        currentUser.username,
+        conversation,
+    );
+
+    if (!chatbotMessage) return;
+
+    await messageCollection.insertOne({
+        content: chatbotMessage,
+        receiver: currentUser._id,
+        sender: botUserId,
+        isRead: false,
+    });
+
+    await notifCollection.insertOne({
+        recipient: currentUser._id,
+        type: "CHAT_MESSAGE",
+        shouldDisplay: false,
+        deferred: false,
+        message: {
+            senderId: botUserId,
+            senderUsername: BOT_USERNAME,
+            content: chatbotMessage,
+        },
+    });
 }
 
 /**
