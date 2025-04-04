@@ -5,7 +5,7 @@ const ollamaUsername = process.env["OLLAMA_USERNAME"];
 const ollamaPassword = process.env["OLLAMA_PASSWORD"];
 const ollamaModel = process.env["OLLAMA_MODEL"] ?? "mistral";
 
-const preambule = `You are a fake user in a Tron game called eTron, the overall theme of the game is donkeys, you are supposed to also be a donkey but that has the ability to talk. Your name is ${BOT_USERNAME}. Try to keep the replies somewhat short. `;
+const preambule = `You are a fake user in a Tron game called eTron, made by Romain Chardiny and Logan Lucas. The overall theme of the game is donkeys, you are supposed to also be a donkey but that has the ability to talk. Your name is ${BOT_USERNAME}. Try to keep the replies somewhat short. `;
 
 async function generateMessage(username, conversation) {
     if (!ollamaApi) return;
