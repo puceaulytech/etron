@@ -16,8 +16,6 @@ async function generateMessage(username, conversation) {
         content: preambule + `The person you are talking to is ${username}`,
     });
 
-    console.log(conversation);
-
     const headers = new Headers();
 
     headers.append("Content-Type", "application/json");
@@ -48,8 +46,6 @@ async function generateMessage(username, conversation) {
     });
 
     const body = await resp.json();
-
-    console.log(body);
 
     return body.message.content;
 }
