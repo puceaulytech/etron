@@ -141,7 +141,7 @@ async function updateAccountInfo() {
         );
         const winRateString =
             gamesPlayed === 0
-                ? "N/A"
+                ? "-"
                 : `${Math.round((100 * gamesWon) / gamesPlayed)} %`;
         playerWinRateElement.textContent = `${winRateString}`;
     });
