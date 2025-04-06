@@ -28,6 +28,8 @@ Visit [https://etron.ps8.pns.academy](https://etron.ps8.pns.academy) to play now
     - See which of your friends are online.
 - **Emotes in Online Mode:** Taunt your opponent with in-game emotes.
 - **Notifications:** Stay updated with in-game events and friend activity.
+- **Chat with a Mysterious Bot:** One of the users is not like the others—talk to a hidden large language model that responds just like a real player.
+- **Waiting Room Entertainment:** While waiting for an opponent in online mode, the game suggests a YouTube video to keep you entertained.
 
 ### 🎮 Controls
 
