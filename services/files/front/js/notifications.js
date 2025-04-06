@@ -115,7 +115,11 @@ function showNotification(notification, noSystem = false) {
 
     let systemNotif = null;
 
-    if (localStorage.getItem("systemNotifications") && !noSystem) {
+    if (
+        localStorage.getItem("systemNotifications") &&
+        !noSystem &&
+        !document.hasFocus()
+    ) {
         systemNotif = new Notification("ETRON", {
             body: content,
             icon: "/favicon.png",
