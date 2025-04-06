@@ -10,6 +10,11 @@ const {
 const pool = require("../helpers/db");
 const { authenticate } = require("../helpers/tokens");
 const { objectIdIncludes } = require("../helpers/mongoldb");
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
+
+const { generateMessage } = require("./chatbot");
+const BOT_USERNAME = process.env["BOT_USERNAME"];
 
 /**
  * Send a message to a friend
@@ -69,19 +74,81 @@ async function sendMessage(req, res) {
         isRead: false,
     });
 
+    const friend = await userCollection.findOne({
+        _id: receiverId,
+    });
+    if (friend.username === BOT_USERNAME) {
+        replyWithChatBot(friend._id, currentUser).catch((err) => {
+            logger.warn("cannot reply with chatbot");
+            logger.warn(err);
+        });
+    } else {
+        await notifCollection.insertOne({
+            recipient: receiverId,
+            type: "CHAT_MESSAGE",
+            shouldDisplay: false,
+            deferred: false,
+            message: {
+                senderId: currentUser._id,
+                senderUsername: currentUser.username,
+                content: payload.content,
+            },
+        });
+    }
+
+    return { message: "Message has been sent" };
+}
+
+async function replyWithChatBot(botUserId, currentUser) {
+    const messageCollection = pool.get().collection("messages");
+    const notifCollection = pool.get().collection("notifications");
+
+    const messages = await messageCollection
+        .find({
+            $or: [
+                { sender: currentUser._id, receiver: botUserId },
+                { sender: botUserId, receiver: currentUser._id },
+            ],
+        })
+        .toArray();
+
+    const conversation = messages.map((m) => {
+        let role =
+            m.sender.toString() === currentUser._id.toString()
+                ? "user"
+                : "assistant";
+
+        return {
+            role,
+            content: m.content,
+        };
+    });
+
+    const chatbotMessage = await generateMessage(
+        currentUser.username,
+        conversation,
+    );
+
+    if (!chatbotMessage) return;
+
+    await messageCollection.insertOne({
+        content: chatbotMessage,
+        receiver: currentUser._id,
+        sender: botUserId,
+        isRead: false,
+    });
+
     await notifCollection.insertOne({
-        recipient: receiverId,
+        recipient: currentUser._id,
         type: "CHAT_MESSAGE",
         shouldDisplay: false,
         deferred: false,
         message: {
-            senderId: currentUser._id,
-            senderUsername: currentUser.username,
-            content: payload.content,
+            senderId: botUserId,
+            senderUsername: BOT_USERNAME,
+            content: chatbotMessage,
         },
     });
-
-    return { message: "Message has been sent" };
 }
 
 /**

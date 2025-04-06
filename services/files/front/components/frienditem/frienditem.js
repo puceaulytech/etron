@@ -126,7 +126,11 @@ class FriendItem extends HTMLElement {
 
     connectedCallback() {
         this.#usernameText.innerText = this.getUsername();
-        this.eloText.innerText = this.displayElo();
+        if (!this.getAttribute("user-elo")) {
+            this.eloText.remove();
+        } else {
+            this.eloText.innerText = this.displayElo();
+        }
     }
 
     setChallengeFeedback(active) {

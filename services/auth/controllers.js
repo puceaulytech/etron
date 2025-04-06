@@ -20,6 +20,8 @@ const {
 } = require("../helpers/tokens");
 const { isUsernameValid, sanitizeUserInfo } = require("../helpers/sanitizer");
 
+const BOT_USERNAME = process.env["BOT_USERNAME"];
+
 const endpoints = {
     login: {
         POST: login,
@@ -114,7 +116,11 @@ async function login(req, res) {
 
     const db = pool.get();
     const user = await db.collection("users").findOne({ username });
-    if (!user || !(await argon2.verify(user.password, payload.password))) {
+    if (
+        !user ||
+        username === BOT_USERNAME ||
+        !(await argon2.verify(user.password, payload.password))
+    ) {
         sendError(
             res,
             401,
