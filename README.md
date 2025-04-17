@@ -50,6 +50,58 @@ docker compose up -d
 
 And visit [http://localhost:8000](http://localhost:8000)
 
+## Architecture
+
+## Back-End Architecture Strategy
+
+### Microservice Breakdown
+
+Our back-end architecture consists of five microservices:
+
+- **Auth**: Handles account creation, login, registration, and JWT token management. It’s kept stateless and isolated for easier scaling and security.
+
+- **Files**: A simple file server used for uploading and serving user content (e.g., avatars). Isolated to separate heavy file I/O from core services.
+
+- **Social**: Manages all friend-related features, chat, and notifications. Given the complexity of real-time social interactions, this service deserved its own scope.
+
+- **Game Service (`gamesvc`)**: Runs all in-game logic and AI. It’s the only microservice that directly communicates with clients via socket.io.
+
+- **Gateway**: Acts as a reverse proxy, routing all client traffic to the appropriate service, handling CORS, and doing token verification for protected routes.
+
+We deliberately kept the number of services low to avoid the overhead of over-microservicing. Splitting the system into **auth**, **social**, and **game** made the most sense to us, as these are the core domains of the game.
+
+---
+
+### Communication Strategy
+
+Most communication happens over HTTP. It’s straightforward, stateless, and easy to reason about for RESTful endpoints like login, friend requests, and file uploads.
+
+However, two areas required WebSockets):
+
+1. **In-Game Communication (`gamesvc`)**:
+
+    - The client connects via Socket.io when a match begins.
+    - Moves are sent to the server, and game state/emotes are pushed back in real-time.
+    - This ensures low-latency interaction and a responsive game experience.
+
+2. **Notifications (`social`)**:
+    - On the main page, the client maintains a WebSocket connection to receive friend invites, challenges, etc.
+    - Pushing this data avoids constant polling and improves UX.
+
+---
+
+### WebSocket accross microservices
+
+One architectural hurdle we faced was how to emit WebSocket events to clients when the originating event came from a different microservice. Socket.io maintains a client connection in-memory, which means only the service that holds the connection (in our case, `gamesvc`) can send messages to that client.
+
+Rather than introducing a Redis or MongoDB socket.io adapter (because additional libraries were not allowed), we found a leaner solution using MongoDB change streams:
+
+- We enabled sharding mode and used a `notifications` collection.
+- Whenever a service (like `social`) wanted to send a message to a connected client, it simply inserted a document into that collection.
+- `gamesvc` listens to the collection via MongoDB’s collection subscription (change stream) feature, picks up new documents, and emits them to the correct client via socket.io.
+
+This solution allowed us to decouple message emission from service ownership of the socket connection.
+
 ## License
 
 eTron is distributed under [AGPL-3.0-only](LICENSE).
