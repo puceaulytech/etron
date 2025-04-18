@@ -106,7 +106,6 @@
 }
 
 .content-section#account-section #player-rank {
-    margin-top: -25px;
     font-size: 1rem;
 }
 
@@ -141,6 +140,9 @@
     border: 3px solid black;
     cursor: pointer;
     aspect-ratio: 1;
+    height: 100%;
+    width: auto;
+    box-sizing: border-box;
 }
 
 #search-results {
@@ -184,4 +186,15 @@ form.login-form {
 #username-input,
 #password-input {
     width: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+    :root {
+        --menu-header-height: 70px;
+        --menu-width: 75vw;
+    }
+
+    #menu-content .content-section {
+        gap: 5px !important;
+    }
 }
