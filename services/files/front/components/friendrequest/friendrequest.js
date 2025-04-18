@@ -51,7 +51,7 @@ class FriendRequest extends HTMLElement {
         
         .username {
           font-weight: 600;
-          font-size: 16px;
+          font-size: 0.8rem;
           color: #1c1e21;
         }
         

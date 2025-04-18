@@ -38,7 +38,7 @@ class SearchResult extends HTMLElement {
                     cursor: pointer;
                     transition: background-color 0.3s ease;
                     font-family: inherit;
-                    font-size: 14px;
+                    font-size: 0.75rem;
                     font-weight: 500;
                 }
                 .add-friend-btn:hover {

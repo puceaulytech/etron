@@ -5,7 +5,7 @@ async function authenticatedFetch(endpoint, options = {}) {
         throw new Error("No access token available. Please log in.");
 
     const fetchWithAuth = async () =>
-        await fetch(endpoint, {
+        await apiFetch(endpoint, {
             ...options,
             headers: {
                 ...options.headers,
@@ -22,7 +22,7 @@ async function authenticatedFetch(endpoint, options = {}) {
         if (!refreshToken)
             throw new Error("No refresh token available. Please log in.");
 
-        const refreshResponse = await fetch("/api/auth/refresh", {
+        const refreshResponse = await apiFetch("/api/auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refreshToken }),

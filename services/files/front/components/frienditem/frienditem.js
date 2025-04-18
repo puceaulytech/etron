@@ -74,7 +74,7 @@ class FriendItem extends HTMLElement {
                     padding: 0 20px 0 20px;
                     margin: 0 20px 0 20px;
                     border-bottom: 1px solid black;
-                    font-size: 22px;
+                    font-size: 1.1rem;
                     gap: 20px;
                 }
                 .container:hover {

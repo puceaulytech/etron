@@ -181,7 +181,7 @@ async function submitLogin(event) {
     const passwordInput = document.querySelector(
         "form.login-form input[name='password']",
     );
-    await fetch("/api/auth/login", {
+    await apiFetch("/api/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -236,7 +236,7 @@ async function registerUser() {
         return;
     }
 
-    await fetch("/api/auth/register", {
+    await apiFetch("/api/auth/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

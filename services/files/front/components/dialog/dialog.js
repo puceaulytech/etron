@@ -27,7 +27,7 @@ class AppDialog extends HTMLElement {
                     border: 4px solid green;
                     min-width: 400px;
                     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                    font-size: 20px;
+                    font-size: 1rem;
                     transform: scale(0);
                     transition: transform 200ms;
                 }
@@ -59,9 +59,8 @@ class AppDialog extends HTMLElement {
         });
 
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape")
-                this.removeAttribute("show");
-        })
+            if (e.key === "Escape") this.removeAttribute("show");
+        });
     }
 
     connectedCallback() {

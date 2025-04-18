@@ -37,7 +37,7 @@ async function getPlayerElo() {
 }
 
 async function updatePlayerCountMatchmaking() {
-    await fetch("/api/gamesvc/onlinecount", {
+    await apiFetch("/api/gamesvc/onlinecount", {
         method: "GET",
     }).then(async (res) => {
         const payload = await res.json();

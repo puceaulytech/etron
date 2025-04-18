@@ -1,5 +1,10 @@
 {
     "appId": "academy.pns.ps8.etron",
     "appName": "eTron",
-    "webDir": "front"
+    "webDir": "front",
+    "plugins": {
+        "CapacitorHttp": {
+            "enabled": true
+        }
+    }
 }

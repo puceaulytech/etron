@@ -23,7 +23,7 @@ class KeyboardControls extends HTMLElement {
             background: white;
             border: 1px solid black;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 0.7rem;
             font-weight: bold;
         }
 

@@ -29,6 +29,7 @@
         <script src="components/customdialog/customdialog.js"></script>
 
         <script src="js/socket.io.js" defer></script>
+        <script src="js/api.js" defer></script>
         <script src="js/ws.js" defer></script>
         <script src="js/authutils.js" defer></script>
         <script src="js/notifications.js" defer></script>
@@ -352,7 +353,11 @@
                 </div>
             </div>
 
-            <div slot="outer" class="tutorial-navigation-container">
+            <div
+                slot="outer"
+                class="tutorial-navigation-container"
+                style="display: contents"
+            >
                 <div class="tutorial-navigation">
                     <button id="prev-page" class="nav-button" disabled>
                         <img src="/assets/chevron-left-icon.svg" />

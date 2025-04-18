@@ -2,7 +2,7 @@ const leaderboardItems = document.getElementById("leaderboard-items");
 const leaderboardEmpty = document.getElementById("leaderboard-empty");
 
 async function updateLeaderboard() {
-    const resp = await fetch("/api/social/leaderboard", { method: "GET" });
+    const resp = await apiFetch("/api/social/leaderboard", { method: "GET" });
 
     const leaderboard = await resp.json();
 
