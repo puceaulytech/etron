@@ -12,8 +12,10 @@
     "license": "ISC",
     "dependencies": {
         "@capacitor/android": "^7.2.0",
+        "@capacitor/app": "^7.0.1",
         "@capacitor/core": "^7.2.0",
-        "@capacitor/ios": "^7.2.0"
+        "@capacitor/ios": "^7.2.0",
+        "@capacitor/screen-orientation": "^7.0.1"
     },
     "devDependencies": {
         "@capacitor/cli": "^7.2.0"
