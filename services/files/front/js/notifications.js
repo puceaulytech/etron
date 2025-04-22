@@ -157,6 +157,8 @@ function showNotification(notification, noSystem = false) {
     });
 
     body.appendChild(notifElem);
+
+    mobileNotificationVibrate();
 }
 
 async function updateOnlineCount() {

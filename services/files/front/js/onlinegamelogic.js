@@ -103,6 +103,8 @@ socket.on("connect", async () => {
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
 
+        if (firstRound) mobileVibrate();
+
         if (
             firstRound &&
             localStorage.getItem("systemNotifications") &&
@@ -175,9 +177,13 @@ socket.on("connect", async () => {
             countdownDiv.querySelector(
                 ".blur-overlay-buttons",
             ).style.visibility = "visible";
+
+            mobileHeavyImpact();
         } else if (gameResult.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";
+
+            mobileLightImpact();
         } else if (gameResult.type === "PLAYER_WIN") {
             const own = inverted ? 1 : -1;
 
@@ -185,6 +191,8 @@ socket.on("connect", async () => {
                 payload.result.winner === own
                     ? "- Round lost -"
                     : "- Round won -";
+
+            mobileLightImpact();
         } else if (gameResult.type === "UNFINISHED") {
             if (inverted) {
                 gameGrid.setAttribute("inverted", "yes");

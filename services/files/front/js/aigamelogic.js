@@ -93,14 +93,20 @@ socket.on("connect", async () => {
             countdownDiv.querySelector(
                 ".blur-overlay-buttons",
             ).style.visibility = "visible";
+
+            mobileHeavyImpact();
         } else if (payload.result.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";
+
+            mobileLightImpact();
         } else if (payload.result.type === "PLAYER_WIN") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 payload.result.winner === 1
                     ? "- Round lost -"
                     : "- Round won -";
+
+            mobileLightImpact();
         } else if (payload.result.type === "UNFINISHED") {
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
