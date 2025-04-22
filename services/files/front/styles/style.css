@@ -339,4 +339,21 @@ svg .svg-shit {
     .tutorial-page {
         gap: 5px;
     }
+
+    #play-local-btn {
+        display: none;
+    }
+
+    #play-ai-btn,
+    #play-online-btn,
+    #play-local-btn {
+        grid-column: unset;
+        grid-row: unset;
+        font-size: 1.75rem;
+    }
+
+    .play-btn-group {
+        grid-template-columns: 2fr 1fr;
+        height: 75px;
+    }
 }
