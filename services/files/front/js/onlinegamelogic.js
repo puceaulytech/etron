@@ -13,7 +13,16 @@ const videoAnchorElement = document.querySelector("#matchmaking-hint a");
 
 const myUserId = localStorage.getItem("userId");
 
+let enableJoystick = false;
 let disableMouseMovement = false;
+
+if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
+    enableJoystick = true;
+    disableMouseMovement = true;
+    const newJoystick = new GameJoystick();
+    newJoystick.id = "joystick";
+    document.querySelector(".container").appendChild(newJoystick);
+}
 
 let opponentId;
 let opponentInfo;
@@ -215,7 +224,7 @@ socket.on("connect", async () => {
                 lastMove = newMove;
 
                 updateNextMousePos(newMove);
-            }
+            } else if (enableJoystick) updateNextMousePos(lastMove);
 
             if (!opponentInfo) {
                 opponentId = Object.keys(payload.sides).find(
@@ -257,6 +266,28 @@ socket.on("connect", async () => {
         if (!gameGrid.somePlayerPos) return;
 
         const newMove = computeMove(event.clientX, event.clientY, inverted);
+
+        updateNextMousePos(newMove);
+
+        if (newMove !== lastMove) {
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
+        }
+    });
+
+    document.addEventListener("joystick-move", (e) => {
+        let { x, y } = e.detail;
+
+        y *= -1;
+        if (!inverted) x *= -1;
+
+        let radians = Math.atan2(y, x);
+        let degrees = radians * (180 / Math.PI);
+
+        const newMove = getHexDirection(degrees + 180);
 
         updateNextMousePos(newMove);
 
