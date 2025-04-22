@@ -92,3 +92,6 @@ function switchToGamepadControls() {
 function switchToKeyboardControls() {
     controlsImg.src = "/assets/mouse.svg";
 }
+
+if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform())
+    switchToGamepadControls();

@@ -221,8 +221,8 @@ rounds-bar.visible {
 
 #joystick {
     position: fixed;
-    bottom: 10vw;
-    left: 10vw;
+    bottom: 5vw;
+    left: 5vw;
     z-index: 70;
 }
 
