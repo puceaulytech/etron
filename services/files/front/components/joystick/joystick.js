@@ -55,6 +55,8 @@ class GameJoystick extends HTMLElement {
         this.centerX = this.baseSize / 2;
         this.centerY = this.baseSize / 2;
 
+        this.activeTouchId = null;
+
         this.setupEventListeners();
     }
 
@@ -72,10 +74,22 @@ class GameJoystick extends HTMLElement {
     handleStart(e) {
         e.preventDefault();
         this.isActive = true;
+        const touch = e.changedTouches[0];
+        this.activeTouchId = touch.identifier;
         this.handleMove(e);
     }
 
     handleMove(e) {
+        let found = false;
+
+        for (let touch of e.changedTouches) {
+            if (touch.identifier === this.activeTouchId) {
+                found = true;
+            }
+        }
+
+        if (!found) return;
+
         if (!this.isActive) return;
         e.preventDefault();
 
@@ -124,6 +138,15 @@ class GameJoystick extends HTMLElement {
     }
 
     handleEnd(e) {
+        let found = false;
+
+        for (let touch of e.changedTouches) {
+            if (touch.identifier === this.activeTouchId) {
+                found = true;
+            }
+        }
+
+        if (!found) return;
         if (!this.isActive) return;
         e.preventDefault();
         this.isActive = false;
@@ -141,6 +164,8 @@ class GameJoystick extends HTMLElement {
                 composed: true,
             }),
         );
+
+        this.activeTouchId = null;
     }
 
     get joystickPosition() {
