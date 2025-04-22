@@ -61,12 +61,17 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        document.querySelector(".controls-container").classList.add("visible");
-        document.querySelector(".game-hud").classList.add("visible");
-        document.querySelector("rounds-bar").classList.add("visible");
-        document
-            .querySelector(".real-donkey-container")
-            .classList.add("visible");
+        [
+            ".controls-container",
+            ".game-hud",
+            "rounds-bar",
+            ".real-donkey-container",
+        ].forEach((selector) => {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            void el.offsetHeight; // Force reflow/redraw
+            el.classList.add("visible");
+        });
 
         countdownDiv.style.visibility = "hidden";
 

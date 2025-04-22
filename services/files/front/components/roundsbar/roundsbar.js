@@ -31,6 +31,13 @@ class RoundsBar extends HTMLElement {
          .won {
             border: 2px solid black;
           }
+
+          @media only screen and (max-width: 1000px) {
+            .rounds-indicator {
+              width: 25px !important;
+              height: 25px !important;
+            }
+          }
          </style>
 
         <div class="rounds-container">

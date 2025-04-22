@@ -33,23 +33,25 @@ body {
 }
 
 .controls-container {
-    visibility: hidden;
+    transform: translateX(-300px);
 }
 .controls-container.visible {
     visibility: visible;
 
     animation-name: controls-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 
 .mouse-controls {
     background-color: green;
     border-radius: 10px;
-    width: 200px;
-    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 15px;
 }
 .mouse-controls div {
     background-color: white;
@@ -57,25 +59,26 @@ body {
     border-color: black;
     border-width: 2px;
     border-style: solid;
-    width: 80%;
-    height: 80%;
+    aspect-ratio: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .mouse-controls img {
     width: 90%;
-    height: 90%;
+    height: auto;
+    aspect-ratio: 1;
 }
 
 .real-donkey-container {
-    visibility: hidden;
+    transform: translateX(300px);
 }
 .real-donkey-container.visible {
     visibility: visible;
 
     animation-name: emotes-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 
 .real-donkey {
@@ -95,19 +98,20 @@ game-grid {
 
 #emote-container {
     display: flex;
-    visibility: hidden;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    transform: translateX(300px);
 }
 #emote-container.visible {
     visibility: visible;
 
     animation-name: emotes-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 #emote-container h1 {
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 #left-keyboard-controls {
@@ -118,6 +122,7 @@ game-grid {
 
     animation-name: controls-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 
 #right-keyboard-controls {
@@ -146,6 +151,8 @@ game-grid {
     border-radius: 15px 15px 0 15px;
     padding: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: auto;
+    aspect-ratio: 1;
 }
 .emote {
     font-size: 2.4rem;
@@ -177,11 +184,11 @@ game-grid {
     border: 6px solid green;
     border-top-width: 0;
     background-color: #a8d139;
-    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 0.75rem;
+    transform: translateY(-300px);
 }
 .opponent-name {
     font-size: 2rem;
@@ -198,16 +205,18 @@ game-grid {
     display: flex;
     animation-name: hud-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 
 rounds-bar {
-    display: none;
+    transform: translateY(300px);
 }
 
 rounds-bar.visible {
     display: flex;
     animation-name: rounds-bar-appear;
     animation-duration: var(--slides-duration);
+    animation-fill-mode: forwards;
 }
 
 .blur-overlay {
@@ -239,7 +248,6 @@ rounds-bar.visible {
 }
 
 .blur-overlay #matchmaking-hint {
-    margin-top: 50px;
     width: 55%;
     text-align: center;
 }
@@ -393,5 +401,68 @@ rounds-bar {
     }
     from {
         transform: rotate(360deg);
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .game-hud {
+        --this-width: 500px;
+        height: 40px;
+        border: 4px solid green;
+        border-top-width: 0;
+    }
+
+    rounds-bar {
+        bottom: 8px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .real-donkey img {
+        max-width: 100px;
+    }
+
+    .mouse-controls {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    .opponent-name {
+        font-size: 1.5rem;
+    }
+
+    .game-hud .opponent-icon {
+        height: 2.8ex;
+    }
+
+    #cancel-matchmaking {
+        bottom: 20px;
+    }
+
+    .blur-overlay {
+        gap: 20px;
+    }
+
+    #emote-container {
+        gap: 10px;
+    }
+
+    .emote-item {
+        gap: 20px;
+    }
+
+    .dialogue-container {
+        max-width: 25px;
+        padding: 10px;
+    }
+
+    .emote {
+        font-size: 1.4rem;
+    }
+
+    .emote-number {
+        display: none;
     }
 }
