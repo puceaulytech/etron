@@ -5,7 +5,16 @@ const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
 const countdownDiv = document.querySelector("#countdown");
 
+let enableJoystick = false;
 let disableMouseMovement = false;
+
+if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
+    enableJoystick = true;
+    disableMouseMovement = true;
+    const newJoystick = new GameJoystick();
+    newJoystick.id = "joystick";
+    document.querySelector(".container").appendChild(newJoystick);
+}
 
 endReturn.addEventListener("click", () => {
     location.assign("/");
@@ -118,6 +127,14 @@ socket.on("connect", async () => {
             );
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
+            // Randomly taunt player
+            if (Math.random() < 0.1) {
+                const index = Math.floor(Math.random() * emotes.length);
+                displayEmote(emotes[index], true);
+            }
+
+            if (enableJoystick) updateNextMousePos(lastMove);
+
             if (disableMouseMovement) return;
             if (!mousePos) return;
             const newMove = computeMove(mousePos.x, mousePos.y, true);
@@ -128,12 +145,6 @@ socket.on("connect", async () => {
             lastMove = newMove;
 
             updateNextMousePos(newMove);
-
-            // Randomly taunt player
-            if (Math.random() < 0.1) {
-                const index = Math.floor(Math.random() * emotes.length);
-                displayEmote(emotes[index], true);
-            }
         }
     });
 
@@ -143,6 +154,27 @@ socket.on("connect", async () => {
 
         mousePos = { x: event.clientX, y: event.clientY };
         const newMove = computeMove(event.clientX, event.clientY, true);
+
+        updateNextMousePos(newMove);
+
+        if (newMove !== lastMove) {
+            socket.emit("move", {
+                gameId,
+                direction: newMove,
+            });
+            lastMove = newMove;
+        }
+    });
+
+    document.addEventListener("joystick-move", (e) => {
+        let { x, y } = e.detail;
+
+        y *= -1;
+
+        let radians = Math.atan2(y, x);
+        let degrees = radians * (180 / Math.PI);
+
+        const newMove = getHexDirection(degrees + 180);
 
         updateNextMousePos(newMove);
 

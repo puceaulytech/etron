@@ -219,6 +219,13 @@ rounds-bar.visible {
     animation-fill-mode: forwards;
 }
 
+#joystick {
+    position: fixed;
+    bottom: 10vw;
+    left: 10vw;
+    z-index: 70;
+}
+
 .blur-overlay {
     visibility: hidden;
     position: fixed;
