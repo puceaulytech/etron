@@ -190,7 +190,7 @@ form.login-form {
 
 @media only screen and (max-width: 1000px) {
     :root {
-        --menu-header-height: 70px;
+        --menu-header-height: 55px;
         --menu-width: 75vw;
     }
 
