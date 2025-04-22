@@ -82,9 +82,11 @@ class GameJoystick extends HTMLElement {
     handleMove(e) {
         let found = false;
 
-        for (let touch of e.changedTouches) {
-            if (touch.identifier === this.activeTouchId) {
-                found = true;
+        if (e.changedTouches) {
+            for (let touch of e.changedTouches) {
+                if (touch.identifier === this.activeTouchId) {
+                    found = true;
+                }
             }
         }
 
@@ -140,9 +142,11 @@ class GameJoystick extends HTMLElement {
     handleEnd(e) {
         let found = false;
 
-        for (let touch of e.changedTouches) {
-            if (touch.identifier === this.activeTouchId) {
-                found = true;
+        if (e.changedTouches) {
+            for (let touch of e.changedTouches) {
+                if (touch.identifier === this.activeTouchId) {
+                    found = true;
+                }
             }
         }
 

@@ -43,6 +43,10 @@ if (container) {
         emoteItem.addEventListener("click", () => {
             sendEmote(index);
         });
+
+        emoteItem.addEventListener("touchstart", () => {
+            sendEmote(index);
+        });
     });
 }
 
