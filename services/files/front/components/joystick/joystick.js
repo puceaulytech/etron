@@ -20,7 +20,7 @@ class GameJoystick extends HTMLElement {
                     position: relative;
                     touch-action: none;
                 }
-                
+
                 .joystick-base {
                     width: 100%;
                     height: 100%;
@@ -32,7 +32,7 @@ class GameJoystick extends HTMLElement {
                     justify-content: center;
                     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
                 }
-                
+
                 .joystick-stick {
                     width: ${this.stickSize}px;
                     height: ${this.stickSize}px;
@@ -57,38 +57,56 @@ class GameJoystick extends HTMLElement {
 
         this.activeTouchId = null;
 
+        this._handleAppear = this.handleAppear.bind(this);
+        this._handleStart = this.handleStart.bind(this);
+        this._handleMove = this.handleMove.bind(this);
+        this._handleEnd = this.handleEnd.bind(this);
+    }
+
+    connectedCallback() {
         this.setupEventListeners();
     }
 
-    setupEventListeners() {
-        this.base.addEventListener("mousedown", this.handleStart.bind(this));
-        document.addEventListener("mousemove", this.handleMove.bind(this));
-        document.addEventListener("mouseup", this.handleEnd.bind(this));
+    disconnectedCallback() {
+        document.removeEventListener("mousemove", this._handleMove);
+        document.removeEventListener("mouseup", this._handleEnd);
+        document.removeEventListener("touchstart", this._handleAppear);
+        document.removeEventListener("touchmove", this._handleMove);
+        document.removeEventListener("touchend", this._handleEnd);
+        document.removeEventListener("touchcancel", this._handleEnd);
+    }
 
-        document.addEventListener("touchstart", (event) => {
-            this.dispatchEvent(
-                new CustomEvent("joystick-appear", {
-                    detail: {
-                        x: event.touches[0].clientX,
-                        y: event.touches[0].clientY,
-                    },
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            this.handleStart(event);
-        });
-        this.base.addEventListener("touchstart", this.handleStart.bind(this));
-        document.addEventListener("touchmove", this.handleMove.bind(this));
-        document.addEventListener("touchend", this.handleEnd.bind(this));
-        document.addEventListener("touchcancel", this.handleEnd.bind(this));
+    setupEventListeners() {
+        this.base.addEventListener("mousedown", this._handleStart);
+        document.addEventListener("mousemove", this._handleMove);
+        document.addEventListener("mouseup", this._handleEnd);
+
+        document.addEventListener("touchstart", this._handleAppear);
+        this.base.addEventListener("touchstart", this._handleStart);
+        document.addEventListener("touchmove", this._handleMove);
+        document.addEventListener("touchend", this._handleEnd);
+        document.addEventListener("touchcancel", this._handleEnd);
+    }
+
+    handleAppear(event) {
+        this.dispatchEvent(
+            new CustomEvent("joystick-appear", {
+                detail: {
+                    x: event.touches[0].clientX,
+                    y: event.touches[0].clientY,
+                },
+                bubbles: true,
+                composed: true,
+            }),
+        );
+        this.handleStart(event);
     }
 
     handleStart(e) {
         e.preventDefault();
         this.isActive = true;
-        const touch = e.changedTouches[0];
-        this.activeTouchId = touch.identifier;
+        const touch = e.changedTouches?.[0] ?? e;
+        this.activeTouchId = touch.identifier ?? null;
         this.handleMove(e);
     }
 
@@ -99,13 +117,14 @@ class GameJoystick extends HTMLElement {
             for (let touch of e.changedTouches) {
                 if (touch.identifier === this.activeTouchId) {
                     found = true;
+                    break;
                 }
             }
+        } else {
+            found = true;
         }
 
-        if (!found) return;
-
-        if (!this.isActive) return;
+        if (!found || !this.isActive) return;
         e.preventDefault();
 
         let clientX, clientY;
@@ -125,7 +144,7 @@ class GameJoystick extends HTMLElement {
         let deltaX = clientX - baseX;
         let deltaY = clientY - baseY;
 
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
         if (distance > this.maxDistance) {
             const angle = Math.atan2(deltaY, deltaX);
@@ -159,12 +178,14 @@ class GameJoystick extends HTMLElement {
             for (let touch of e.changedTouches) {
                 if (touch.identifier === this.activeTouchId) {
                     found = true;
+                    break;
                 }
             }
+        } else {
+            found = true;
         }
 
-        if (!found) return;
-        if (!this.isActive) return;
+        if (!found || !this.isActive) return;
         e.preventDefault();
         this.isActive = false;
 

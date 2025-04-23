@@ -98,6 +98,9 @@ socket.on("connect", async () => {
                 countdownDiv.querySelector("p.title").textContent = "You won!";
             }
 
+            if (enableJoystick)
+                document.querySelector("game-joystick").remove();
+
             countdownDiv.style.visibility = "visible";
             countdownDiv.querySelector(
                 ".blur-overlay-buttons",
@@ -166,38 +169,13 @@ socket.on("connect", async () => {
         }
     });
 
-    document.addEventListener("joystick-move", (e) => {
-        let { x, y } = e.detail;
+    document.addEventListener("joystick-move", (e) =>
+        handleJoystickMove(e, true),
+    );
 
-        y *= -1;
+    document.addEventListener("joystick-appear", handleJoystickAppear);
 
-        let radians = Math.atan2(y, x);
-        let degrees = radians * (180 / Math.PI);
-
-        const newMove = getHexDirection(degrees + 180);
-
-        updateNextMousePos(newMove);
-
-        if (newMove !== lastMove) {
-            socket.emit("move", {
-                gameId,
-                direction: newMove,
-            });
-            lastMove = newMove;
-        }
-    });
-
-    document.addEventListener("joystick-appear", (e) => {
-        const j = document.querySelector("game-joystick");
-        j.style.left = `${e.detail.x - j.offsetWidth / 2}px`;
-        j.style.top = `${e.detail.y - j.offsetHeight / 2}px`;
-        j.style.opacity = 1;
-    });
-
-    document.addEventListener("joystick-disappear", () => {
-        const j = document.querySelector("game-joystick");
-        j.style.opacity = 0;
-    });
+    document.addEventListener("joystick-disappear", handleJoystickDisappear);
 });
 
 function findPlayerPos(board) {
