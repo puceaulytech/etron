@@ -92,6 +92,17 @@ class GameGrid extends HTMLElement {
 
         if (this.hasAttribute("grid")) this.redrawGrid();
         this.trueOffsetTop = this.canvas.offsetTop;
+
+        const dpr = window.devicePixelRatio;
+        const rect = this.canvas.getBoundingClientRect();
+
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+
+        this.ctx.scale(dpr, dpr);
+
+        this.canvas.style.width = `${rect.width}px`;
+        this.canvas.style.height = `${rect.height}px`;
     }
 
     connectedCallback() {
