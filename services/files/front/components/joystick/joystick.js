@@ -58,7 +58,6 @@ class GameJoystick extends HTMLElement {
         this.activeTouchId = null;
 
         this._handleAppear = this.handleAppear.bind(this);
-        this._handleStart = this.handleStart.bind(this);
         this._handleMove = this.handleMove.bind(this);
         this._handleEnd = this.handleEnd.bind(this);
     }
@@ -82,13 +81,19 @@ class GameJoystick extends HTMLElement {
         document.addEventListener("mouseup", this._handleEnd);
 
         document.addEventListener("touchstart", this._handleAppear);
-        this.base.addEventListener("touchstart", this._handleStart);
         document.addEventListener("touchmove", this._handleMove);
         document.addEventListener("touchend", this._handleEnd);
         document.addEventListener("touchcancel", this._handleEnd);
     }
 
     handleAppear(event) {
+        if (this.isActive) return;
+
+        event.preventDefault();
+
+        const touch = event.changedTouches[0];
+        this.activeTouchId = touch.identifier ?? null;
+
         this.dispatchEvent(
             new CustomEvent("joystick-appear", {
                 detail: {
@@ -99,15 +104,9 @@ class GameJoystick extends HTMLElement {
                 composed: true,
             }),
         );
-        this.handleStart(event);
-    }
 
-    handleStart(e) {
-        e.preventDefault();
         this.isActive = true;
-        const touch = e.changedTouches?.[0] ?? e;
-        this.activeTouchId = touch.identifier ?? null;
-        this.handleMove(e);
+        this.handleMove(event);
     }
 
     handleMove(e) {
@@ -120,8 +119,6 @@ class GameJoystick extends HTMLElement {
                     break;
                 }
             }
-        } else {
-            found = true;
         }
 
         if (!found || !this.isActive) return;
@@ -181,11 +178,11 @@ class GameJoystick extends HTMLElement {
                     break;
                 }
             }
-        } else {
-            found = true;
         }
 
-        if (!found || !this.isActive) return;
+        if (!found) return;
+
+        if (!this.isActive) return;
         e.preventDefault();
         this.isActive = false;
 
