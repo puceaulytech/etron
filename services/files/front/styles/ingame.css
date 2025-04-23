@@ -221,9 +221,9 @@ rounds-bar.visible {
 
 #joystick {
     position: fixed;
-    bottom: 5vw;
-    left: 5vw;
     z-index: 70;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
 }
 
 .blur-overlay {

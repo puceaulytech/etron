@@ -299,4 +299,16 @@ socket.on("connect", async () => {
             lastMove = newMove;
         }
     });
+
+    document.addEventListener("joystick-appear", (e) => {
+        const j = document.querySelector("game-joystick");
+        j.style.left = `${e.detail.x - j.offsetWidth / 2}px`;
+        j.style.top = `${e.detail.y - j.offsetHeight / 2}px`;
+        j.style.opacity = 1;
+    });
+
+    document.addEventListener("joystick-disappear", () => {
+        const j = document.querySelector("game-joystick");
+        j.style.opacity = 0;
+    });
 });

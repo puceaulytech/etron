@@ -65,6 +65,19 @@ class GameJoystick extends HTMLElement {
         document.addEventListener("mousemove", this.handleMove.bind(this));
         document.addEventListener("mouseup", this.handleEnd.bind(this));
 
+        document.addEventListener("touchstart", (event) => {
+            this.dispatchEvent(
+                new CustomEvent("joystick-appear", {
+                    detail: {
+                        x: event.touches[0].clientX,
+                        y: event.touches[0].clientY,
+                    },
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+            this.handleStart(event);
+        });
         this.base.addEventListener("touchstart", this.handleStart.bind(this));
         document.addEventListener("touchmove", this.handleMove.bind(this));
         document.addEventListener("touchend", this.handleEnd.bind(this));
@@ -164,6 +177,13 @@ class GameJoystick extends HTMLElement {
                     x: 0,
                     y: 0,
                 },
+                bubbles: true,
+                composed: true,
+            }),
+        );
+
+        this.dispatchEvent(
+            new CustomEvent("joystick-disappear", {
                 bubbles: true,
                 composed: true,
             }),
