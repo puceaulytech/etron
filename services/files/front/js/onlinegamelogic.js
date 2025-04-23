@@ -16,14 +16,6 @@ const myUserId = localStorage.getItem("userId");
 let enableJoystick = false;
 let disableMouseMovement = false;
 
-if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
-    enableJoystick = true;
-    disableMouseMovement = true;
-    const newJoystick = new GameJoystick();
-    newJoystick.id = "joystick";
-    document.querySelector(".container").appendChild(newJoystick);
-}
-
 let opponentId;
 let opponentInfo;
 
@@ -112,20 +104,32 @@ socket.on("connect", async () => {
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        if (firstRound) mobileVibrate();
+        if (firstRound) {
+            mobileVibrate();
 
-        if (
-            firstRound &&
-            localStorage.getItem("systemNotifications") &&
-            !document.hasFocus()
-        ) {
-            new Notification("ETRON", {
-                body: "Match found!",
-                icon: "/favicon.png",
-            });
+            if (
+                typeof Capacitor !== "undefined" &&
+                Capacitor.isNativePlatform()
+            ) {
+                enableJoystick = true;
+                disableMouseMovement = true;
+                const newJoystick = new GameJoystick();
+                newJoystick.id = "joystick";
+                document.querySelector(".container").appendChild(newJoystick);
+            }
+
+            if (
+                localStorage.getItem("systemNotifications") &&
+                !document.hasFocus()
+            ) {
+                new Notification("ETRON", {
+                    body: "Match found!",
+                    icon: "/favicon.png",
+                });
+            }
+
+            firstRound = false;
         }
-
-        if (firstRound) firstRound = false;
 
         waitingForOpponent.style.visibility = "hidden";
         cancelMatchmakingBtn.style.visibility = "hidden";
