@@ -181,6 +181,7 @@ async function submitLogin(event) {
     const passwordInput = document.querySelector(
         "form.login-form input[name='password']",
     );
+    const fcmToken = localStorage.getItem("fcmToken");
     await apiFetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -189,6 +190,7 @@ async function submitLogin(event) {
         body: JSON.stringify({
             username: usernameInput.value,
             password: passwordInput.value,
+            fcmToken,
         }),
     }).then(async (response) => {
         passwordInput.value = "";

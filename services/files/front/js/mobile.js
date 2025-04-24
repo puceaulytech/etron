@@ -15,6 +15,16 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
         "/assets/tutorial-controls-mobile.gif";
     document.querySelector(".tutorial-controls .tutorial-part span").innerText =
         "Tap the screen and move by using the joystick";
+
+    Capacitor.Plugins.PushNotifications.requestPermissions().then((result) => {
+        if (result.receive === "granted") {
+            Capacitor.Plugins.PushNotifications.register();
+        }
+    });
+
+    Capacitor.Plugins.PushNotifications.addListener("registration", (token) => {
+        localStorage.setItem("fcmToken", token.value);
+    });
 }
 
 function mobileVibrate() {
