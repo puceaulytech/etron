@@ -140,7 +140,6 @@
     border: 3px solid black;
     cursor: pointer;
     aspect-ratio: 1;
-    height: 100%;
     width: auto;
     box-sizing: border-box;
 }
@@ -196,5 +195,9 @@ form.login-form {
 
     #menu-content .content-section {
         gap: 5px !important;
+    }
+
+    #search-button {
+        height: 100%;
     }
 }
