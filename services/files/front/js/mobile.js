@@ -11,12 +11,15 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
         history.back();
     });
 
-    document.querySelector(".tutorial-controls > span").remove();
-    document.querySelector(".tutorial-controls .tutorial-part").remove();
-    document.querySelector(".tutorial-controls .tutorial-part img").src =
-        "/assets/tutorial-controls-mobile.gif";
-    document.querySelector(".tutorial-controls .tutorial-part span").innerText =
-        "Tap the screen and move by using the joystick";
+    if (location.pathname === "/") {
+        document.querySelector(".tutorial-controls > span").remove();
+        document.querySelector(".tutorial-controls .tutorial-part").remove();
+        document.querySelector(".tutorial-controls .tutorial-part img").src =
+            "/assets/tutorial-controls-mobile.gif";
+        document.querySelector(
+            ".tutorial-controls .tutorial-part span",
+        ).innerText = "Tap the screen and move by using the joystick";
+    }
 
     Capacitor.Plugins.PushNotifications.requestPermissions().then((result) => {
         if (result.receive === "granted") {
@@ -29,7 +32,13 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
     });
 
     Capacitor.Plugins.CapacitorShake.addListener("shake", () => {
-        if (
+        console.log("shaking");
+        if (location.pathname === "/pages/online1v1.html") {
+            if (gameId) {
+                console.log("sending shake");
+                socket.emit("shake", { gameId });
+            }
+        } else if (
             location.pathname !== "/pages/local1v1.html" &&
             location.pathname !== "/pages/ai1v1.html" &&
             location.pathname !== "/pages/online1v1.html"
