@@ -8,7 +8,7 @@ const successDisplay = document.getElementById("success-display");
 recoveryForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const resp = await fetch("/api/auth/resetpassword", {
+    const resp = await apiFetch("/api/auth/resetpassword", {
         method: "POST",
         body: JSON.stringify({
             username: usernameInput.value,

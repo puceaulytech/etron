@@ -5,7 +5,10 @@
         <meta charset="utf-8" />
         <meta name="description" content="A TRON game with donkeys" />
         <link rel="icon" href="/favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no,maximum-scale=1"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -25,7 +28,9 @@
         <script src="components/dialog/dialog.js"></script>
         <script src="components/customdialog/customdialog.js"></script>
 
+        <script src="js/mobile.js" defer></script>
         <script src="js/socket.io.js" defer></script>
+        <script src="js/api.js" defer></script>
         <script src="js/ws.js" defer></script>
         <script src="js/authutils.js" defer></script>
         <script src="js/notifications.js" defer></script>
@@ -162,10 +167,10 @@
                             name="username"
                             class="app-text-input"
                             placeholder="Search for new friends"
-                            oninput="userSearchInput()"
+                            oninput="searchForUsers()"
                         />
                         <div id="search-button">
-                            <img src="assets/search-icon.svg" />
+                            <img src="/assets/search-icon.svg" />
                         </div>
                     </div>
                     <div id="search-results"></div>
@@ -349,7 +354,11 @@
                 </div>
             </div>
 
-            <div slot="outer" class="tutorial-navigation-container">
+            <div
+                slot="outer"
+                class="tutorial-navigation-container"
+                style="display: contents"
+            >
                 <div class="tutorial-navigation">
                     <button id="prev-page" class="nav-button" disabled>
                         <img src="/assets/chevron-left-icon.svg" />

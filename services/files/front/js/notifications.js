@@ -157,10 +157,12 @@ function showNotification(notification, noSystem = false) {
     });
 
     body.appendChild(notifElem);
+
+    mobileNotificationVibrate();
 }
 
 async function updateOnlineCount() {
-    const resp = await fetch("/api/gamesvc/onlinecount", {
+    const resp = await apiFetch("/api/gamesvc/onlinecount", {
         method: "GET",
     });
     const payload = await resp.json();

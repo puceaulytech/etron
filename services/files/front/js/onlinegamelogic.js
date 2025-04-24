@@ -13,6 +13,7 @@ const videoAnchorElement = document.querySelector("#matchmaking-hint a");
 
 const myUserId = localStorage.getItem("userId");
 
+let enableJoystick = false;
 let disableMouseMovement = false;
 
 let opponentId;
@@ -26,6 +27,14 @@ let gameId;
 let firstRound = true;
 let startElo = 0;
 
+function shakeScreen() {
+    document.querySelector("body").classList.add("screen-shaking");
+    setTimeout(
+        () => document.querySelector("body").classList.remove("screen-shaking"),
+        500,
+    );
+}
+
 cancelMatchmakingBtn.addEventListener("click", () => {
     location.assign("/");
 });
@@ -37,7 +46,7 @@ async function getPlayerElo() {
 }
 
 async function updatePlayerCountMatchmaking() {
-    await fetch("/api/gamesvc/onlinecount", {
+    await apiFetch("/api/gamesvc/onlinecount", {
         method: "GET",
     }).then(async (res) => {
         const payload = await res.json();
@@ -103,18 +112,32 @@ socket.on("connect", async () => {
     socket.on("countdown", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        if (
-            firstRound &&
-            localStorage.getItem("systemNotifications") &&
-            !document.hasFocus()
-        ) {
-            new Notification("ETRON", {
-                body: "Match found!",
-                icon: "/favicon.png",
-            });
-        }
+        if (firstRound) {
+            mobileVibrate();
 
-        if (firstRound) firstRound = false;
+            if (
+                typeof Capacitor !== "undefined" &&
+                Capacitor.isNativePlatform()
+            ) {
+                enableJoystick = true;
+                disableMouseMovement = true;
+                const newJoystick = new GameJoystick();
+                newJoystick.id = "joystick";
+                document.querySelector(".container").appendChild(newJoystick);
+            }
+
+            if (
+                localStorage.getItem("systemNotifications") &&
+                !document.hasFocus()
+            ) {
+                new Notification("ETRON", {
+                    body: "Match found!",
+                    icon: "/favicon.png",
+                });
+            }
+
+            firstRound = false;
+        }
 
         waitingForOpponent.style.visibility = "hidden";
         cancelMatchmakingBtn.style.visibility = "hidden";
@@ -171,13 +194,20 @@ socket.on("connect", async () => {
                 countdownDiv.querySelector("p.title").textContent = "You lost!";
             }
 
+            if (enableJoystick)
+                document.querySelector("game-joystick").remove();
+
             countdownDiv.style.visibility = "visible";
             countdownDiv.querySelector(
                 ".blur-overlay-buttons",
             ).style.visibility = "visible";
+
+            mobileHeavyImpact();
         } else if (gameResult.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";
+
+            mobileLightImpact();
         } else if (gameResult.type === "PLAYER_WIN") {
             const own = inverted ? 1 : -1;
 
@@ -185,6 +215,8 @@ socket.on("connect", async () => {
                 payload.result.winner === own
                     ? "- Round lost -"
                     : "- Round won -";
+
+            mobileLightImpact();
         } else if (gameResult.type === "UNFINISHED") {
             if (inverted) {
                 gameGrid.setAttribute("inverted", "yes");
@@ -207,7 +239,7 @@ socket.on("connect", async () => {
                 lastMove = newMove;
 
                 updateNextMousePos(newMove);
-            }
+            } else if (enableJoystick) updateNextMousePos(lastMove);
 
             if (!opponentInfo) {
                 opponentId = Object.keys(payload.sides).find(
@@ -242,6 +274,8 @@ socket.on("connect", async () => {
         }
     });
 
+    socket.on("shake", shakeScreen);
+
     document.addEventListener("mousemove", (event) => {
         if (disableMouseMovement) return;
 
@@ -260,4 +294,12 @@ socket.on("connect", async () => {
             lastMove = newMove;
         }
     });
+
+    document.addEventListener("joystick-move", (e) =>
+        handleJoystickMove(e, inverted),
+    );
+
+    document.addEventListener("joystick-appear", handleJoystickAppear);
+
+    document.addEventListener("joystick-disappear", handleJoystickDisappear);
 });

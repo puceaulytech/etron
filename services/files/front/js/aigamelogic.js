@@ -5,7 +5,16 @@ const loadingScreen = document.querySelector("#loading-screen");
 const roundsBar = document.querySelector("rounds-bar");
 const countdownDiv = document.querySelector("#countdown");
 
+let enableJoystick = false;
 let disableMouseMovement = false;
+
+if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
+    enableJoystick = true;
+    disableMouseMovement = true;
+    const newJoystick = new GameJoystick();
+    newJoystick.id = "joystick";
+    document.querySelector(".container").appendChild(newJoystick);
+}
 
 endReturn.addEventListener("click", () => {
     location.assign("/");
@@ -61,12 +70,17 @@ socket.on("connect", async () => {
     socket.on("gamestate", (payload) => {
         if (gameId !== payload.gameId) return;
 
-        document.querySelector(".controls-container").classList.add("visible");
-        document.querySelector(".game-hud").classList.add("visible");
-        document.querySelector("rounds-bar").classList.add("visible");
-        document
-            .querySelector(".real-donkey-container")
-            .classList.add("visible");
+        [
+            ".controls-container",
+            ".game-hud",
+            "rounds-bar",
+            ".real-donkey-container",
+        ].forEach((selector) => {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            void el.offsetHeight; // Force reflow/redraw
+            el.classList.add("visible");
+        });
 
         countdownDiv.style.visibility = "hidden";
 
@@ -84,18 +98,27 @@ socket.on("connect", async () => {
                 countdownDiv.querySelector("p.title").textContent = "You won!";
             }
 
+            if (enableJoystick)
+                document.querySelector("game-joystick").remove();
+
             countdownDiv.style.visibility = "visible";
             countdownDiv.querySelector(
                 ".blur-overlay-buttons",
             ).style.visibility = "visible";
+
+            mobileHeavyImpact();
         } else if (payload.result.type === "DRAW") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 "- It's a draw! -";
+
+            mobileLightImpact();
         } else if (payload.result.type === "PLAYER_WIN") {
             countdownDiv.querySelector("p.subtitle").textContent =
                 payload.result.winner === 1
                     ? "- Round lost -"
                     : "- Round won -";
+
+            mobileLightImpact();
         } else if (payload.result.type === "UNFINISHED") {
             const playerPos = findPlayerPos(payload.board);
             gameGrid.setAttribute(
@@ -107,6 +130,14 @@ socket.on("connect", async () => {
             );
             gameGrid.setAttribute("grid", JSON.stringify(payload.board));
 
+            // Randomly taunt player
+            if (Math.random() < 0.1) {
+                const index = Math.floor(Math.random() * emotes.length);
+                displayEmote(emotes[index], true);
+            }
+
+            if (enableJoystick) updateNextMousePos(lastMove);
+
             if (disableMouseMovement) return;
             if (!mousePos) return;
             const newMove = computeMove(mousePos.x, mousePos.y, true);
@@ -117,12 +148,6 @@ socket.on("connect", async () => {
             lastMove = newMove;
 
             updateNextMousePos(newMove);
-
-            // Randomly taunt player
-            if (Math.random() < 0.1) {
-                const index = Math.floor(Math.random() * emotes.length);
-                displayEmote(emotes[index], true);
-            }
         }
     });
 
@@ -143,6 +168,14 @@ socket.on("connect", async () => {
             lastMove = newMove;
         }
     });
+
+    document.addEventListener("joystick-move", (e) =>
+        handleJoystickMove(e, true),
+    );
+
+    document.addEventListener("joystick-appear", handleJoystickAppear);
+
+    document.addEventListener("joystick-disappear", handleJoystickDisappear);
 });
 
 function findPlayerPos(board) {

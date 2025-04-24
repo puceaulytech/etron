@@ -39,6 +39,14 @@ if (container) {
         emoteItem.style.display = "flex";
 
         container.appendChild(emoteItem);
+
+        emoteItem.addEventListener("click", () => {
+            sendEmote(index);
+        });
+
+        emoteItem.addEventListener("touchstart", () => {
+            sendEmote(index);
+        });
     });
 }
 

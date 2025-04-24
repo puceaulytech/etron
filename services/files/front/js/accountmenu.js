@@ -170,18 +170,23 @@ function focusSectionByName(sectionName) {
     return true;
 }
 
+const usernameInput = document.querySelector(
+    "form.login-form input[name='username']",
+);
+const passwordInput = document.querySelector(
+    "form.login-form input[name='password']",
+);
+
+setupScrollWorkaround(usernameInput);
+setupScrollWorkaround(passwordInput);
+
 /**
  * @param {SubmitEvent} event
  */
 async function submitLogin(event) {
     if (event) event.preventDefault();
-    const usernameInput = document.querySelector(
-        "form.login-form input[name='username']",
-    );
-    const passwordInput = document.querySelector(
-        "form.login-form input[name='password']",
-    );
-    await fetch("/api/auth/login", {
+    const fcmToken = localStorage.getItem("fcmToken");
+    await apiFetch("/api/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -189,6 +194,7 @@ async function submitLogin(event) {
         body: JSON.stringify({
             username: usernameInput.value,
             password: passwordInput.value,
+            fcmToken,
         }),
     }).then(async (response) => {
         passwordInput.value = "";
@@ -236,7 +242,7 @@ async function registerUser() {
         return;
     }
 
-    await fetch("/api/auth/register", {
+    await apiFetch("/api/auth/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -272,11 +278,13 @@ function logOut() {
     socket.disconnect();
 }
 
-const usernameInput = document.querySelector("#search-container input");
+const usernameSearchInput = document.querySelector("#search-container input");
 const searchResultsContainer = document.querySelector("#search-results");
 
-function userSearchInput() {
-    const input = usernameInput.value;
+setupScrollWorkaround(usernameSearchInput);
+
+function searchForUsers() {
+    const input = usernameSearchInput.value;
 
     if (input.length < 3) {
         searchResultsContainer.innerHTML = "";
@@ -299,7 +307,7 @@ function userSearchInput() {
 }
 
 function resetSearchInput() {
-    usernameInput.value = "";
+    usernameSearchInput.value = "";
 }
 
 const friendList = document.querySelector("#friend-list");

@@ -59,6 +59,12 @@ class NotificationCard extends HTMLElement {
                     30% { transform: translateY(-30px); }
                     100% { transform: translateY(400px); }
                 }
+
+                @media only screen and (max-width: 1000px) {
+                    .container {
+                        padding: 10px;
+                    }
+                }
             </style>
 
             <div class="container">

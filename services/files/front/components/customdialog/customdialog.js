@@ -11,8 +11,8 @@ class AppDialogCustom extends HTMLElement {
                     top: 0;
                     left: 0;
                     z-index: 1000;
-                    width: 100%;
-                    height: 100%;
+                    width: 100dvw;
+                    height: 100dvh;
                     justify-content: center;
                     align-items: center;
                     background: rgba(0, 0, 0, 0.5);
@@ -26,16 +26,22 @@ class AppDialogCustom extends HTMLElement {
                     min-width: 400px;
                     max-width: 80%;
                     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                    font-size: 20px;
+                    font-size: 1rem;
                     transform: scale(0);
                     transition: transform 200ms;
+                    box-sizing: border-box;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    gap: 15px;
                 }
                 .dialog-header {
-                    margin-bottom: 15px;
                     text-align: center;
                 }
                 .dialog-body {
-                    margin-bottom: 15px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
                 .dialog-buttons {
                     display: flex;
@@ -44,6 +50,14 @@ class AppDialogCustom extends HTMLElement {
                 }
                 #content {
                     margin: 0;
+                }
+
+                @media only screen and (max-width: 1000px) {
+                    .dialog {
+                        width: 100dvw !important;
+                        height: 100dvh !important;
+                        max-width: unset !important;
+                    }
                 }
             </style>
             <div class="dialog">
