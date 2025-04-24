@@ -93,3 +93,13 @@ function mobileNotificationVibrate() {
 
     Capacitor.Plugins.Haptics.impact({ type: "SUCCESS" });
 }
+
+function setupScrollWorkaround(elem) {
+    if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
+        elem.addEventListener("focus", () => {
+            setTimeout(() => {
+                elem.scrollIntoView({ behavior: "smooth" });
+            }, 300);
+        });
+    }
+}

@@ -205,13 +205,13 @@
     display: none;
 }
 
-@media only screen and (max-width: 1000px) {
+/* @media only screen and (max-width: 1000px) {
     #chat-input-container input[name="message"]:focus {
         position: relative;
         top: -70vh;
         box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
     }
-}
+} */
 
 @keyframes message-appear {
     0% {
