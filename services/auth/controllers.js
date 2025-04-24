@@ -130,6 +130,15 @@ async function login(req, res) {
         return;
     }
 
+    if (payload.fcmToken) {
+        await db
+            .collection("users")
+            .updateOne(
+                { _id: user._id },
+                { $set: { fcmToken: payload.fcmToken } },
+            );
+    }
+
     const refreshToken = generateRefreshToken(jwt, { username, _id: user._id });
     const accessToken = generateAccessToken(jwt, { username, _id: user._id });
 

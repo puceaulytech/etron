@@ -1,5 +1,8 @@
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
+const firebase = require("firebase-admin");
+const firebaseApp = require("firebase-admin/app");
+const { getMessaging } = require("firebase-admin/messaging");
 const storage = require("./storage");
 const {
     Direction,
@@ -10,6 +13,8 @@ const {
 const { verifyAccessToken } = require("../helpers/tokens");
 const ObjectId = require("mongodb").ObjectId;
 const pool = require("../helpers/db");
+const { Logger } = require("../helpers/logger");
+const logger = new Logger("debug");
 
 async function pollPendingNotifs(socket) {
     const notifCollection = pool.get().collection("notifications");
@@ -29,6 +34,8 @@ async function pollPendingNotifs(socket) {
     await notifCollection.updateMany(filter, { $set: { sended: true } });
 }
 
+let firebaseAdmin;
+
 function handleWS(httpServer) {
     const io = new Server(httpServer, {});
 
@@ -36,6 +43,19 @@ function handleWS(httpServer) {
 
     const notifCollection = pool.get().collection("notifications");
     const changeStream = notifCollection.watch();
+
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        try {
+            firebaseAdmin = firebaseApp.initializeApp({
+                credential: firebase.credential.cert(
+                    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT),
+                ),
+            });
+        } catch (err) {
+            logger.warn("cannot initialize firebase admin");
+            logger.warn(err);
+        }
+    }
 
     changeStream.on("change", async (change) => {
         if (change.operationType === "insert") {
@@ -57,6 +77,15 @@ function handleWS(httpServer) {
                         { _id: notification._id },
                         { $set: { sended: true } },
                     );
+                }
+
+                if (firebaseAdmin && notification.shouldDisplay) {
+                    const user = await userCollection.findOne({
+                        _id: notification.recipient,
+                    });
+
+                    if (user.fcmToken)
+                        await sendPushNotification(user.fcmToken, notification);
                 }
             }
         }
@@ -189,6 +218,29 @@ function handleWS(httpServer) {
     });
 
     return io;
+}
+
+async function sendPushNotification(fcmToken, notification) {
+    let title = "";
+    let body = "";
+
+    if (notification.type === "FRIEND_REQUEST") {
+        title = `${notification.friendRequest.targetUsername} wants to be your friend`;
+        body = "Go on the app to accept the friend request";
+    } else if (notification.type === "FRIEND_REQUEST_ACCEPTED") {
+        title = `${notification.friendRequestAccepted.targetUsername} accepted your friend request`;
+        body = "Go on the app to challenge your new friend now";
+    } else {
+        return;
+    }
+
+    await getMessaging(firebaseAdmin).send({
+        notification: { title, body },
+        token: fcmToken,
+        android: {
+            priority: "high",
+        },
+    });
 }
 
 module.exports = handleWS;
