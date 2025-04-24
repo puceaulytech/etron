@@ -98,7 +98,11 @@ function setupScrollWorkaround(elem) {
     if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
         elem.addEventListener("focus", () => {
             setTimeout(() => {
-                elem.scrollIntoView({ behavior: "smooth" });
+                elem.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "center",
+                });
             }, 300);
         });
     }

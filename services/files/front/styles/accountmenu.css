@@ -10,8 +10,10 @@
 
 #account-menu {
     width: calc(var(--menu-width) - 2 * var(--menu-border-size));
-    height: calc(100vh - 2 * var(--menu-border-size));
-    position: absolute;
+    /* height: calc(100vh - 2 * var(--menu-border-size)); */
+    height: 100%;
+    box-sizing: border-box;
+    position: fixed;
     right: calc(-20px - var(--menu-width));
     top: 0;
     background-color: #ade67f;
@@ -29,12 +31,15 @@
 #account-menu #menu-header {
     width: 100%;
     height: var(--menu-header-height);
+    position: sticky;
+    top: 0;
     border-bottom: medium solid black;
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
     align-items: center;
     justify-content: center;
     gap: 2px;
+    background-color: #ade67f;
 }
 
 #menu-header .section {
@@ -199,5 +204,10 @@ form.login-form {
 
     #search-button {
         height: 100%;
+    }
+
+    .content-section h1 {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 }
