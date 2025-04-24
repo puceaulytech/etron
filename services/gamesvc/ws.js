@@ -177,6 +177,27 @@ function handleWS(httpServer) {
             }
         });
 
+        socket.on("shake", (payload) => {
+            const game = storage.games.get(payload.gameId);
+
+            // Game doesn't exist, ignore
+            if (!game) return;
+            if (game.ai) return;
+
+            const receiver =
+                socket.userId === game.firstPlayer
+                    ? game.secondPlayer
+                    : game.firstPlayer;
+
+            const socketId = storage.getClientSocketId(receiver);
+
+            if (socketId) {
+                const socket = io.sockets.sockets.get(socketId);
+
+                socket.emit("shake", payload);
+            }
+        });
+
         // Register disconnection event
         socket.on("disconnect", async (_reason) => {
             storage.removeClient(socket.userId);

@@ -27,6 +27,14 @@ let gameId;
 let firstRound = true;
 let startElo = 0;
 
+function shakeScreen() {
+    document.querySelector("body").classList.add("screen-shaking");
+    setTimeout(
+        () => document.querySelector("body").classList.remove("screen-shaking"),
+        500,
+    );
+}
+
 cancelMatchmakingBtn.addEventListener("click", () => {
     location.assign("/");
 });
@@ -265,6 +273,8 @@ socket.on("connect", async () => {
             }
         }
     });
+
+    socket.on("shake", shakeScreen);
 
     document.addEventListener("mousemove", (event) => {
         if (disableMouseMovement) return;

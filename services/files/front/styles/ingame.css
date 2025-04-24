@@ -411,6 +411,48 @@ rounds-bar {
     }
 }
 
+.screen-shaking {
+    animation-name: screen-shake;
+    animation-duration: 100ms;
+    animation-iteration-count: infinite;
+    overflow: hidden;
+}
+@keyframes screen-shake {
+    0% {
+        transform: scale(1.02) translate(4px, -4px);
+    }
+    10% {
+        transform: scale(1.02) translate(-5px, 5px);
+    }
+    20% {
+        transform: scale(1.02) translate(-6px, 3px);
+    }
+    30% {
+        transform: scale(1.02) translate(6px, -2px);
+    }
+    40% {
+        transform: scale(1.02) translate(4px, -5px);
+    }
+    50% {
+        transform: scale(1.02) translate(-4px, 4px);
+    }
+    60% {
+        transform: scale(1.02) translate(-6px, -3px);
+    }
+    70% {
+        transform: scale(1.02) translate(5px, 4px);
+    }
+    80% {
+        transform: scale(1.02) translate(-4px, -4px);
+    }
+    90% {
+        transform: scale(1.02) translate(5px, 5px);
+    }
+    100% {
+        transform: scale(1.02) translate(0px, 0px);
+    }
+}
+
 @media only screen and (max-width: 1000px) {
     .game-hud {
         --this-width: 500px;
