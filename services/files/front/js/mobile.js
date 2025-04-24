@@ -8,6 +8,13 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
     Capacitor.Plugins.App.addListener("backButton", () => {
         history.back();
     });
+
+    document.querySelector(".tutorial-controls > span").remove();
+    document.querySelector(".tutorial-controls .tutorial-part").remove();
+    document.querySelector(".tutorial-controls .tutorial-part img").src =
+        "/assets/tutorial-controls-mobile.gif";
+    document.querySelector(".tutorial-controls .tutorial-part span").innerText =
+        "Tap the screen and move by using the joystick";
 }
 
 function mobileVibrate() {

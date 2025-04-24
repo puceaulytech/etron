@@ -340,6 +340,14 @@ svg .svg-shit {
         gap: 5px;
     }
 
+    .tutorial-controls {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tutorial-part img {
+        object-fit: cover;
+    }
+
     #play-local-btn {
         display: none;
     }
