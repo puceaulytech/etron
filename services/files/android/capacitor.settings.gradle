@@ -5,6 +5,9 @@ project(':capacitor-android').projectDir = new File('../../../node_modules/@capa
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../../../node_modules/@capacitor/app/android')
 
+include ':capacitor-dialog'
+project(':capacitor-dialog').projectDir = new File('../../../node_modules/@capacitor/dialog/android')
+
 include ':capacitor-haptics'
 project(':capacitor-haptics').projectDir = new File('../../../node_modules/@capacitor/haptics/android')
 
@@ -13,3 +16,6 @@ project(':capacitor-push-notifications').projectDir = new File('../../../node_mo
 
 include ':capacitor-screen-orientation'
 project(':capacitor-screen-orientation').projectDir = new File('../../../node_modules/@capacitor/screen-orientation/android')
+
+include ':capgo-capacitor-shake'
+project(':capgo-capacitor-shake').projectDir = new File('../../../node_modules/@capgo/capacitor-shake/android')

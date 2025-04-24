@@ -1,3 +1,5 @@
+let shakeDialogIsOpen = false;
+
 if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
     if (location.pathname === "/pages/passwordrecovery.html") {
         Capacitor.Plugins.ScreenOrientation.lock({ orientation: "portrait" });
@@ -24,6 +26,25 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
 
     Capacitor.Plugins.PushNotifications.addListener("registration", (token) => {
         localStorage.setItem("fcmToken", token.value);
+    });
+
+    Capacitor.Plugins.CapacitorShake.addListener("shake", () => {
+        if (shakeDialogIsOpen) return;
+
+        shakeDialogIsOpen = true;
+
+        Capacitor.Plugins.Dialog.confirm({
+            title: "A problem?",
+            message: "It looks like you are having a hard time with the app",
+            okButtonTitle: "File a bug report",
+        }).then((res) => {
+            if (res.value)
+                location.assign(
+                    "https://github.com/puceaulytech/etron/issues/new",
+                );
+
+            shakeDialogIsOpen = false;
+        });
     });
 }
 
