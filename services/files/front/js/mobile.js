@@ -29,22 +29,29 @@ if (typeof Capacitor !== "undefined" && Capacitor.isNativePlatform()) {
     });
 
     Capacitor.Plugins.CapacitorShake.addListener("shake", () => {
-        if (shakeDialogIsOpen) return;
+        if (
+            location.pathname !== "/pages/local1v1.html" &&
+            location.pathname !== "/pages/ai1v1.html" &&
+            location.pathname !== "/pages/online1v1.html"
+        ) {
+            if (shakeDialogIsOpen) return;
 
-        shakeDialogIsOpen = true;
+            shakeDialogIsOpen = true;
 
-        Capacitor.Plugins.Dialog.confirm({
-            title: "A problem?",
-            message: "It looks like you are having a hard time with the app",
-            okButtonTitle: "File a bug report",
-        }).then((res) => {
-            if (res.value)
-                location.assign(
-                    "https://github.com/puceaulytech/etron/issues/new",
-                );
+            Capacitor.Plugins.Dialog.confirm({
+                title: "A problem?",
+                message:
+                    "It looks like you are having a hard time with the app",
+                okButtonTitle: "File a bug report",
+            }).then((res) => {
+                if (res.value)
+                    location.assign(
+                        "https://github.com/puceaulytech/etron/issues/new",
+                    );
 
-            shakeDialogIsOpen = false;
-        });
+                shakeDialogIsOpen = false;
+            });
+        }
     });
 }
 
